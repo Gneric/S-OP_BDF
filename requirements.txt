@@ -1,0 +1,7 @@
+flask
+flask_restful
+flask_cors
+sqlalchemy
+waitress
+pyodbc
+pandas
