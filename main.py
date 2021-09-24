@@ -3,10 +3,12 @@ from api.routes.welcome import Welcome
 from api.routes.uploadExcel import UploadExcel
 from api.routes.getData import GetData
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import Api
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 api.add_resource(Welcome, '/')
 api.add_resource(UploadExcel, '/upload_excel')
