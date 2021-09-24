@@ -7,6 +7,8 @@ class UploadExcel(Resource):
     def post(self):
         if 'excel_file' not in request.files:
             return 'No se encontro excel file', 400
+        #if request.args['area_id'] == "": 
+        #    return 'No se encontro area id', 400
         else:
             cleanDataFolder()
             try:
