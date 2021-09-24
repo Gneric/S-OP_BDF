@@ -65,7 +65,7 @@ def getData(id, area_id):
 
 def checkInfoMonth(year, month):
     if int(month) < 10:
-        month = f"0{month}"
+        month = f"0{int(month)}"
     info = requestIDbyPeriod(f"{year}{month}")
     return { 'result' : info }
      
