@@ -1,3 +1,5 @@
+#!/home/overlord/apps/S-OP_BDF/env/bin/python
+
 from api.routes.getInfoMes import GetInfoMes
 from api.routes.welcome import Welcome
 from api.routes.uploadExcel import UploadExcel
@@ -17,5 +19,5 @@ api.add_resource(GetInfoMes, '/get_info')
 
 if __name__ == '__main__':
   from waitress import serve
-  serve(app, host="0.0.0.0", port=3006, threads=8)
+  serve(app, host="0.0.0.0", port=3100, threads=8)
   #app.run(host='0.0.0.0', port=3006, debug=True)
