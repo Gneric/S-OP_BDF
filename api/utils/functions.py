@@ -24,7 +24,7 @@ def checkFiles():
     n_files = len(dir_files)
     return n_files
 
-def checkExcelFiles():
+def checkExcelFiles(year, month):
     for f in scandir(data_path):
         print("Excel File Name : ", f.name)
         xl = pd.ExcelFile(f)
@@ -33,13 +33,13 @@ def checkExcelFiles():
             if sheet == 'Hoja1':
                 df = pd.read_excel(f, sheet)
                 if 'BASELINE' in f.name:
-                    return Loadbaseline(df)
+                    return Loadbaseline(df, year, month)
                 if 'LAUNCH' in f.name:
-                    return LoadLaunch(df)
+                    return LoadLaunch(df, year, month)
                 if 'PROMO' in f.name:
-                    return LoadPromo(df)
+                    return LoadPromo(df, year, month)
                 if 'VALORIZACION' in f.name:
-                    return LoadValorizacion(df)
+                    return LoadValorizacion(df, year, month)
                 else:
                     return '.'
 
