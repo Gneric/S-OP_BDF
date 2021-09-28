@@ -38,11 +38,12 @@ class UploadExcel(Resource):
             if n_files == 0:
                 return 'No files saved', 400
             else:                   
-                res = checkExcelFiles(area_id, year, month)
+                res = checkExcelFiles(int(area_id), year, month)
                 if res == "":
                     return "Error al subir el archivo", 400
                 else:
                     return { "result" : res }, 200
+            
         except SystemError as Err:
             print("ERROR : ", Err)
             return { 'Error' : errors }, 400
