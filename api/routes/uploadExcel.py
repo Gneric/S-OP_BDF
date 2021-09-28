@@ -5,8 +5,19 @@ from ..utils.functions import *
 
 class UploadExcel(Resource):
     def post(self):
+
+        year = request.args['year']
+        month = request.args['month']
+
+        if int(month) < 10 and len(month) == 1:
+            month = f"0{int(month)}"
         if 'excel_file' not in request.files:
             return 'No se encontro excel file', 400
+        if request.args['area_id'] == "": 
+            return 'No se encontro area id', 400
+        if datetime.now().strftime('%Y%M') != str(year)+str(month):
+            return "El periodo enviado no es el actual", 400 
+           
         else:
             cleanDataFolder()
             try:
@@ -22,8 +33,8 @@ class UploadExcel(Resource):
                 n_files = checkFiles()
                 if n_files == 0:
                     return 'No files saved', 400
-                else:
-                    res = checkExcelFiles()
+                else:                   
+                    res = checkExcelFiles(year, month)
                     if res == "":
                         return "Error al subir el archivo", 400
                     else:

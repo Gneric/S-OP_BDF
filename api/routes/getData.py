@@ -6,8 +6,10 @@ class GetData(Resource):
     def post(self):
         id = request.json['file_id']
         area = request.json['area_id']
+
         if id == "" or area == "":
-            return 'No se encontro parametros de id y area', 400
+            return 'No se encontro parametros de id y/o area', 400
+        
         else:
             try:
                 res = getData(id, area)
