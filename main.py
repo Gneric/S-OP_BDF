@@ -15,5 +15,5 @@ api.add_resource(GetInfoMes, '/get_info')
 
 if __name__ == '__main__':
   from waitress import serve
-  serve(app, host="0.0.0.0", port=3006, threads=8)
-  #app.run(host='0.0.0.0', port=3006, debug=True)
+  serve(app, host="0.0.0.0", port=3100, threads=8)
+  #app.run(host='0.0.0.0', port=3100, debug=True)
