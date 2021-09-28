@@ -24,24 +24,6 @@ def checkFiles():
     n_files = len(dir_files)
     return n_files
 
-def checkExcelFiles(year, month):
-    for f in scandir(data_path):
-        print("Excel File Name : ", f.name)
-        xl = pd.ExcelFile(f)
-        print("Sheet Names", xl.sheet_names)
-        for sheet in xl.sheet_names:
-            if sheet == 'Hoja1':
-                df = pd.read_excel(f, sheet)
-                if 'BASELINE' in f.name:
-                    return Loadbaseline(df, year, month)
-                if 'LAUNCH' in f.name:
-                    return LoadLaunch(df, year, month)
-                if 'PROMO' in f.name:
-                    return LoadPromo(df, year, month)
-                if 'VALORIZACION' in f.name:
-                    return LoadValorizacion(df, year, month)
-                else:
-                    return '.'
 
 db_table_area = {
     "1" : "baseline",
@@ -49,6 +31,23 @@ db_table_area = {
     "3" : "promo",
     "4" : "valorizacion"
 }
+def checkExcelFiles(area_id, year, month):
+    for f in scandir(data_path):
+        xl = pd.ExcelFile(f)
+        for sheet in xl.sheet_names:
+            if sheet == 'Hoja1':
+                df = pd.read_excel(f, sheet)
+                if area_id == 1:
+                    return Loadbaseline(df, year, month)
+                if area_id == 2:
+                    return LoadLaunch(df, year, month)
+                if area_id == 3:
+                    return LoadPromo(df, year, month)
+                if area_id == 4:
+                    return LoadValorizacion(df, year, month)
+                else:
+                    return ""
+
 def getData(id, area_id):
     area = db_table_area[str(area_id)]
     if area == "baseline":
