@@ -6,9 +6,9 @@ from flask_restful import Resource
 class GetInfoMes(Resource):
     def post(self):
 
-        year = request.json['year']
-        month = request.json['month']
-        
+        year = str(request.json['year'])
+        month = str(request.json['month'])
+
         if year == "" or month == "":
             return 'No se encontro parametros de year y month', 400
         else:
