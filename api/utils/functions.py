@@ -67,4 +67,21 @@ def checkInfoMonth(year, month):
         month = f"0{int(month)}"
     info = requestIDbyPeriod(f"{year}{month}")
     return { 'result' : info }
+
+
+def checkDeleteTable(area_id, year, month):
+    area_id = int(area_id)
+    if int(month) < 10 and len(month) == 1:
+        month = f"0{int(month)}"
+    if area_id == 1:
+        return deleteDataBaseline(year+month)
+    if area_id == 2:
+        return deleteDataLaunch(year+month)
+    if area_id == 3:
+        return deleteDataPromo(year+month)
+    if area_id == 4:
+        return deleteDataValorizacion(year+month)
+    else:
+        return ""
+
      

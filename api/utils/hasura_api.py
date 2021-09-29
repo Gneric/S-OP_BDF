@@ -53,6 +53,9 @@ def requestIDbyPeriod(period):
         print("error on requestIDbyPeriod")
         return ""
 
+#######################
+###### BASELINE #######
+#######################
 def sendDataBaseline(data):
     try:
         # SendInsert
@@ -70,7 +73,6 @@ def sendDataBaseline(data):
         return result
     except:
         return ""
-    
 def requestDataBaseline(id):
     try:
         query = """
@@ -96,8 +98,27 @@ def requestDataBaseline(id):
     except SystemError as err:
         print(err)
         return ""
+def deleteDataBaseline(id):
+    try:
+        query = """
+        mutation MyMutation($id: String) {
+            delete_Maestro_baseline(where: {id: {_eq: $id}}) {
+                affected_rows
+            }
+        }
+        """
+        res_delete = queryHasura(query, {"id" : id })
+        result = {
+            "deleted_rows" : res_delete["data"]["delete_Maestro_baseline"]["affected_rows"]
+        }
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
 
-
+#######################
+####### LAUNCH ########
+#######################
 def sendDataLaunch(data):
     # SendInsert
     query = """
@@ -109,7 +130,6 @@ def sendDataLaunch(data):
     """
     res_insert = queryHasura(query, {"objects" : data})
     return res_insert
-
 def requestDataLaunch(id):
     # Request data
     query = """
@@ -133,8 +153,27 @@ def requestDataLaunch(id):
         "rows" : res_select["data"]["Maestro_launch"]
     }
     return result
+def deleteDataLaunch(id):
+    try:
+        query = """
+        mutation MyMutation($id: String) {
+            delete_Maestro_launch(where: {id: {_eq: $id}}) {
+                affected_rows
+            }
+        }
+        """
+        res_delete = queryHasura(query, {"id" : id })
+        result = {
+            "deleted_rows" : res_delete["data"]["delete_Maestro_launch"]["affected_rows"]
+        }
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
 
-
+#######################
+###### PROMOCION ######
+#######################
 def sendDataPromo(data):
     # SendInsert
     query = """
@@ -146,26 +185,52 @@ def sendDataPromo(data):
     """
     res_insert = queryHasura(query, {"sqlData" : data})
     return res_insert
-
 def requestDataPromo(id):
     # Request data
     query = """
-    query Maestro_promo {
-        Maestro_promo {
+    query MyQuery($id: String) {
+        Maestro_promo(where: {id: {_eq: $id}}) {
             id
-            created_at
-            updated_at
+            clasificacion
+            tipo_promo
+            canal
+            application_form
+            nart
+            descripcion
+            year
+            month
+            cantidad
         }
     }
     """
-    res_select = queryHasura(query)
+    res_select = queryHasura(query, {"id" : id })
     colum_list = [ { 'prop' : i } for i in res_select["data"]["Maestro_promo"][0].keys()]
     result = {
         "columns" : colum_list,
         "rows" : res_select["data"]["Maestro_promo"]
     }
     return result
+def deleteDataPromo(id):
+    try:
+        query = """
+        mutation MyMutation($id: String) {
+            delete_Maestro_promo(where: {id: {_eq: $id}}) {
+                affected_rows
+            }
+        }
+        """
+        res_delete = queryHasura(query, {"id" : id })
+        result = {
+            "deleted_rows" : res_delete["data"]["delete_Maestro_promo"]["affected_rows"]
+        }
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
 
+#######################
+#### VALORIZACION #####
+#######################
 def sendDataValorizacion(data):
     # SendInsert
     query = """
@@ -177,22 +242,43 @@ def sendDataValorizacion(data):
     """
     res_insert = queryHasura(query, {"sqlData" : data})
     return res_insert
-
 def requestDataValorizacion(id):
     # Request data
     query = """
-    query Maestro_valorizacion {
-        Maestro_valorizacion {
+    query MyQuery($id: String) {
+        Maestro_valorizacion(where: {id: {_eq: $id}}) {
             id
-            created_at
-            updated_at
+            clasificacion
+            nart
+            descripcion
+            year
+            month
+            value
+            cantidad
         }
     }
     """
-    res_select = queryHasura(query)
+    res_select = queryHasura(query, {"id" : id })
     colum_list = [ { 'prop' : i } for i in res_select["data"]["Maestro_valorizacion"][0].keys()]
     result = {
         "columns" : colum_list,
         "rows" : res_select["data"]["Maestro_valorizacion"]
     }
     return result
+def deleteDataValorizacion(id):
+    try:
+        query = """
+        mutation MyMutation($id: String){
+            delete_Maestro_valorizacion(where: {id: {_eq: $id}}) {
+                affected_rows
+            }
+        }
+        """
+        res_delete = queryHasura(query, {"id" : id })
+        result = {
+            "deleted_rows" : res_delete["data"]["delete_Maestro_valorizacion"]["affected_rows"]
+        }
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
