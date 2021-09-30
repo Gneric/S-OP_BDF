@@ -3,7 +3,7 @@ from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
 
-data_path = join(getcwd(),'api','data')
+data_path = join(getcwd(),'api','files')
 def cleanDataFolder():
     for file in scandir(data_path):
         remove(file)
