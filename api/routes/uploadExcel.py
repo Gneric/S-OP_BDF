@@ -17,6 +17,10 @@ class UploadExcel(Resource):
             if 'excel_file' in request.files.keys():
                 files = request.files.getlist('excel_file')
             else:
+                print(f"{year=}")
+                print(f"{month=}")
+                print(f"{area_id=}")
+                print(f"files={request.files.getlist('excel_file')}")
                 return 'No se encuentran todas las varaibles necesarias', 400
 
             if int(month) < 10 and len(str(month)) == 1:
