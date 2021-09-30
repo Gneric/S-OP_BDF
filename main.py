@@ -1,3 +1,4 @@
+from api.routes.cloneData import CloneData
 from api.routes.getInfoMes import GetInfoMes
 from api.routes.welcome import Welcome
 from api.routes.uploadExcel import UploadExcel
@@ -14,6 +15,7 @@ api.add_resource(UploadExcel, '/upload_excel')
 api.add_resource(GetData, '/get_excel_data')
 api.add_resource(GetInfoMes, '/get_info')
 api.add_resource(DeleteData, '/del_data')
+api.add_resource(CloneData, '/clone_data')
 
 if __name__ == '__main__':
   #from waitress import serve

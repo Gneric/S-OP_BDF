@@ -10,6 +10,14 @@ area_by_table = {
     "Maestro_valorizacion" : { "area_id" : 4, "area_name" : "Finanzas"},
 }
 
+def getSizebyColumnName(size_list, name):
+    try:
+        values_list = [ x['size'] if x['name']==name else 'NULL' for x in size_list]
+        value = list(filter(lambda a: a != 'NULL', values_list))[0]
+        return value
+    except:
+        return 0
+
 def queryHasura(query, variables = ""):
     if variables == "":
         result = requests.post(hasura_endpoint, json={'query': query}, headers=headers)
@@ -89,7 +97,11 @@ def requestDataBaseline(id):
         }
         """
         res_select = queryHasura(query, {"id" : id })
-        colum_list = [ { 'prop' : i } for i in res_select["data"]["Maestro_baseline"][0].keys()]
+        if len(res_select["data"]["Maestro_baseline"]) < 1:
+            return "No existen datos para los parametros igresados"
+
+        size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+        colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_baseline"][0].keys()]
         result = {
             "columns" : colum_list,
             "rows" : res_select["data"]["Maestro_baseline"]
@@ -124,12 +136,15 @@ def sendDataLaunch(data):
     query = """
     mutation MyMutation($objects: [Maestro_launch_insert_input!] = {}) {
         insert_Maestro_launch(objects: $objects, on_conflict: {constraint: Maestro_launch_pkey, update_columns: cantidad}) {
-            affected_rows
+            returning {
+                id
+            }
         }
     }
     """
     res_insert = queryHasura(query, {"objects" : data})
-    return res_insert
+    result = { "file_id" : res_insert["data"]["insert_Maestro_launch"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_launch"]["area_name"] }
+    return result
 def requestDataLaunch(id):
     # Request data
     query = """
@@ -147,7 +162,12 @@ def requestDataLaunch(id):
     }
     """
     res_select = queryHasura(query, {"id", id})
-    colum_list = [ { 'prop' : i } for i in res_select["data"]["Maestro_launch"][0].keys()]
+
+    if len(res_select["data"]["Maestro_launch"]) < 1:
+        return "No existen datos para los parametros igresados"
+
+    size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+    colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_launch"][0].keys()]
     result = {
         "columns" : colum_list,
         "rows" : res_select["data"]["Maestro_launch"]
@@ -177,14 +197,18 @@ def deleteDataLaunch(id):
 def sendDataPromo(data):
     # SendInsert
     query = """
-    mutation insert_Maestro_promo($sqlData: [Maestro_promo_insert_input!]!) {
-        insert_Maestro_promo(objects: $sqlData) {
-            affected_rows
+    mutation MyMutation($objects: [Maestro_promo_insert_input!] = {}) {
+        insert_Maestro_promo(objects: $objects, on_conflict: {constraint: Maestro_promo_pkey, update_columns: cantidad}) {
+            returning {
+                id
+            }
         }
     }
+
     """
-    res_insert = queryHasura(query, {"sqlData" : data})
-    return res_insert
+    res_insert = queryHasura(query, {"objects" : data})
+    result = { "file_id" : res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_promo"]["area_name"] }
+    return result
 def requestDataPromo(id):
     # Request data
     query = """
@@ -204,7 +228,12 @@ def requestDataPromo(id):
     }
     """
     res_select = queryHasura(query, {"id" : id })
-    colum_list = [ { 'prop' : i } for i in res_select["data"]["Maestro_promo"][0].keys()]
+
+    if len(res_select["data"]["Maestro_promo"]) < 1:
+        return "No existen datos para los parametros igresados"
+
+    size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+    colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_promo"][0].keys()]
     result = {
         "columns" : colum_list,
         "rows" : res_select["data"]["Maestro_promo"]
@@ -234,14 +263,17 @@ def deleteDataPromo(id):
 def sendDataValorizacion(data):
     # SendInsert
     query = """
-    mutation insert_Maestro_valorizacion($sqlData: [Maestro_valorizacion_insert_input!]!) {
-        insert_Maestro_valorizacion(objects: $sqlData) {
-            affected_rows
+    mutation MyMutation($objects: [Maestro_valorizacion_insert_input!] = {}) {
+        insert_Maestro_valorizacion(objects: $objects, on_conflict: {constraint: Maestro_valorizacion_pkey, update_columns: cantidad}) {
+            returning {
+                id
+            }
         }
     }
     """
-    res_insert = queryHasura(query, {"sqlData" : data})
-    return res_insert
+    res_insert = queryHasura(query, {"objects" : data})
+    result = { "file_id" : res_insert["data"]["insert_Maestro_valorizacion"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_valorizacion"]["area_name"] }
+    return result
 def requestDataValorizacion(id):
     # Request data
     query = """
@@ -259,7 +291,11 @@ def requestDataValorizacion(id):
     }
     """
     res_select = queryHasura(query, {"id" : id })
-    colum_list = [ { 'prop' : i } for i in res_select["data"]["Maestro_valorizacion"][0].keys()]
+    if len(res_select["data"]["Maestro_valorizacion"]) < 1:
+        return "No existen datos para los parametros igresados"
+
+    size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+    colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_valorizacion"][0].keys()]
     result = {
         "columns" : colum_list,
         "rows" : res_select["data"]["Maestro_valorizacion"]

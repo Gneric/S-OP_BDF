@@ -3,9 +3,6 @@ from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
 
-
-
-
 data_path = join(getcwd(),'api','data')
 def cleanDataFolder():
     for file in scandir(data_path):
@@ -49,18 +46,16 @@ def checkExcelFiles(area_id, year, month):
                     return ""
 
 def getData(id, area_id):
-    area = db_table_area[str(area_id)]
-    if area == "baseline":
+    if area_id == 1:
         return requestDataBaseline(id)
-    elif area == "launch":
+    if area_id == 2:
         return requestDataLaunch(id)
-    elif area == "promo":
+    if area_id == 3:
         return requestDataPromo(id)
-    elif area == "valorizacion":
+    if area_id == 4:
         return requestDataValorizacion(id) 
     else:
-        print("Area no encontrada")
-        return '.'
+        return ""
 
 def checkInfoMonth(year, month):
     if int(month) < 10 and len(month) == 1:
@@ -83,5 +78,31 @@ def checkDeleteTable(area_id, year, month):
         return deleteDataValorizacion(year+month)
     else:
         return ""
+
+def cloneData(file_id, area_id):
+    try:
+        data = []
+        if area_id == 1:
+            data = requestDataBaseline(file_id)
+        if area_id == 2:
+            data = requestDataLaunch(file_id)
+        if area_id == 3:
+            data = requestDataPromo(file_id)
+        if area_id == 4:
+            data = requestDataValorizacion(file_id)
+        if data == []:
+            return "area_id not found"
+        column_list = list(data["rows"][0].keys())
+        values = [ list(i.values()) for i in data["rows"] ]
+        xslx_name = f"{db_table_area[str(area_id)]}.xlsx"
+        xslx_path = join(data_path, xslx_name)
+        print(xslx_path)
+        excel_path = createExcelFile(values,column_list,file_id,xslx_path)
+        if excel_path == "":
+            return ""
+        return xslx_name
+    except:
+        return sys.exc_info()[1]
+    
 
      

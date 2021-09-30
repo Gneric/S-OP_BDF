@@ -2,6 +2,7 @@ import sys
 import json
 import pandas as pd
 from datetime import datetime
+import xlsxwriter
 
 from api.utils.hasura_api import *
 
@@ -21,10 +22,9 @@ def Loadbaseline(df, year, month):
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
-        return res
+        return res, 
     except:
-        print("ERROR : ", sys.exc_info()[0])
-        return ""
+        return sys.exc_info()[1], "error"
     
 def LoadLaunch(df, year, month):
     try:
@@ -45,8 +45,7 @@ def LoadLaunch(df, year, month):
         res = sendDataLaunch(parsed)
         return res
     except:
-        print("ERROR : ", sys.exc_info()[0])
-        return ""
+        return sys.exc_info()[1], "error"
 
 def LoadPromo(df, year, month):
     try:
@@ -70,8 +69,7 @@ def LoadPromo(df, year, month):
         res = sendDataPromo(parsed)
         return res
     except:
-        print("ERROR : ", sys.exc_info()[0])
-        return ""
+        return sys.exc_info()[1], "error"
 
 def LoadValorizacion(df, year, month):
     try:
@@ -96,5 +94,15 @@ def LoadValorizacion(df, year, month):
         res = sendDataValorizacion(parsed)
         return res
     except:
-        print("ERROR : ", sys.exc_info()[0])
+        return sys.exc_info()[1], "error"
+
+
+def createExcelFile(values, column_list, file_id, data_path):
+    try:
+        writer = pd.ExcelWriter(data_path, engine='xlsxwriter')
+        df = pd.DataFrame(values, columns=column_list)
+        df.to_excel(writer, file_id, index=False)
+        writer.save()
+        return data_path
+    except:
         return ""

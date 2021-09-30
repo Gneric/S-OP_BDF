@@ -2,6 +2,7 @@ from flask import request
 from werkzeug.utils import secure_filename
 from flask_restful import Resource
 from ..utils.functions import *
+from datetime import datetime
 
 class UploadExcel(Resource):
     def post(self):
@@ -38,9 +39,12 @@ class UploadExcel(Resource):
             if n_files == 0:
                 return 'No files saved', 400
             else:                   
-                res = checkExcelFiles(int(area_id), year, month)
+                res, res_check = checkExcelFiles(int(area_id), year, month)
+                print(f"{res}")
                 if res == "":
                     return "Error al subir el archivo", 400
+                if res_check == "error":
+                    return f"Error: {res}", 400
                 else:
                     return { "result" : res }, 200
             
