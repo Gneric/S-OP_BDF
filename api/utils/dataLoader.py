@@ -22,7 +22,7 @@ def Loadbaseline(df, year, month):
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
-        return res, 
+        return res
     except:
         return sys.exc_info()[1], "error"
     
