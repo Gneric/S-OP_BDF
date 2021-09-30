@@ -22,7 +22,7 @@ def Loadbaseline(df, year, month):
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
-        return res
+        return res, ""
     except:
         return sys.exc_info()[1], "error"
     
@@ -43,7 +43,7 @@ def LoadLaunch(df, year, month):
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
         res = sendDataLaunch(parsed)
-        return res
+        return res, ""
     except:
         return sys.exc_info()[1], "error"
 
@@ -67,7 +67,7 @@ def LoadPromo(df, year, month):
         parsed = json.loads(result)
         #print(json.dumps(parsed, indent=4))
         res = sendDataPromo(parsed)
-        return res
+        return res, ""
     except:
         return sys.exc_info()[1], "error"
 
@@ -92,7 +92,7 @@ def LoadValorizacion(df, year, month):
         parsed = json.loads(result)
         #print(json.dumps(parsed, indent=4))
         res = sendDataValorizacion(parsed)
-        return res
+        return res, ""
     except:
         return sys.exc_info()[1], "error"
 

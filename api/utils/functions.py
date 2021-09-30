@@ -43,7 +43,7 @@ def checkExcelFiles(area_id, year, month):
                 if area_id == 4:
                     return LoadValorizacion(df, year, month)
                 else:
-                    return ""
+                    return "", ""
 
 def getData(id, area_id):
     if area_id == 1:
