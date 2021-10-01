@@ -11,7 +11,7 @@ from flask_restful import Api
 
 app = Flask(__name__)
 api = Api(app)
-CORS(app)
+CORS(app, expose_headers=["filename"])
 
 api.add_resource(Welcome, '/api/')
 api.add_resource(UploadExcel, '/api/upload_excel')

@@ -18,9 +18,11 @@ class CloneData(Resource):
             else:
                 data_path = join(getcwd(),'api','data')
                 try:
-                    return send_from_directory(
+                    result = send_from_directory(
                         data_path, res, as_attachment=True
                     )
+                    result.headers['filename'] = res
+                    return result
                 except FileNotFoundError:
                     abort(404)
         except:
