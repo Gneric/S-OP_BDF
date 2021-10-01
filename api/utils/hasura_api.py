@@ -49,13 +49,12 @@ def requestIDbyPeriod(period):
         }
         """
         res_insert = queryHasura(query, {"id" : period})
-        print(res_insert)
         result = []
         for file in res_insert["data"]:
             if len(res_insert["data"][file]) > 0:
-                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : res_insert["data"][file][0]["id"] })
+                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : res_insert["data"][file][0]["id"], "data" : [ {"file_id" : res_insert["data"][file][0]["id"], "mes": period[0:4]+"-"+period[4:]} ] })
             else:
-                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : "" })
+                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : "", "data": {"file_id": "", "mes": ""}})
         return result
     except:
         print("error on requestIDbyPeriod")

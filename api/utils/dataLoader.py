@@ -1,7 +1,8 @@
 import sys
 import json
 import pandas as pd
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from os.path import join
 import xlsxwriter
 
 from api.utils.hasura_api import *
@@ -105,4 +106,24 @@ def createExcelFile(values, column_list, file_id, data_path):
         writer.save()
         return data_path
     except:
+        return ""
+
+def createTemplate(filename, template_path, data_path, year, month):
+    try:
+        file_path = join(template_path, filename)
+        df = pd.read_excel(file_path)
+        month_list = []
+        curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
+        for _ in range(18): # Avanzando año y medio
+            next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
+            month_list.append(next_month.strftime("%Y-%m-%d")) 
+            curr_month = next_month
+        df = df.reindex(columns=df.columns.tolist() + month_list)
+        new_file_path = join(data_path, filename)
+        writer = pd.ExcelWriter(new_file_path, engine='xlsxwriter')
+        df.to_excel(writer, filename[0:-5], index=False)
+        writer.save()
+        return filename
+    except:
+        print(sys.exc_info()[1])
         return ""

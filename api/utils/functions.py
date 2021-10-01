@@ -4,6 +4,7 @@ from os.path import join
 import pandas as pd
 
 data_path = join(getcwd(),'api','data')
+template_path = join(getcwd(),'api','templates')
 def cleanDataFolder():
     for file in scandir(data_path):
         remove(file)
@@ -104,5 +105,17 @@ def cloneData(file_id, area_id):
     except:
         return sys.exc_info()[1]
     
+
+def getTemplates(year, month, area_id):
+    try:
+        path = createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
+        if path == "":
+            return ""
+        return path
+    except:
+        print(sys.exc_info()[1])
+        return ""
+        
+
 
      
