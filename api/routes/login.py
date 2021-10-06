@@ -20,4 +20,4 @@ class LogIn(Resource):
             return { 'userData' : user }, 200
         except:
             print(sys.exc_info()[1])
-            return { 'email' : "correo o contraseña incorrecto" }
+            return { 'error' : "correo o contraseña incorrecto" }, 400

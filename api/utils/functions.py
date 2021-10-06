@@ -127,19 +127,14 @@ def getTemplates(year, month, area_id):
         return ""
 
 def logUser(email, password):
-    try:
-        user_info = checkPassword(email)
-        if user_info == "":
-            return { 'error' : 'No existe usuario' }
+    user_info = checkPassword(email)
+    if user_info == "":
+        return { 'error' : 'No existe usuario' }
+    else:
+        if bcrypt.checkpw(password.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
+            return checkUser(email)
         else:
-            if bcrypt.checkpw(password.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
-                return checkUser(email)
-            else:
-                return "Contraseña incorrecta"
-    except:
-        print(sys.exc_info()[1])
-        return "Failed to logUser"
-
+            raise
 
 def signUser(username, mail, phone, password):
     try:
