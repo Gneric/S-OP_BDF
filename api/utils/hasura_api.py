@@ -9,7 +9,7 @@ area_by_table = {
     "Maestro_launch" : { "area_id" : 2, "area_name" : "Marketing"},
     "Maestro_promo" : { "area_id" : 3, "area_name" : "Ventas"},
     "Maestro_valorizacion" : { "area_id" : 4, "area_name" : "Finanzas"},
-    "Maestro_shoppers" : { "area_id" : 5, "area_name" : "Shoppers"},
+    "Maestro_Shoppers" : { "area_id" : 5, "area_name" : "Shoppers"},
 }
 
 def getSizebyColumnName(size_list, name):
@@ -48,9 +48,13 @@ def requestIDbyPeriod(period):
         Maestro_valorizacion(distinct_on: id, where: {id: {_eq: $id}}) {
             id
         }
+        Maestro_Shoppers(distinct_on: id, where: {id: {_eq: $id}}) {
+            id
+        }
         }
         """
         res_insert = queryHasura(query, {"id" : period})
+        print(res_insert)
         result = []
         for file in res_insert["data"]:
             if len(res_insert["data"][file]) > 0:
@@ -60,6 +64,7 @@ def requestIDbyPeriod(period):
         return result
     except:
         print("error on requestIDbyPeriod")
+        print(sys.exc_info()[1])
         return ""
 
 def checkUser(email):
@@ -81,15 +86,26 @@ def checkUser(email):
         res_insert = queryHasura(query, {"email" : email})
         print(res_insert)
         result = res_insert["data"]["Users"][0]
-        user = {
-            "id": result["userID"],
-            "fullName" : result["userName"],
-            "username" : result["userName"],
-            "avatar": result["profileImageUrl"],
-            "email": result["mail"],
-            "role": result["UserType"]["userTypeName"],
-            "ability" : [{ "action": "manage", "subject": "all" }]
-        }
+        if result["userID"] == 1:
+            user = {
+                "id": result["userID"],
+                "fullName" : result["userName"],
+                "username" : result["userName"],
+                "avatar": result["profileImageUrl"],
+                "email": result["mail"],
+                "role": result["UserType"]["userTypeName"],
+                "ability" : [{ "action": "manage", "subject": "all" }]
+            }
+        else:
+            user = {
+                "id": result["userID"],
+                "fullName" : result["userName"],
+                "username" : result["userName"],
+                "avatar": result["profileImageUrl"],
+                "email": result["mail"],
+                "role": result["UserType"]["userTypeName"],
+                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Ventas" }]
+            }
         return user
     except:
         ""

@@ -139,8 +139,8 @@ def createTemplate(filename, template_path, data_path, year, month):
         month_list = []
         curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
         for _ in range(18): # Avanzando año y medio
+            month_list.append(curr_month.strftime("%Y-%m-%d")) 
             next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
-            month_list.append(next_month.strftime("%Y-%m-%d")) 
             curr_month = next_month
         df = df.reindex(columns=df.columns.tolist() + month_list)
         new_file_path = join(data_path, filename)
