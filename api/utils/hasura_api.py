@@ -62,11 +62,11 @@ def requestIDbyPeriod(period):
         print("error on requestIDbyPeriod")
         return ""
 
-def checkUser(username):
+def checkUser(email):
     try:
         query = """
-            query MyQuery($username: String) {
-                Users(where: {isEnabled: {_eq: 1}, userName: {_eq: $username}}) {
+            query MyQuery($email: String) {
+                Users(where: {isEnabled: {_eq: 1}, mail: {_eq: $email}}) {
                     userID
                     userName
                     profileImageUrl
@@ -78,7 +78,7 @@ def checkUser(username):
                 }
             }
         """
-        res_insert = queryHasura(query, {"username" : username})
+        res_insert = queryHasura(query, {"email" : email})
         print(res_insert)
         result = res_insert["data"]["Users"][0]
         user = {
@@ -93,16 +93,16 @@ def checkUser(username):
         return user
     except:
         ""
-def checkPassword(username):
+def checkPassword(email):
     try:
         query = """
-            query MyQuery($password: String, $username: String) {
-                Users(where: {isEnabled: {_eq: 1}, userName: {_eq: $username}}) {
+            query MyQuery($email: String) {
+                Users(where: {isEnabled: {_eq: 1}, mail: {_eq: $email}}) {
                     hash_password
                 }
             }
         """
-        res_insert = queryHasura(query, {"username" : username})
+        res_insert = queryHasura(query, {"email" : email})
         print(res_insert)
         result = res_insert["data"]["Users"][0]
         return result
