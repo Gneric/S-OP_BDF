@@ -97,6 +97,30 @@ def LoadValorizacion(df, year, month):
     except:
         return sys.exc_info()[1], "error"
 
+def LoadShoppers(df, year, month):
+    try:
+        df = df.melt(id_vars = ["CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
+        df = df.drop(labels=[0], axis=0)
+        df['YEAR'] = df['FECHA'].dt.year
+        df['MONTH'] = df['FECHA'].dt.month
+        df["KEY"] = str(year)+str(month)
+        d1 = df[["KEY","CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION", "YEAR", "MONTH", "QUANTITY"]]
+        d1 = d1[d1['CLASIFICACION'].notna()]
+        d1 = d1[d1['TIPO_PROMO'].notna()]
+        d1 = d1[d1['CANAL'].notna()]
+        d1 = d1[d1['APPLICATION_FORM'].notna()]
+        d1 = d1[d1['NART'].notna()]
+        d1 = d1[d1['DESCRIPCION'].notna()]
+        d1 = d1[d1['QUANTITY'].notna()]
+        d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
+        result = d1.to_json(orient="records")
+        parsed = json.loads(result)
+        #print(json.dumps(parsed, indent=4))
+        res = sendDataShopper(parsed)
+        return res, ""
+    except:
+        return sys.exc_info()[1], "error"
+
 
 def createExcelFile(values, column_list, file_id, data_path):
     try:

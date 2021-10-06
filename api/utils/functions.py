@@ -2,6 +2,7 @@ from api.utils.dataLoader import *
 from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
+import bcrypt
 
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
@@ -27,7 +28,8 @@ db_table_area = {
     "1" : "baseline",
     "2" : "launch",
     "3" : "promo",
-    "4" : "valorizacion"
+    "4" : "valorizacion",
+    "5" : "shoppers"
 }
 def checkExcelFiles(area_id, year, month):
     for f in scandir(data_path):
@@ -43,6 +45,8 @@ def checkExcelFiles(area_id, year, month):
                     return LoadPromo(df, year, month)
                 if area_id == 4:
                     return LoadValorizacion(df, year, month)
+                if area_id == 5:
+                    return LoadShoppers(df, year, month)
                 else:
                     return "", ""
 
@@ -55,6 +59,8 @@ def getData(id, area_id):
         return requestDataPromo(id)
     if area_id == 4:
         return requestDataValorizacion(id) 
+    if area_id == 5:
+        return requestDataShoppers(id) 
     else:
         return ""
 
@@ -77,6 +83,8 @@ def checkDeleteTable(area_id, year, month):
         return deleteDataPromo(year+month)
     if area_id == 4:
         return deleteDataValorizacion(year+month)
+    if area_id == 5:
+        return deleteDataShoppers(year+month)
     else:
         return ""
 
@@ -91,6 +99,8 @@ def cloneData(file_id, area_id):
             data = requestDataPromo(file_id)
         if area_id == 4:
             data = requestDataValorizacion(file_id)
+        if area_id == 5:
+            data = requestDataShoppers(file_id)
         if data == []:
             return "area_id not found"
         column_list = list(data["rows"][0].keys())
@@ -115,7 +125,34 @@ def getTemplates(year, month, area_id):
     except:
         print(sys.exc_info()[1])
         return ""
-        
 
+def logUser(username, password):
+    try:
+        user_info = checkPassword(username)
+        if user_info == "":
+            return { 'error' : 'No existe usuario' }
+        else:
+            if bcrypt.checkpw(password.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
+                return checkUser(username)
+            else:
+                return "Contraseña incorrecta"
+    except:
+        print(sys.exc_info()[1])
+        return "Failed to logUser"
+
+
+def signUser(username, mail, phone, password):
+    try:
+        hash_pwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        print(f"hash_password for user {username} : {hash_pwd}")
+        user = {"userName": username,"mail": mail,"phone": phone,"hash_password" : hash_pwd,"profileImageUrl": "","userTypeId": 1}
+        result = insertUser(user)
+        if result=="":
+            raise
+        else:
+            return result
+    except:
+        print(sys.exc_info()[1])
+        return "Failed to registerUser"
 
      

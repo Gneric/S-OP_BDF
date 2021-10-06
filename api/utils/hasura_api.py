@@ -1,6 +1,7 @@
 from os import error
 import requests
 import json
+import sys
 hasura_endpoint = 'https://graph.sop.strategio.cloud/v1/graphql'
 headers = {'Content-Type': 'application/json','x-hasura-admin-secret': 'x5cHTWnDb7N2vh3eJZYzamgsUXBVkw'}
 area_by_table = {
@@ -8,6 +9,7 @@ area_by_table = {
     "Maestro_launch" : { "area_id" : 2, "area_name" : "Marketing"},
     "Maestro_promo" : { "area_id" : 3, "area_name" : "Ventas"},
     "Maestro_valorizacion" : { "area_id" : 4, "area_name" : "Finanzas"},
+    "Maestro_shoppers" : { "area_id" : 5, "area_name" : "Shoppers"},
 }
 
 def getSizebyColumnName(size_list, name):
@@ -59,6 +61,73 @@ def requestIDbyPeriod(period):
     except:
         print("error on requestIDbyPeriod")
         return ""
+
+def checkUser(username):
+    try:
+        query = """
+            query MyQuery($username: String) {
+                Users(where: {isEnabled: {_eq: 1}, userName: {_eq: $username}}) {
+                    userID
+                    userName
+                    profileImageUrl
+                    mail
+                    phone
+                    UserType {
+                        userTypeName
+                    }
+                }
+            }
+        """
+        res_insert = queryHasura(query, {"username" : username})
+        print(res_insert)
+        result = res_insert["data"]["Users"][0]
+        user = {
+            "id": result["userID"],
+            "fullName" : result["userName"],
+            "username" : result["userName"],
+            "avatar": result["profileImageUrl"],
+            "email": result["mail"],
+            "role": result["UserType"]["userTypeName"],
+            "ability" : [{ "action": "manage", "subject": "all" }]
+        }
+        return user
+    except:
+        ""
+def checkPassword(username):
+    try:
+        query = """
+            query MyQuery($password: String, $username: String) {
+                Users(where: {isEnabled: {_eq: 1}, userName: {_eq: $username}}) {
+                    hash_password
+                }
+            }
+        """
+        res_insert = queryHasura(query, {"username" : username})
+        print(res_insert)
+        result = res_insert["data"]["Users"][0]
+        return result
+    except:
+        ""
+
+def insertUser(user):
+    try:
+        query = """
+        mutation MyMutation($user: [Users_insert_input!] = {}) {
+            insert_Users(objects: $user) {
+                returning {
+                    userName
+                }
+            }
+        }
+        """
+        res_insert = queryHasura(query, {"user" : user})
+        print(res_insert)
+        result = res_insert["data"]["insert_Users"]["returning"][0]
+        return result
+    except:
+        print(sys.exc_info()[1])
+        return ""
+        
 
 #######################
 ###### BASELINE #######
@@ -312,6 +381,70 @@ def deleteDataValorizacion(id):
         res_delete = queryHasura(query, {"id" : id })
         result = {
             "deleted_rows" : res_delete["data"]["delete_Maestro_valorizacion"]["affected_rows"]
+        }
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
+#######################
+###### SHOPPER ######
+#######################
+def sendDataShoppers(data):
+    # SendInsert
+    query = """
+    mutation MyMutation($objects: [Maestro_Shoppers_insert_input!] = {}) {
+        insert_Maestro_Shoppers(objects: $objects, on_conflict: {constraint: Maestro_Shoppers_pkey, update_columns: cantidad}) {
+            returning {
+            id
+            }
+        }
+    }
+    """
+    res_insert = queryHasura(query, {"objects" : data})
+    result = { "file_id" : res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_promo"]["area_name"] }
+    return result
+def requestDataShoppers(id):
+    # Request data
+    query = """
+    query MyQuery($id: String) {
+        Maestro_Shoppers(where: {id: {_eq: $id}}) {
+            id
+            clasificacion
+            tipo_promo
+            canal
+            application_form
+            nart
+            descripcion
+            year
+            month
+            cantidad
+        }
+    }
+    """
+    res_select = queryHasura(query, {"id" : id })
+
+    if len(res_select["data"]["Maestro_Shoppers"]) < 1:
+        return "No existen datos para los parametros igresados"
+
+    size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+    colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_Shoppers"][0].keys()]
+    result = {
+        "columns" : colum_list,
+        "rows" : res_select["data"]["Maestro_Shoppers"]
+    }
+    return result
+def deleteDataShoppers(id):
+    try:
+        query = """
+        mutation MyMutation($id: String) {
+            delete_Maestro_Shoppers(where: {id: {_eq: $id}}) {
+                affected_rows
+            }
+        }
+        """
+        res_delete = queryHasura(query, {"id" : id })
+        result = {
+            "deleted_rows" : res_delete["data"]["delete_Maestro_Shoppers"]["affected_rows"]
         }
         return result
     except SystemError as err:
