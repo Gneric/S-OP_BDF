@@ -12,6 +12,8 @@ class UploadExcel(Resource):
                 year = request.form['year']
             if 'month' in request.form.keys():
                 month = request.form['month']
+                if int(month) < 10 and len(str(month)) == 1:
+                    month = f"0{int(month)}"
             if 'area_id' in request.form.keys():
                 area_id = request.form["area_id"]
             if 'excel_file' in request.files.keys():
@@ -19,8 +21,6 @@ class UploadExcel(Resource):
             else:
                 return { "error" : "No se encontraron las variables necesarias para el ingreso" }, 400
 
-            if int(month) < 10 and len(str(month)) == 1:
-                month = f"0{int(month)}"
             if request.files['excel_file'].filename == '':
                 return { "error" : "No se encontro archivo excel adjunto" }, 400
             if datetime.now().strftime('%Y%m') != str(year)+str(month):
@@ -44,6 +44,5 @@ class UploadExcel(Resource):
                 else:
                     return { "result" : res }, 200
             
-        except SystemError as Err:
-            print("ERROR : ", Err)
-            return { 'Error' : errors }, 400
+        except:
+            return { 'Error' : sys.exc_info()[1] }, 400
