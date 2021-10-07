@@ -86,7 +86,8 @@ def checkUser(email):
         res_insert = queryHasura(query, {"email" : email})
         print(res_insert)
         result = res_insert["data"]["Users"][0]
-        if result["userName"] == "Admin":
+        id = result['userID']
+        if id==1:
             user = {
                 "id": result["userID"],
                 "fullName" : result["userName"],
@@ -96,7 +97,7 @@ def checkUser(email):
                 "role": result["UserType"]["userTypeName"],
                 "ability" : [{ "action": "manage", "subject": "all" }]
             }
-        if result["userName"] == "AdminMarketing":
+        elif id==8:
              user = {
                 "id": result["userID"],
                 "fullName" : result["userName"],
