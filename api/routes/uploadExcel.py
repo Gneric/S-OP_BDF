@@ -17,38 +17,30 @@ class UploadExcel(Resource):
             if 'excel_file' in request.files.keys():
                 files = request.files.getlist('excel_file')
             else:
-                print(f"{year=}")
-                print(f"{month=}")
-                print(f"{area_id=}")
-                print(f"files={request.files.getlist('excel_file')}")
-                return 'No se encuentran todas las varaibles necesarias', 400
+                return { "error" : "No se encontraron las variables necesarias para el ingreso" }, 400
 
             if int(month) < 10 and len(str(month)) == 1:
                 month = f"0{int(month)}"
-            if 'excel_file' not in request.files:
-                return 'No se encontro excel file', 400
+            if request.files['excel_file'].filename == '':
+                return { "error" : "No se encontro archivo excel adjunto" }, 400
             if datetime.now().strftime('%Y%m') != str(year)+str(month):
-                return "El periodo enviado no es el actual", 400 
+                return { "error" : "El periodo enviado no es el actual" }, 400
             
             cleanDataFolder()
             for f in files:
                 if allowed_extensions(f.filename) == False:
-                    errors.append({f"{f.filename}": 'File type is not allowed'})
-                if allowed_names(f.filename) == False:
-                    errors.append({f"{f.filename}": 'File name is not on listed aproved filenames'})
+                    return { "error" : "extension del archivo adjunto no se encuentra en el listado de aprovados" }, 400
                 else:
                     f.save(join(data_path, secure_filename(f.filename)))
             
-            n_files = checkFiles()
-            if n_files == 0:
-                return 'No files saved', 400
+            if checkFiles() == 0:
+                return { "error" : 'No files saved' }, 400
             else:                   
                 res, res_check = checkExcelFiles(int(area_id), year, month)
-                print(f"{res}")
-                if res == "":
-                    return "Error al subir el archivo", 400
                 if res_check == "error":
-                    return f"Error: {res}", 400
+                    return { "error" : res }, 400
+                if res == "":
+                    return { "error" : "unknown error" }, 400
                 else:
                     return { "result" : res }, 200
             

@@ -19,9 +19,7 @@ def allowed_names(filename):
     return '.' in filename and filename.rsplit(' - ', 1)[0] in ALLOWED_NAMES
 
 def checkFiles():
-    dir_files = listdir(data_path)
-    n_files = len(dir_files)
-    return n_files
+    return len(listdir(data_path))
 
 
 db_table_area = {
@@ -48,7 +46,9 @@ def checkExcelFiles(area_id, year, month):
                 if area_id == 5:
                     return LoadShoppers(df, year, month)
                 else:
-                    return "", ""
+                    return "El Area ID enviado no se encuentra en el listado de IDs aprovados", "error"
+            else:
+                return "No se encontro la hoja con el nombre correcto 'Hoja 1'", "error"
 
 def getData(id, area_id):
     if area_id == 1:

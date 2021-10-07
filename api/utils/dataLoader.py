@@ -24,8 +24,12 @@ def Loadbaseline(df, year, month):
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
         return res, ""
+    except KeyError as err:
+        error = str(err.__str__()).split(sep=": ")
+        column_error = error[1].replace("[","").replace("]","").replace("\"","")
+        return f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'", "error"
     except:
-        return sys.exc_info()[1], "error"
+        return str(sys.exc_info()), "error"
     
 def LoadLaunch(df, year, month):
     try:
@@ -45,8 +49,12 @@ def LoadLaunch(df, year, month):
         parsed = json.loads(result)
         res = sendDataLaunch(parsed)
         return res, ""
+    except KeyError as err:
+        error = str(err.__str__()).split(sep=": ")
+        column_error = error[1].replace("[","").replace("]","").replace("\"","")
+        return f"No se encontraron las columna(s): {column_error} en el archivo 'LAUNCH'", "error"
     except:
-        return sys.exc_info()[1], "error"
+        return str(sys.exc_info()), "error"
 
 def LoadPromo(df, year, month):
     try:
@@ -66,11 +74,14 @@ def LoadPromo(df, year, month):
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
-        #print(json.dumps(parsed, indent=4))
         res = sendDataPromo(parsed)
         return res, ""
+    except KeyError as err:
+        error = str(err.__str__()).split(sep=": ")
+        column_error = error[1].replace("[","").replace("]","").replace("\"","")
+        return f"No se encontraron las columna(s): {column_error} en el archivo 'PROMO'", "error"
     except:
-        return sys.exc_info()[1], "error"
+        return str(sys.exc_info()), "error"
 
 def LoadValorizacion(df, year, month):
     try:
@@ -91,11 +102,14 @@ def LoadValorizacion(df, year, month):
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","value","cantidad"]
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
-        #print(json.dumps(parsed, indent=4))
         res = sendDataValorizacion(parsed)
         return res, ""
+    except KeyError as err:
+        error = str(err.__str__()).split(sep=": ")
+        column_error = error[1].replace("[","").replace("]","").replace("\"","")
+        return f"No se encontraron las columna(s): {column_error} en el archivo 'VALORIZACION'", "error"
     except:
-        return sys.exc_info()[1], "error"
+        return str(sys.exc_info()), "error"
 
 def LoadShoppers(df, year, month):
     try:
@@ -115,11 +129,14 @@ def LoadShoppers(df, year, month):
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
-        #print(json.dumps(parsed, indent=4))
-        res = sendDataShopper(parsed)
+        res = sendDataShoppers(parsed)
         return res, ""
+    except KeyError as err:
+        error = str(err.__str__()).split(sep=": ")
+        column_error = error[1].replace("[","").replace("]","").replace("\"","")
+        return f"No se encontraron las columna(s): {column_error} en el archivo 'SHOPPERS'", "error"
     except:
-        return sys.exc_info()[1], "error"
+        return str(sys.exc_info()), "error"
 
 
 def createExcelFile(values, column_list, file_id, data_path):
