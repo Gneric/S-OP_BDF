@@ -85,37 +85,15 @@ def checkUser(email):
         res_insert = queryHasura(query, {"email" : email})
         print(res_insert)
         result = res_insert["data"]["Users"][0]
-        id = result['userID']
-        if id==1:
-            user = {
-                "id": result["userID"],
-                "fullName" : result["userName"],
-                "username" : result["userName"],
-                "avatar": result["profileImageUrl"],
-                "email": result["mail"],
-                "role": result["UserType"]["userTypeName"],
-                "ability" : [{ "action": "manage", "subject": "all" }]
-            }
-        elif id==8:
-             user = {
-                "id": result["userID"],
-                "fullName" : result["userName"],
-                "username" : result["userName"],
-                "avatar": result["profileImageUrl"],
-                "email": result["mail"],
-                "role": result["UserType"]["userTypeName"],
-                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Marketing" }]
-            }
-        else:
-            user = {
-                "id": result["userID"],
-                "fullName" : result["userName"],
-                "username" : result["userName"],
-                "avatar": result["profileImageUrl"],
-                "email": result["mail"],
-                "role": result["UserType"]["userTypeName"],
-                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Supply" }]
-            }
+        user = {
+            "id": result["userID"],
+            "fullName" : result["userName"],
+            "username" : result["userName"],
+            "avatar": result["profileImageUrl"],
+            "email": result["mail"],
+            "role": result["UserType"]["userTypeName"],
+            "ability" : [result["UserType"]["UserType_UserRole"]]
+        }
         return user
     except:
         ""
