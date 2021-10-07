@@ -105,7 +105,7 @@ def checkUser(email):
                 "avatar": result["profileImageUrl"],
                 "email": result["mail"],
                 "role": result["UserType"]["userTypeName"],
-                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Launch" }]
+                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Marketing" }]
             }
         else:
             user = {
