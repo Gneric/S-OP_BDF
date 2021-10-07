@@ -96,6 +96,16 @@ def checkUser(email):
                 "role": result["UserType"]["userTypeName"],
                 "ability" : [{ "action": "manage", "subject": "all" }]
             }
+        if result["userID"] == 5:
+             user = {
+                "id": result["userID"],
+                "fullName" : result["userName"],
+                "username" : result["userName"],
+                "avatar": result["profileImageUrl"],
+                "email": result["mail"],
+                "role": result["UserType"]["userTypeName"],
+                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Ventas" }]
+            }
         else:
             user = {
                 "id": result["userID"],
@@ -104,7 +114,7 @@ def checkUser(email):
                 "avatar": result["profileImageUrl"],
                 "email": result["mail"],
                 "role": result["UserType"]["userTypeName"],
-                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Ventas" }]
+                "ability" : [{ "action": "read", "subject": "Auth" }, { "action": "read", "subject": "Supply" }]
             }
         return user
     except:
