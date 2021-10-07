@@ -51,6 +51,7 @@ def checkExcelFiles(area_id, year, month):
                 return "No se encontro la hoja con el nombre correcto 'Hoja 1'", "error"
 
 def getData(id, area_id):
+    print(area_id)
     if area_id == 1:
         return requestDataBaseline(id)
     if area_id == 2:

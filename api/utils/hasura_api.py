@@ -27,7 +27,6 @@ def queryHasura(query, variables = ""):
         result = requests.post(hasura_endpoint, json={'query': query, 'variables': variables}, headers=headers)
 
     if result.status_code == 200:
-        #print(json.dumps(result.json(), indent=4))
         return result.json()
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(requests.status_code, query))
@@ -241,33 +240,35 @@ def sendDataLaunch(data):
     result = { "file_id" : res_insert["data"]["insert_Maestro_launch"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_launch"]["area_name"] }
     return result
 def requestDataLaunch(id):
-    # Request data
-    query = """
-    query MyQuery($id: String) {
-        Maestro_launch(where: {id: {_eq: $id}}) {
-            id
-            clasificacion
-            canal
-            nart
-            descripcion
-            year
-            month
-            cantidad
+    try:
+        query = """
+        query MyQuery($id: String) {
+            Maestro_launch(where: {id: {_eq: $id}}) {
+                id
+                clasificacion
+                canal
+                nart
+                descripcion
+                year
+                month
+                cantidad
+            }
         }
-    }
-    """
-    res_select = queryHasura(query, {"id", id})
+        """
+        res_select = queryHasura(query, {"id" : id })
+        if len(res_select["data"]["Maestro_launch"]) < 1:
+            return "No existen datos para los parametros igresados"
 
-    if len(res_select["data"]["Maestro_launch"]) < 1:
-        return "No existen datos para los parametros igresados"
-
-    size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
-    colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_launch"][0].keys()]
-    result = {
-        "columns" : colum_list,
-        "rows" : res_select["data"]["Maestro_launch"]
-    }
-    return result
+        size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+        colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_launch"][0].keys()]
+        result = {
+            "columns" : colum_list,
+            "rows" : res_select["data"]["Maestro_launch"]
+        }
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
 def deleteDataLaunch(id):
     try:
         query = """
