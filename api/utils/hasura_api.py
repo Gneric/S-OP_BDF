@@ -35,31 +35,41 @@ def requestIDbyPeriod(period):
     try:
         query = """
         query MyQuery($id: String) {
-        Maestro_baseline(distinct_on: id, where: {id: {_eq: $id}}) {
-            id
-        }
-        Maestro_launch(distinct_on: id, where: {id: {_eq: $id}}) {
-            id
-        }
-        Maestro_promo(distinct_on: id, where: {id: {_eq: $id}}) {
-            id
-        }
-        Maestro_valorizacion(distinct_on: id, where: {id: {_eq: $id}}) {
-            id
-        }
-        Maestro_Shoppers(distinct_on: id, where: {id: {_eq: $id}}) {
-            id
-        }
+            Maestro_baseline(distinct_on: id, where: {id: {_iregex: $id}}) {
+                id
+            }
+            Maestro_launch(distinct_on: id, where: {id: {_iregex: $id}}) {
+                id
+            }
+            Maestro_promo(distinct_on: id, where: {id: {_iregex: $id}}) {
+                id
+            }
+            Maestro_valorizacion(distinct_on: id, where: {id: {_iregex: $id}}) {
+                id
+            }
+            Maestro_Shoppers(distinct_on: id, where: {id: {_iregex: $id}}) {
+                id
+            }
         }
         """
-        res_insert = queryHasura(query, {"id" : period})
+        res_insert = queryHasura(query, {"id" : period[:3]})
         print(res_insert)
+        
         result = []
+        
         for file in res_insert["data"]:
+            data = []
+            file_id = ""
             if len(res_insert["data"][file]) > 0:
-                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : res_insert["data"][file][0]["id"], "data" : [ {"file_id" : res_insert["data"][file][0]["id"], "mes": period[0:4]+"-"+period[4:]} ] })
+                for mes in res_insert["data"][file]:
+                    if mes["id"] == period:
+                        file_id = period
+                for mes in res_insert["data"][file]:
+                    if mes["id"] != period:
+                        data.append({"file_id" : mes["id"], "mes": mes["id"][0:4]+"-"+mes["id"][4:]})
+                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : file_id, "data" : data })
             else:
-                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : "", "data": {"file_id": "", "mes": ""}})
+                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : "", "data": []})
         return result
     except:
         print("error on requestIDbyPeriod")
@@ -69,22 +79,27 @@ def requestIDbyPeriod(period):
 def checkUser(email):
     try:
         query = """
-            query MyQuery($email: String) {
-                Users(where: {isEnabled: {_eq: 1}, mail: {_eq: $email}}) {
-                    userID
-                    userName
-                    profileImageUrl
-                    mail
-                    phone
-                    UserType {
-                        userTypeName
+        query MyQuery($email: String) {
+            Users(where: {isEnabled: {_eq: 1}, mail: {_eq: $email}}) {
+                userID
+                userName
+                profileImageUrl
+                mail
+                phone
+                UserType {
+                userTypeName
+                UserType_UserRole {
+                    action
+                    subject
                     }
                 }
             }
+        }
         """
         res_insert = queryHasura(query, {"email" : email})
         print(res_insert)
         result = res_insert["data"]["Users"][0]
+        print(result)
         user = {
             "id": result["userID"],
             "fullName" : result["userName"],
@@ -92,7 +107,7 @@ def checkUser(email):
             "avatar": result["profileImageUrl"],
             "email": result["mail"],
             "role": result["UserType"]["userTypeName"],
-            "ability" : [result["UserType"]["UserType_UserRole"]]
+            "ability" : result["UserType"]["UserType_UserRole"]
         }
         return user
     except:

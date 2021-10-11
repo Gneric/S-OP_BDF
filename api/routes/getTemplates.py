@@ -23,6 +23,7 @@ class GetTemplates(Resource):
                         data_path, res, as_attachment=True
                     )
                     result.headers['filename'] = res
+                    cleanDataFolder()
                     return result
                 except FileNotFoundError:
                     abort(404)

@@ -22,8 +22,8 @@ class UploadExcel(Resource):
                 month = f"0{int(month)}"
             if request.files['excel_file'].filename == '':
                 return { "error" : "No se encontro archivo excel adjunto" }, 400
-            if datetime.now().strftime('%Y%m') != str(year)+str(month):
-                return { "error" : "El periodo enviado no es el actual" }, 400
+            #if datetime.now().strftime('%Y%m') != str(year)+str(month):
+            #    return { "error" : "El periodo enviado no es el actual" }, 400
             
             cleanDataFolder()
             for f in files:
@@ -37,11 +37,14 @@ class UploadExcel(Resource):
             else:                   
                 res, res_check = checkExcelFiles(int(area_id), year, month)
                 if res_check == "error":
+                    cleanDataFolder()
                     return { "error" : res }, 400
                 if res == "":
+                    cleanDataFolder()
                     return { "error" : "unknown error" }, 400
                 else:
+                    cleanDataFolder()
                     return { "result" : res }, 200
-            
         except:
+            cleanDataFolder()
             return { 'Error' : str(sys.exc_info()[1]) }, 400
