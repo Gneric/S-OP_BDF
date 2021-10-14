@@ -215,6 +215,7 @@ def listUsers(id):
             query = """
             query MyQuery {
                 Users {
+                        userID
                         profileImageUrl
                         userName
                         name
@@ -228,7 +229,10 @@ def listUsers(id):
             """
             res = queryHasura(query)
             users = res["data"]["Users"]
-            return users
+            res = []
+            for u in users:
+                res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['UserType']['userTypeName'] })
+            return res
     except:
         print(sys.exc_info()[1])
         return []
