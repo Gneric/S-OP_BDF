@@ -1,4 +1,3 @@
-from api.casl.permissions import ability_for
 from api.utils.functions import logUser
 from flask_restful import Resource
 from flask import request
