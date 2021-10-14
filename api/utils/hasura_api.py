@@ -229,10 +229,11 @@ def listUsers(id):
             """
             res = queryHasura(query)
             users = res["data"]["Users"]
+            total = len(users)
             res = []
             for u in users:
                 res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['UserType']['userTypeName'] })
-            return res
+            return { 'users' : res, 'total': total }
     except:
         print(sys.exc_info()[1])
         return []
