@@ -23,7 +23,7 @@ from datetime import timedelta
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "3jeYU\@++MhuRc6LmNXYD+ddq&M%jP@:uK2^SSB"
 app.config["JWT_COOKIE_SECURE"] = False
-app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"]
+app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=24)
 jwt = JWTManager(app)
@@ -37,10 +37,6 @@ def refresh():
     access_token = create_access_token(identity=identity)
     return { access_token : access_token }
 
-@jwt.unauthorized_loader
-def unauthorized_loader_callback(jwt_header):
-  return { "error" : "token no enviado" }
-
 @jwt.token_verification_failed_loader
 def token_verification_failed_loader_callback(jwt_header, jwt_payload):
   return { "error" : "token invalido" }  
@@ -48,6 +44,10 @@ def token_verification_failed_loader_callback(jwt_header, jwt_payload):
 @jwt.invalid_token_loader
 def invalid_token_loader_callback(jwt_header):
   return { "error" : "token invalido" } 
+
+@jwt.unauthorized_loader
+def unauthorized_loader_callback(jwt_header):
+  return { "error" : "token no enviado" }
 
 api.add_resource(Welcome, '/api/')
 api.add_resource(UploadExcel, '/api/upload_excel')
