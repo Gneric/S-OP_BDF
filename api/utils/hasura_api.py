@@ -10,7 +10,7 @@ area_by_table = {
     "Maestro_launch" : { "area_id" : 2, "area_name" : "Marketing"},
     "Maestro_promo" : { "area_id" : 3, "area_name" : "Ventas"},
     "Maestro_valorizacion" : { "area_id" : 4, "area_name" : "Finanzas"},
-    "Maestro_Shoppers" : { "area_id" : 5, "area_name" : "Shoppers"},
+    "Maestro_Shopper" : { "area_id" : 5, "area_name" : "Shopper"},
 }
 
 def getSizebyColumnName(size_list, name):
@@ -48,7 +48,7 @@ def requestIDbyPeriod(period):
             Maestro_valorizacion(distinct_on: id, where: {id: {_iregex: $id}}) {
                 id
             }
-            Maestro_Shoppers(distinct_on: id, where: {id: {_iregex: $id}}) {
+            Maestro_Shopper(distinct_on: id, where: {id: {_iregex: $id}}) {
                 id
             }
         }
@@ -524,8 +524,8 @@ def deleteDataValorizacion(id):
 def sendDataShoppers(data):
     # SendInsert
     query = """
-    mutation MyMutation($objects: [Maestro_Shoppers_insert_input!] = {}) {
-        insert_Maestro_Shoppers(objects: $objects, on_conflict: {constraint: Maestro_Shoppers_pkey, update_columns: cantidad}) {
+    mutation MyMutation($objects: [Maestro_Shopper_insert_input!] = {}) {
+        insert_Maestro_Shopper(objects: $objects, on_conflict: {constraint: Maestro_Shoppers_pkey, update_columns: cantidad}) {
             returning {
             id
             }
@@ -539,7 +539,7 @@ def requestDataShoppers(id):
     # Request data
     query = """
     query MyQuery($id: String) {
-        Maestro_Shoppers(where: {id: {_eq: $id}}) {
+        Maestro_Shopper(where: {id: {_eq: $id}}) {
             id
             clasificacion
             tipo_promo
@@ -555,28 +555,28 @@ def requestDataShoppers(id):
     """
     res_select = queryHasura(query, {"id" : id })
 
-    if len(res_select["data"]["Maestro_Shoppers"]) < 1:
+    if len(res_select["data"]["Maestro_Shopper"]) < 1:
         return "No existen datos para los parametros igresados"
 
     size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
     colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_Shoppers"][0].keys()]
     result = {
         "columns" : colum_list,
-        "rows" : res_select["data"]["Maestro_Shoppers"]
+        "rows" : res_select["data"]["Maestro_Shopper"]
     }
     return result
 def deleteDataShoppers(id):
     try:
         query = """
         mutation MyMutation($id: String) {
-            delete_Maestro_Shoppers(where: {id: {_eq: $id}}) {
+            delete_Maestro_Shopper(where: {id: {_eq: $id}}) {
                 affected_rows
             }
         }
         """
         res_delete = queryHasura(query, {"id" : id })
         result = {
-            "deleted_rows" : res_delete["data"]["delete_Maestro_Shoppers"]["affected_rows"]
+            "deleted_rows" : res_delete["data"]["delete_Maestro_Shopper"]["affected_rows"]
         }
         return result
     except SystemError as err:
