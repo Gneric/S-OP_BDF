@@ -1,12 +1,16 @@
-from flask import request
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from flask_restful import Resource
 from ..utils.functions import *
 from datetime import datetime
+from flask import request
 
 class UploadExcel(Resource):
+    @jwt_required()
     def post(self):
         try:
+            current_user = get_jwt_identity()
+            print(current_user)
             if 'year' in request.form.keys():
                 year = request.form['year']
             if 'month' in request.form.keys():
@@ -22,8 +26,8 @@ class UploadExcel(Resource):
                 month = f"0{int(month)}"
             if request.files['excel_file'].filename == '':
                 return { "error" : "No se encontro archivo excel adjunto" }, 400
-            #if datetime.now().strftime('%Y%m') != str(year)+str(month):
-            #    return { "error" : "El periodo enviado no es el actual" }, 400
+            if datetime.now().strftime('%Y%m') != str(year)+str(month):
+                return { "error" : "El periodo enviado no es el actual" }, 400
             
             cleanDataFolder()
             for f in files:

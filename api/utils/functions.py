@@ -151,4 +151,15 @@ def signUser(username, mail, phone, password):
         print(sys.exc_info()[1])
         return "Failed to registerUser"
 
+def userInfo(id = ""):
+    try:
+        if id == "":
+            res = listUsers("")
+            return { 'result' : res }
+        else:
+            res = listUsers(id)
+            return { 'result' : res }
+    except:
+        print(sys.exc_info()[1])
+        return { "error" : "Error al retornar informacion de ususarios" }
      

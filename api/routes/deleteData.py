@@ -1,11 +1,15 @@
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.utils.functions import checkDeleteTable
-from flask import request
 from flask_restful import Resource
+from flask import request
 
 
 class DeleteData(Resource):
+    @jwt_required()
     def post(self):
         try:
+            current_user = get_jwt_identity()
+            print(f"{current_user=}")
             if 'year' in request.form.keys():
                 year = str(request.form['year'])
             if 'month' in request.form.keys():

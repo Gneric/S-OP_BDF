@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.utils.functions import cleanDataFolder, getTemplates
 from flask import request
 from flask import send_from_directory, abort
@@ -7,8 +8,11 @@ from os import getcwd
 import sys
 
 class GetTemplates(Resource):
+    @jwt_required()
     def post(self):
         try:
+            current_user = get_jwt_identity()
+            print(f"{current_user=}")
             year = str(request.json['year'])
             month = str(request.json['month'])
             area_id = int(request.json['area_id'])

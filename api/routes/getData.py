@@ -1,10 +1,14 @@
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.utils.functions import getData
 from flask import request
 from flask_restful import Resource
 import sys
 
 class GetData(Resource):
+    @jwt_required()
     def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
         id = request.json['file_id']
         area_id = request.json['area_id']
 

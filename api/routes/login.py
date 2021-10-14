@@ -1,23 +1,21 @@
+from api.casl.permissions import ability_for
 from api.utils.functions import logUser
 from flask_restful import Resource
 from flask import request
-import json, jwt, datetime, sys
-key = "secret_key"
-refresh_key = "secret_refresh_key"
+from flask_jwt_extended import create_access_token, create_refresh_token
+import sys
 
 class LogIn(Resource):
     def post(self):
         try:
-            email = request.json.get('email', '')
-            password = request.json.get('password', '')
+            email = request.json.get('email', None)
+            password = request.json.get('password', None)
             user = logUser(email, password)
-            #token = jwt.encode({"username": username, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24)}, key, algorithm="HS256")
-            #refresh_token = jwt.encode({"username": username, "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=24)}, refresh_key, algorithm="HS256")
-            #decoded = jwt.decode(token, key, algorithms="HS256")
-            #user["accessToken"] = token
-            #user["refreshToken"] = refresh_token
-            #print(f"{datetime.datetime.fromtimestamp(decoded['exp'])=}")
-            return { 'userData' : user }, 200
+            if user == None:
+                return {"msg": "Bad username or password"}, 401
+            token = create_access_token(identity=user['id'])
+            refresh_token = create_refresh_token(identity=user['id'])
+            return { 'userData' : user, "access_token": token, "refresh_token": refresh_token }
         except:
             print(sys.exc_info()[1])
             return { 'error' : "correo o contraseña incorrecto" }, 400

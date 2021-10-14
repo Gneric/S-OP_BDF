@@ -2,6 +2,7 @@ from os import error
 import requests
 import json
 import sys
+
 hasura_endpoint = 'https://graph.sop.strategio.cloud/v1/graphql'
 headers = {'Content-Type': 'application/json','x-hasura-admin-secret': 'x5cHTWnDb7N2vh3eJZYzamgsUXBVkw'}
 area_by_table = {
@@ -91,6 +92,7 @@ def checkUser(email):
                 UserType_UserRole {
                     action
                     subject
+                    conditions
                     }
                 }
             }
@@ -99,7 +101,9 @@ def checkUser(email):
         res_insert = queryHasura(query, {"email" : email})
         print(res_insert)
         result = res_insert["data"]["Users"][0]
-        print(result)
+
+        abilities = [ { "action": i['action'], "subject": i['subject'], "conditions": i['conditions'] } if i['conditions'] else { "action": i['action'], "subject": i['subject'] } for i in result["UserType"]["UserType_UserRole"] ]
+        print(abilities)
         user = {
             "id": result["userID"],
             "fullName" : result["userName"],
@@ -107,7 +111,7 @@ def checkUser(email):
             "avatar": result["profileImageUrl"],
             "email": result["mail"],
             "role": result["UserType"]["userTypeName"],
-            "ability" : result["UserType"]["UserType_UserRole"]
+            "ability" : abilities
         }
         return user
     except:
@@ -147,7 +151,109 @@ def insertUser(user):
         print(sys.exc_info()[1])
         return ""
         
+def checkPermissions(id):
+    try:
+        query = """
+        query MyQuery($id: Int) {
+            Users(where: {userID: {_eq: $id}}) {
+                UserType {
+                    UserType_UserRole {
+                        action
+                        subject
+                    }
+                }
+            }
+        }
+        """
+        res = queryHasura(query, {"id" : id})
+        permissions = res["data"]["Users"][0]["UserType"]["UserType_UserRole"]
+        return permissions
+    except:
+        print(sys.exc_info()[1])
+        return []
 
+def listUsers(id):
+    try:
+        if id:
+            query = """
+            query MyQuery($id: Int) {
+            Users(where: {userID: {_eq: $id}}) {
+                userID
+                profileImageUrl
+                userName
+                name
+                mail
+                phone
+                isEnabled
+                UserType {
+                    userTypeName
+                    UserType_UserRole {
+                        action
+                        subject
+                    }
+                }
+            }
+            }
+            """
+            res = queryHasura(query, { "id": id })
+            data = res["data"]["Users"][0]
+            rol = res["data"]["Users"][0]["UserType"]["userTypeName"]
+            permissions = res["data"]["Users"][0]["UserType"]["UserType_UserRole"]
+            user = {
+                "userID": data['userID'],
+                "profileImageUrl": data['profileImageUrl'],
+                "userName": data['userName'],
+                "name": data['name'],
+                "mail": data['mail'],
+                "phone": data['phone'],
+                "isEnabled": data['isEnabled'],
+                "role" : rol,
+                "permissions" : permissions
+            }
+            return user
+        else:
+            query = """
+            query MyQuery {
+                Users {
+                        profileImageUrl
+                        userName
+                        name
+                        mail
+                        isEnabled
+                        UserType {
+                            userTypeName
+                    }
+                }
+            }
+            """
+            res = queryHasura(query)
+            users = res["data"]["Users"]
+            return users
+    except:
+        print(sys.exc_info()[1])
+        return []
+def ListUsers():
+    try:
+        query = """
+        query MyQuery {
+            Users {
+                    use
+                    userName
+                    name
+                    mail
+                    isEnabled
+                    UserType {
+                        userTypeName
+                }
+            }
+        }
+        """
+        res = queryHasura(query)
+        users = res["data"]["Users"]
+        return users
+    except:
+        print(sys.exc_info()[1])
+        return []
 #######################
 ###### BASELINE #######
 #######################
