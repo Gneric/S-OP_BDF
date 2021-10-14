@@ -58,8 +58,8 @@ api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(GetTemplates, '/api/getTemplate')
 api.add_resource(UserList, '/api/user_info')
 
-api.add_resource(LogIn, '/login')
-api.add_resource(SignIn, '/signin')
+api.add_resource(LogIn, '/api/login')
+api.add_resource(SignIn, '/api/signin')
 
 if __name__ == '__main__':
   from waitress import serve
