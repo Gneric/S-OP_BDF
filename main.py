@@ -1,3 +1,4 @@
+from flask_jwt_extended.utils import create_refresh_token
 from api.routes.welcome import Welcome
 from api.routes.userList import UserList
 from api.routes.cloneData import CloneData
@@ -33,7 +34,8 @@ api = Api(app)
 def refresh():
     identity = get_jwt_identity()
     access_token = create_access_token(identity=identity)
-    return { access_token : access_token }
+    refresh_token = create_refresh_token(identity=identity)
+    return { "accessToken" : access_token, "refreshToken": refresh_token }
 
 @jwt.token_verification_failed_loader
 def token_verification_failed_loader_callback(jwt_header, jwt_payload):
