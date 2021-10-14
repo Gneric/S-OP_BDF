@@ -191,6 +191,7 @@ def listUsers(id):
                         action
                         subject
                         conditions
+                        isEnabled
                     }
                 }
             }
@@ -199,7 +200,7 @@ def listUsers(id):
             res = queryHasura(query, { "id": id })
             data = res["data"]["Users"][0]
             rol = res["data"]["Users"][0]["UserType"]["userTypeName"]
-            permissions = [ { "action": i['action'], "subject": i['subject'], "conditions": i['conditions'] } if i['conditions'] else { "action": i['action'], "subject": i['subject'] } for i in res["data"]["Users"][0]["UserType"]["UserType_UserRole"] ]
+            permissions = [ { "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "conditions": i['conditions'] } if i['conditions'] else { "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in res["data"]["Users"][0]["UserType"]["UserType_UserRole"] ]
             user = {
                 "userID": data['userID'],
                 "profileImageUrl": data['profileImageUrl'],
