@@ -30,7 +30,7 @@ jwt = JWTManager(app)
 CORS(app, expose_headers=["filename"])
 api = Api(app)
 
-@app.route("/refresh", methods=["POST"])
+@app.route("/api/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
     identity = get_jwt_identity()
