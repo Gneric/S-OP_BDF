@@ -17,7 +17,7 @@ class LogIn(Resource):
             print('Creando tokens')
             token = create_access_token(identity=user['id'])
             refresh_token = create_refresh_token(identity=user['id'])
-            return { 'userData' : user, "access_token": token, "refresh_token": refresh_token }
+            return { 'userData' : user, "accessToken": token, "refreshToken": refresh_token }
         except:
             print(sys.exc_info()[1])
             return { 'error' : "correo o contraseña incorrecto" }, 400
