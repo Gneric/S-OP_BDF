@@ -16,6 +16,7 @@ class CloneData(Resource):
             file_id = str(request.json['file_id'])
             area_id = int(request.json['area_id'])
             cleanDataFolder()
+            print("a")
             res = cloneData(file_id, area_id)
             if res == "":
                 return "Error clonando data del mes", 400
@@ -26,7 +27,6 @@ class CloneData(Resource):
                         data_path, res, as_attachment=True
                     )
                     result.headers['filename'] = res
-                    cleanDataFolder()
                     return result
                 except FileNotFoundError:
                     abort(404)

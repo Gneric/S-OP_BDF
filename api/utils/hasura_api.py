@@ -300,7 +300,7 @@ def requestDataBaseline(id):
         if len(res_select["data"]["Maestro_baseline"]) < 1:
             return "No existen datos para los parametros igresados"
 
-        size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+        size_list = [{'name':'clasificacion','size':120}, {'name':'descripcion','size':500},{'name':'nart','size':200}]
         colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_baseline"][0].keys()]
         result = {
             "columns" : colum_list,
@@ -365,7 +365,7 @@ def requestDataLaunch(id):
         if len(res_select["data"]["Maestro_launch"]) < 1:
             return "No existen datos para los parametros igresados"
 
-        size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+        size_list = [{'name':'clasificacion','size':120} ,{'name':'canal','size':100},{'name':'descripcion','size':500},{'name':'nart','size':200}]
         colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_launch"][0].keys()]
         result = {
             "columns" : colum_list,
@@ -434,7 +434,7 @@ def requestDataPromo(id):
     if len(res_select["data"]["Maestro_promo"]) < 1:
         return "No existen datos para los parametros igresados"
 
-    size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+    size_list = [{'name':'clasificacion','size':120}, {'name':'canal','size':100},{'name':'application_form','size':120}, {'name':'descripcion','size':500},{'name':'nart','size':200}]
     colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_promo"][0].keys()]
     result = {
         "columns" : colum_list,
@@ -496,7 +496,7 @@ def requestDataValorizacion(id):
     if len(res_select["data"]["Maestro_valorizacion"]) < 1:
         return "No existen datos para los parametros igresados"
 
-    size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
+    size_list = [{'name':'clasificacion','size':120} , {'name':'descripcion','size':500},{'name':'nart','size':200}]
     colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_valorizacion"][0].keys()]
     result = {
         "columns" : colum_list,
