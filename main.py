@@ -1,4 +1,5 @@
-from flask_jwt_extended.utils import create_refresh_token
+from flask_jwt_extended.utils import create_refresh_token, decode_token
+from api.routes.modifyUser import ModifyUser
 from api.routes.welcome import Welcome
 from api.routes.userList import UserList
 from api.routes.cloneData import CloneData
@@ -11,7 +12,7 @@ from api.routes.deleteData import DeleteData
 from api.routes.login import LogIn
 from api.routes.signin import SignIn
 
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, get_jwt_identity, create_access_token, jwt_required
@@ -30,9 +31,11 @@ CORS(app, expose_headers=["filename"])
 api = Api(app)
 
 @app.route("/api/refresh", methods=["POST"])
-@jwt_required(refresh=True)
 def refresh():
-    identity = get_jwt_identity()
+    token = request.json.get('refreshToken', '')
+    identity = decode_token(token)["sub"]
+    if token == '':
+      return { 'error': 'token no enviado' }, 400
     access_token = create_access_token(identity=identity)
     refresh_token = create_refresh_token(identity=identity)
     return { "accessToken" : access_token, "refreshToken": refresh_token }
@@ -60,6 +63,7 @@ api.add_resource(UserList, '/api/user_info')
 
 api.add_resource(LogIn, '/api/login')
 api.add_resource(SignIn, '/api/signin')
+api.add_resource(ModifyUser, '/api/modify_user')
 
 if __name__ == '__main__':
   from waitress import serve

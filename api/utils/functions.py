@@ -162,4 +162,4 @@ def userInfo(id = ""):
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al retornar informacion de ususarios" }
-     
+ 

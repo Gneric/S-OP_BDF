@@ -11,10 +11,8 @@ class GetData(Resource):
         print(f"{current_user=}")
         id = request.json['file_id']
         area_id = request.json['area_id']
-
         if id == "" or area_id == "":
             return 'No se encontro parametros de id y/o area', 400
-        
         else:
             try:
                 res = getData(id, int(area_id))
