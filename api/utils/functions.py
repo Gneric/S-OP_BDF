@@ -141,7 +141,14 @@ def signUser(username, mail, phone, password):
     try:
         hash_pwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         print(f"hash_password for user {username} : {hash_pwd}")
-        user = {"userName": username,"mail": mail,"phone": phone,"hash_password" : hash_pwd,"profileImageUrl": "","userTypeId": 1}
+        user = {
+            "userName": username,
+            "mail": mail,
+            "phone": phone,
+            "hash_password" : hash_pwd,
+            "profileImageUrl": "",
+            "userTypeId": 1
+        }
         result = insertUser(user)
         if result=="":
             raise
@@ -163,3 +170,10 @@ def userInfo(id = ""):
         print(sys.exc_info()[1])
         return { "error" : "Error al retornar informacion de ususarios" }
  
+def modUser(user):
+    try:
+        res = ""
+        return 
+    except:
+        print(sys.exc_info()[1])
+        return { "error" : "Error al retornar respuesta del servidor" }

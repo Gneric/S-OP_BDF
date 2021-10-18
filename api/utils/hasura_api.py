@@ -78,43 +78,43 @@ def requestIDbyPeriod(period):
         return ""
 
 def checkUser(email):
+    print('Entering checkUser')
     try:
         query = """
         query MyQuery($email: String) {
-            Users(where: {isEnabled: {_eq: 1}, mail: {_eq: $email}}) {
-                userID
-                userName
-                profileImageUrl
-                mail
-                phone
-                UserType {
+        Users(where: {isEnabled: {_eq: 1}, mail: {_eq: $email}}) {
+            userID
+            userName
+            profileImageUrl
+            mail
+            phone
+            UserRole {
                 userTypeName
-                UserType_UserRole {
-                    action
-                    subject
-                    conditions
-                    }
-                }
             }
+        }
+        search_permissions(args: {email: $email}) {
+            action
+            subject
+            conditions
+        }
         }
         """
         res_insert = queryHasura(query, {"email" : email})
-        print(res_insert)
         result = res_insert["data"]["Users"][0]
-
-        abilities = [ { "action": i['action'], "subject": i['subject'], "conditions": i['conditions'] } if i['conditions'] else { "action": i['action'], "subject": i['subject'] } for i in result["UserType"]["UserType_UserRole"] ]
-        print(abilities)
+        permissions = res_insert["data"]["search_permissions"]
+        abilities = [ { "action": i['action'], "subject": i['subject'], "conditions": i['conditions'] } if i['conditions'] else { "action": i['action'], "subject": i['subject'] } for i in permissions ]
         user = {
             "id": result["userID"],
             "fullName" : result["userName"],
             "username" : result["userName"],
             "avatar": result["profileImageUrl"],
             "email": result["mail"],
-            "role": result["UserType"]["userTypeName"],
+            "role": result["UserRole"]["userTypeName"],
             "ability" : abilities
         }
         return user
     except:
+        print(sys.exc_info()[1])
         ""
 def checkPassword(email):
     try:
@@ -155,18 +155,15 @@ def checkPermissions(id):
     try:
         query = """
         query MyQuery($id: Int) {
-            Users(where: {userID: {_eq: $id}}) {
-                UserType {
-                    UserType_UserRole {
-                        action
-                        subject
-                    }
-                }
-            }
+        search_permissions_id(args: {id: $id}) {
+            action
+            subject
+            conditions
+        }
         }
         """
         res = queryHasura(query, {"id" : id})
-        permissions = res["data"]["Users"][0]["UserType"]["UserType_UserRole"]
+        permissions = res["data"]["search_permissions_id"]
         return permissions
     except:
         print(sys.exc_info()[1])
@@ -175,6 +172,7 @@ def checkPermissions(id):
 def listUsers(id):
     try:
         if id:
+            print('Entering if id exists')
             query = """
             query MyQuery($id: Int) {
             Users(where: {userID: {_eq: $id}}) {
@@ -185,22 +183,24 @@ def listUsers(id):
                 mail
                 phone
                 isEnabled
-                UserType {
+                UserRole {
                     userTypeName
-                    UserType_UserRole {
-                        action
-                        subject
-                        conditions
-                        isEnabled
-                    }
                 }
+            }
+            search_permissions_id_edit(args: {id: $id}) {
+                permissionID
+                action
+                subject
+                condition
+                isEnabled
             }
             }
             """
             res = queryHasura(query, { "id": id })
             data = res["data"]["Users"][0]
-            rol = res["data"]["Users"][0]["UserType"]["userTypeName"]
-            permissions = [ { "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "conditions": i['conditions'] } if i['conditions'] else { "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in res["data"]["Users"][0]["UserType"]["UserType_UserRole"] ]
+            rol = data["UserRole"]["userTypeName"]
+            abilities = res["data"]["search_permissions_id_edit"]
+            permissions = [ { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "condition": i['condition'] } if i['condition'] else { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in abilities ]
             user = {
                 "userID": data['userID'],
                 "profileImageUrl": data['profileImageUrl'],
@@ -214,6 +214,7 @@ def listUsers(id):
             }
             return user
         else:
+            print('Entering if id doenst exist')
             query = """
             query MyQuery {
                 Users {
@@ -223,7 +224,7 @@ def listUsers(id):
                         name
                         mail
                         isEnabled
-                        UserType {
+                        UserRole {
                             userTypeName
                     }
                 }
@@ -234,7 +235,7 @@ def listUsers(id):
             total = len(users)
             res = []
             for u in users:
-                res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['UserType']['userTypeName'] })
+                res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['UserRole']['userTypeName'] })
             return { 'users' : res, 'total': total }
     except:
         print(sys.exc_info()[1])

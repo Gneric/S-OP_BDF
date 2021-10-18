@@ -35,22 +35,22 @@ def refresh():
     token = request.json.get('refreshToken', '')
     identity = decode_token(token)["sub"]
     if token == '':
-      return { 'error': 'token no enviado' }, 400
+      return { 'error': 'token no enviado' }, 401
     access_token = create_access_token(identity=identity)
     refresh_token = create_refresh_token(identity=identity)
     return { "accessToken" : access_token, "refreshToken": refresh_token }
 
 @jwt.token_verification_failed_loader
 def token_verification_failed_loader_callback(jwt_header, jwt_payload):
-  return { "error" : "token invalido" }  
+  return { "error" : "token invalido" }, 401
 
 @jwt.invalid_token_loader
 def invalid_token_loader_callback(jwt_header):
-  return { "error" : "token invalido" } 
+  return { "error" : "token invalido" }, 401
 
 @jwt.unauthorized_loader
 def unauthorized_loader_callback(jwt_header):
-  return { "error" : "token no enviado" }
+  return { "error" : "token no enviado" }, 401
 
 api.add_resource(Welcome, '/api/')
 api.add_resource(UploadExcel, '/api/upload_excel')
@@ -64,8 +64,9 @@ api.add_resource(UserList, '/api/user_info')
 api.add_resource(LogIn, '/api/login')
 api.add_resource(SignIn, '/api/signin')
 api.add_resource(ModifyUser, '/api/modify_user')
+#api.add_resource(ModifyUser, '/api/add_user')
 
 if __name__ == '__main__':
-  from waitress import serve
-  serve(app, host="0.0.0.0", port=3100, threads=8)
-  #app.run(host='0.0.0.0', port=3100, debug=True)
+  #from waitress import serve
+  #serve(app, host="0.0.0.0", port=3100, threads=8)
+  app.run(host='0.0.0.0', port=3100, debug=True)
