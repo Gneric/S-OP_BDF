@@ -195,7 +195,7 @@ def listUsers(id):
             res = queryHasura(query, { "id": id })
             data = res["data"]["Users"][0]
             abilities = res["data"]["search_permissions_id_edit"]
-            permissions = [ { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "condition": i['condition'] } if i['condition'] else { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in abilities ]
+            permissions = [ { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "conditions": i['condition'] } if i['condition'] else { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in abilities ]
             user = {
                 "userID": data['userID'],
                 "profileImageUrl": data['profileImageUrl'],
