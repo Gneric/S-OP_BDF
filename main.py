@@ -1,4 +1,5 @@
 from flask_jwt_extended.utils import create_refresh_token, decode_token
+from api.routes.changepwd import ChangePassword
 from api.routes.modifyUser import ModifyUser
 from api.routes.welcome import Welcome
 from api.routes.userList import UserList
@@ -64,9 +65,10 @@ api.add_resource(UserList, '/api/user_info')
 api.add_resource(LogIn, '/api/login')
 api.add_resource(SignIn, '/api/signin')
 api.add_resource(ModifyUser, '/api/modify_user')
+api.add_resource(ChangePassword, '/api/change_pwd')
 #api.add_resource(ModifyUser, '/api/add_user')
 
 if __name__ == '__main__':
-  #from waitress import serve
-  #serve(app, host="0.0.0.0", port=3100, threads=8)
-  app.run(host='0.0.0.0', port=3100, debug=True)
+  from waitress import serve
+  serve(app, host="0.0.0.0", port=3100, threads=8)
+  #app.run(host='0.0.0.0', port=3100, debug=True)

@@ -170,10 +170,27 @@ def userInfo(id = ""):
         print(sys.exc_info()[1])
         return { "error" : "Error al retornar informacion de ususarios" }
  
-def modUser(user):
+def modUser(user, permissions):
     try:
-        res = ""
-        return 
+        pwd = checkPassword(user['mail'])
+        user['hash_password'] = pwd["hash_password"]
+        permission2 = [{'userID': user['userID'], 'permissionID': p['permissionID'], 'isEnabled': p['isEnabled']} for p in permissions ]
+        res = modifyUser(user, permission2)
+        return res
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al retornar respuesta del servidor" }
+
+def pwdChange(user_id, pwd, new_pwd):
+    try:
+        user_info = checkPasswordByID(user_id)
+        if user_info == "":
+            return { 'error' : 'No existe usuario' }
+        else:
+            if bcrypt.checkpw(pwd.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
+                return changepw(user_id, new_pwd)
+            else:
+                { "error" : "La contraseña ingresada con coincide con la contraseña actual" }
+    except:
+        print(sys.exc_info()[1])
+        return { "error" : "Error al cambiar la contraseña del usuario" }

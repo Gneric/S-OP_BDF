@@ -124,12 +124,38 @@ def checkPassword(email):
             }
         """
         res_insert = queryHasura(query, {"email" : email})
-        print(res_insert)
         result = res_insert["data"]["Users"][0]
         return result
     except:
         ""
-
+def checkPasswordByID(id):
+    try:
+        query = """
+            query MyQuery($id: Int) {
+                Users(where: {isEnabled: {_eq: 1}, userID: {_eq: $id}}) {
+                    hash_password
+                }
+            }
+        """
+        res_insert = queryHasura(query, {"id" : id})
+        result = res_insert["data"]["Users"][0]
+        return result
+    except:
+        ""
+def changepw(user_id, new_pwd):
+    try:
+        query = """
+        mutation MyMutation($id: Int, $hash_password: String) {
+        update_Users(where: {userID: {_eq: $id}}, _set: {hash_password: $hash_password}) {
+            affected_rows
+        }
+        }
+        """
+        res_insert = queryHasura(query, {"id" : user_id, 'hash_password': new_pwd})
+        result = res_insert["update_Users"]["affected_rows"]
+        return result
+    except:
+        ""
 def insertUser(user):
     try:
         query = """
@@ -142,7 +168,6 @@ def insertUser(user):
         }
         """
         res_insert = queryHasura(query, {"user" : user})
-        print(res_insert)
         result = res_insert["data"]["insert_Users"]["returning"][0]
         return result
     except:
@@ -243,8 +268,7 @@ def ListUsers():
                     name
                     mail
                     isEnabled
-                    UserType {
-                        userTypeName
+                    role
                 }
             }
         }
@@ -255,6 +279,25 @@ def ListUsers():
     except:
         print(sys.exc_info()[1])
         return []
+def modifyUser(userData, permissions):
+    try:
+        print('Entering modifyUser')
+        query = """
+        mutation MyMutation($permissions: [UserPermissions_insert_input!] = {}, $userData: [Users_insert_input!] = {}) {
+        insert_Users(objects: $userData, on_conflict: {constraint: Users_mail_key, update_columns: [mail, userName, name, role, isEnabled]}) {
+            affected_rows
+        }
+        insert_UserPermissions(objects: $permissions, on_conflict: {constraint: UserRoles_pkey, update_columns: isEnabled}) {
+            affected_rows
+        }
+        }
+        """
+        res = queryHasura(query, {'permissions': permissions, 'userData': userData })
+        print(res)
+        return res
+    except:
+        print(sys.exc_info()[1])
+        return ""
 #######################
 ###### BASELINE #######
 #######################

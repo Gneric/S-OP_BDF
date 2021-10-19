@@ -18,11 +18,11 @@ class ModifyUser(Resource):
                 "mail" : request.json.get('mail',''),
                 "phone": request.json.get('phone',''),
                 "isEnabled": request.json.get('isEnabled',''),
-                "role" : request.json.get('role',''),
-                "permissions" : request.json.get('permissions','')
+                "role" : request.json.get('role','')
             }
+            permissions = request.json.get('permissions','')
             if current_user == 1 or current_user == user['userID']:
-                return modUser(user)
+                return modUser(user, permissions)
             else:
                 return {"msg": "Bad username or password"}, 401
         except:
