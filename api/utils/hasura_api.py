@@ -88,9 +88,7 @@ def checkUser(email):
             profileImageUrl
             mail
             phone
-            UserRole {
-                userTypeName
-            }
+            role
         }
         search_permissions(args: {email: $email}) {
             action
@@ -109,7 +107,7 @@ def checkUser(email):
             "username" : result["userName"],
             "avatar": result["profileImageUrl"],
             "email": result["mail"],
-            "role": result["UserRole"]["userTypeName"],
+            "role": result["role"],
             "ability" : abilities
         }
         return user
@@ -183,11 +181,9 @@ def listUsers(id):
                 mail
                 phone
                 isEnabled
-                UserRole {
-                    userTypeName
-                }
+                role
             }
-            search_permissions_id_edit(args: {id: $id}) {
+            search_permissions_id_edit(args: {id: $id}, where: {permissionID: {_gt: 3}}) {
                 permissionID
                 action
                 subject
@@ -198,7 +194,6 @@ def listUsers(id):
             """
             res = queryHasura(query, { "id": id })
             data = res["data"]["Users"][0]
-            rol = data["UserRole"]["userTypeName"]
             abilities = res["data"]["search_permissions_id_edit"]
             permissions = [ { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "condition": i['condition'] } if i['condition'] else { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in abilities ]
             user = {
@@ -209,7 +204,7 @@ def listUsers(id):
                 "mail": data['mail'],
                 "phone": data['phone'],
                 "isEnabled": data['isEnabled'],
-                "role" : rol,
+                "role" : data['role'],
                 "permissions" : permissions
             }
             return user
@@ -224,18 +219,16 @@ def listUsers(id):
                         name
                         mail
                         isEnabled
-                        UserRole {
-                            userTypeName
+                        role
                     }
                 }
-            }
             """
             res = queryHasura(query)
             users = res["data"]["Users"]
             total = len(users)
             res = []
             for u in users:
-                res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['UserRole']['userTypeName'] })
+                res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['role'] })
             return { 'users' : res, 'total': total }
     except:
         print(sys.exc_info()[1])
