@@ -93,14 +93,15 @@ def checkUser(email):
         search_permissions(args: {email: $email}) {
             action
             subject
-            conditions
+            condition
+            isEnabled
         }
         }
         """
         res_insert = queryHasura(query, {"email" : email})
         result = res_insert["data"]["Users"][0]
         permissions = res_insert["data"]["search_permissions"]
-        abilities = [ { "action": i['action'], "subject": i['subject'], "conditions": i['conditions'] } if i['conditions'] else { "action": i['action'], "subject": i['subject'] } for i in permissions ]
+        abilities = [ { "action": i['action'], "subject": i['subject'], "isEnabled": i["isEnabled"], "conditions": i['condition'] } if i['condition'] else { "action": i['action'], "subject": i['subject'], "isEnabled": i["isEnabled"] } for i in permissions ]
         user = {
             "id": result["userID"],
             "fullName" : result["userName"],

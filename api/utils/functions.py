@@ -193,11 +193,11 @@ def pwdChange(user_id, pwd, new_pwd):
             if bcrypt.checkpw(pwd.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
                 res = changepw(user_id, bcrypt.hashpw(new_pwd.encode('utf-8'), bcrypt.gensalt()))
                 if res == "":
-                    return { "error", "error al cambiar la contraseña" }
+                    return { "error", "error al cambiar la contraseña" }, 400
                 else:
                     return { "result" : "ok" }
             else:
-                { "error" : "La contraseña ingresada con coincide con la contraseña actual" }
+                { "error" : "La contraseña ingresada con coincide con la contraseña actual" }, 400
     except:
         print(sys.exc_info()[1])
-        return { "error" : "Error al cambiar la contraseña del usuario" }
+        return { "error" : "Error al cambiar la contraseña del usuario" }, 400
