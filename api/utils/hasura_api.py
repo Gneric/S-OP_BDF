@@ -90,7 +90,7 @@ def checkUser(email):
             phone
             role
         }
-        search_permissions(args: {email: $email}) {
+        search_permissions(args: {email: $email}, where: {isEnabled: {_eq: 1}}) {
             action
             subject
             condition
