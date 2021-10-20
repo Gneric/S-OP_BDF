@@ -27,6 +27,7 @@ app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=24)
+app.config["PROPAGATE_EXCEPTIONS"] = True
 jwt = JWTManager(app)
 CORS(app, expose_headers=["filename"])
 api = Api(app)
@@ -43,15 +44,32 @@ def refresh():
 
 @jwt.token_verification_failed_loader
 def token_verification_failed_loader_callback(jwt_header, jwt_payload):
-  return { "error" : "token invalido" }, 401
+  response = { "error" : "token invalido" }
+  response.status_code = 401
+  return response
 
 @jwt.invalid_token_loader
 def invalid_token_loader_callback(jwt_header):
-  return { "error" : "token invalido" }, 401
+  response = { "error" : "token invalido" }
+  response.status_code = 401
+  return response
 
 @jwt.unauthorized_loader
 def unauthorized_loader_callback(jwt_header):
-  return { "error" : "token no enviado" }, 401
+  response = { "error" : "token invalido" }
+  response.status_code = 401
+  return response
+
+@jwt.expired_token_loader
+def expired_token_loader_callback(jwt_header, two):
+  response = { "error" : "token expirado" }, 401
+  return response
+
+@jwt.needs_fresh_token_loader
+def needs_fresh_token_loader(jwt_header):
+  response = { "error" : "token invalido" }
+  response.status_code = 401
+  return response
 
 api.add_resource(Welcome, '/api/')
 api.add_resource(UploadExcel, '/api/upload_excel')
