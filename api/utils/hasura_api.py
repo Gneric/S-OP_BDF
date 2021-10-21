@@ -147,12 +147,12 @@ def changepw(user_id, new_pwd):
     try:
         query = """
         mutation MyMutation($id: Int, $hash_password: String) {
-        update_Users(where: {userID: {_eq: $id}}, _set: {hash_password: $hash_password}) {
-            affected_rows
-        }
+            update_Users(where: {userID: {_eq: $id}}, _set: {hash_password: $hash_password}) {
+                affected_rows
+            }
         }
         """
-        res_insert = queryHasura(query, {"id" : user_id, 'hash_password': new_pwd})
+        res_insert = queryHasura(query, {"id" : user_id, 'hash_password': str(new_pwd)})
         print(res_insert)
         result = res_insert["update_Users"]["affected_rows"]
         return result
