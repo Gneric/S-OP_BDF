@@ -187,12 +187,13 @@ def modUser(user, permissions):
 def pwdChange(user_id, pwd, new_pwd):
     try:
         user_info = checkPasswordByID(user_id)
+        print(f"{user_info=}")
+        print(f"{pwd=}")
+        print(f"{new_pwd=}")
         if user_info == "":
             return { 'error' : 'No existe usuario' }
         else:
-            print(f"{user_info=}")
-            print(f"{pwd=}")
-            print(f"{new_pwd=}")
+            
             if bcrypt.checkpw(pwd.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
                 res = changepw(user_id, bcrypt.hashpw(new_pwd.encode('utf-8'), bcrypt.gensalt()))
                 print(f"{res=}")
