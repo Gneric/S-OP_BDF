@@ -22,7 +22,7 @@ class ChangePassword(Resource):
             if current_user == user_id or current_user == 1:
                 return pwdChange(user_id, pwd, new_pwd)
             else:
-                return {"msg": "No tiene permisos para hacer cambios en este usuario"}, 401
+                return { 'error': "No tiene permisos para hacer cambios en este usuario"}, 401
         except:
             print(sys.exc_info()[1])
             return { 'error' : "correo o contraseña incorrecto" }, 400
