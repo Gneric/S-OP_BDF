@@ -11,7 +11,7 @@ class ChangePassword(Resource):
         try:
             current_user = get_jwt_identity()
             user_id = request.json.get('user_id','')
-            pwd = request.json.get('password','')
+            pwd = request.json.get('old_password','')
             new_pwd = request.json.get('new_password','')
             if current_user == 1:
                 confirm_pwd = ""
