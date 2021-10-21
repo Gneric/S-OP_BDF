@@ -154,6 +154,7 @@ def changepw(user_id, new_pwd):
         """
         res_insert = queryHasura(query, {"id" : user_id, 'hash_password': new_pwd})
         result = res_insert["update_Users"]["affected_rows"]
+        print(result)
         return result
     except:
         ""
