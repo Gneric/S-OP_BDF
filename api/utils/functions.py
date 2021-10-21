@@ -193,6 +193,7 @@ def pwdChange(user_id, pwd, new_pwd):
             
             if bcrypt.checkpw(pwd.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
                 hashed_pwd = bcrypt.hashpw(new_pwd.encode('utf-8'), bcrypt.gensalt())
+                print(f'user_info of user: {user_info}, {user_info.get("hash_password")}')
                 print(f'old_password {user_info.get("hash_password")}')
                 print(f'new_password {hashed_pwd.decode("utf-8")}')
                 res = changepw(user_id, hashed_pwd.decode('utf-8'))
