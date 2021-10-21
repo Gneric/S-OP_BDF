@@ -10,21 +10,22 @@ class ModifyUser(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
+            data = request.json.get('data','')
             user = {
-                "userID" : request.json.get('userID',''),
-                "profileImageUrl" : request.json.get('profileImageUrl',''),
-                "userName" : request.json.get('userName',''),
-                "name" : request.json.get('name',''),
-                "mail" : request.json.get('mail',''),
-                "phone": request.json.get('phone',''),
-                "isEnabled": request.json.get('isEnabled',''),
-                "role" : request.json.get('role','')
+                "userID" : data['userID'], 
+                "profileImageUrl" : data['profileImageUrl'],
+                "userName" : data['userName'],
+                "name" : data['name'],
+                "mail" : data['mail'],
+                "phone": data['phone'],
+                "isEnabled": data['isEnabled'],
+                "role" : data['role']
             }
-            permissions = request.json.get('permissions','')
+            permissions = data['permissions']
             if current_user == 1 or current_user == user['userID']:
                 return modUser(user, permissions)
             else:
-                return {"msg": "Bad username or password"}, 401
+                return {"error": "correo o contraseña incorrecto"}, 401
         except:
             print(sys.exc_info()[1])
-            return { 'error' : "correo o contraseña incorrecto" }, 400
+            return { 'error' : "error en lectura de variables" }, 400
