@@ -145,8 +145,6 @@ def checkPasswordByID(id):
         ""
 def changepw(user_id, new_pwd):
     try:
-        print(f"{user_id=}")
-        print(f"{new_pwd=}")
         query = """
         mutation MyMutation($id: Int, $hash_password: String) {
         update_Users(where: {userID: {_eq: $id}}, _set: {hash_password: $hash_password}) {
