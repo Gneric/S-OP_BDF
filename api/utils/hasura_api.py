@@ -625,7 +625,6 @@ def deleteDataShoppers(id):
 def requestVisualBD():
     try:
         query = """
-
         query BD_syop {
             rows: BD_SOP(order_by: {month: asc, year: asc}, where: {}) {
             id

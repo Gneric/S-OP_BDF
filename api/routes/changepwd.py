@@ -1,8 +1,8 @@
 from flask_jwt_extended.view_decorators import jwt_required
-from api.utils.functions import logUser, modUser, pwdChange
+from api.utils.functions import pwdChange
 from flask_restful import Resource
 from flask import request
-from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity
+from flask_jwt_extended import get_jwt_identity
 import sys
 
 class ChangePassword(Resource):

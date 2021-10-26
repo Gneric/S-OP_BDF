@@ -1,4 +1,4 @@
-from api.utils.functions import checkUser, createUser, signUser
+from api.utils.functions import createUser
 from flask_restful import Resource
 from flask import request
 import json
