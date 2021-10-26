@@ -137,23 +137,24 @@ def logUser(email, password):
         else:
             raise
 
-def signUser(username, mail, phone, password):
+def createUser(new_user):
     try:
-        hash_pwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        print(f"hash_password for user {username} : {hash_pwd}")
+        hash_pwd = bcrypt.hashpw(new_user['password'].encode('utf-8'), bcrypt.gensalt())
+        print(f"hash_password for user {new_user['username']} : {hash_pwd}")
         user = {
-            "userName": username,
-            "mail": mail,
-            "phone": phone,
-            "hash_password" : hash_pwd,
-            "profileImageUrl": "",
-            "userTypeId": 1
+            "userName": new_user['userName'],
+            "hash_password": hash_pwd.decode('utf-8'),
+            "name": new_user['name'],
+            "mail": new_user['mail'],
+            "phone": new_user['phone'],
+            "isEnabled": new_user['isEnabled'],
+            "role": new_user['role']
         }
         result = insertUser(user)
-        if result=="":
-            raise
-        else:
+        if result:
             return result
+        else:
+            return { 'error': 'error ingresando usuario' }, 400
     except:
         print(sys.exc_info()[1])
         return "Failed to registerUser"
@@ -177,12 +178,12 @@ def modUser(user, permissions):
         permission2 = [{'userID': user['userID'], 'permissionID': p['permissionID'], 'isEnabled': p['isEnabled']} for p in permissions ]
         res = modifyUser(user, permission2)
         if res == "":
-            return { "error": "error al modificar el usuario" }
+            return { "error": "error al modificar el usuario" }, 400
         else:
             return { "result" : "ok" }
     except:
         print(sys.exc_info()[1])
-        return { "error" : "Error al retornar respuesta del servidor" }
+        return { "error" : "Error al retornar respuesta del servidor" }, 400
 
 def pwdChange(user_id, pwd, new_pwd):
     try:
@@ -194,10 +195,6 @@ def pwdChange(user_id, pwd, new_pwd):
             if bcrypt.checkpw(pwd.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
                 hashed_pwd = bcrypt.hashpw(new_pwd.encode('utf-8'), bcrypt.gensalt())
                 decoded_pwd = hashed_pwd.decode("utf-8")
-                print(f'user_info of user: {user_info}, {user_info.get("hash_password")}')
-                print(f'old_password {user_info.get("hash_password")}')
-                print(f'new_password {hashed_pwd}')
-                print(f'decoded_password {decoded_pwd}')
                 res = changepw(user_id, hashed_pwd.decode('utf-8'))
                 if res != "" or res != None:
                     return { "result" : "ok" }, 200
@@ -208,3 +205,6 @@ def pwdChange(user_id, pwd, new_pwd):
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al cambiar la contraseña del usuario" }, 400
+
+def getVisualBD():
+    return requestVisualBD()

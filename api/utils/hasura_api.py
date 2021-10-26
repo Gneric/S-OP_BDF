@@ -94,14 +94,13 @@ def checkUser(email):
             action
             subject
             condition
-            isEnabled
         }
         }
         """
         res_insert = queryHasura(query, {"email" : email})
         result = res_insert["data"]["Users"][0]
         permissions = res_insert["data"]["search_permissions"]
-        abilities = [ { "action": i['action'], "subject": i['subject'], "isEnabled": i["isEnabled"], "conditions": i['condition'] } if i['condition'] else { "action": i['action'], "subject": i['subject'], "isEnabled": i["isEnabled"] } for i in permissions ]
+        abilities = [ { "action": i['action'], "subject": i['subject'], "conditions": i['condition'] } if i['condition'] else { "action": i['action'], "subject": i['subject'] } for i in permissions ]
         user = {
             "id": result["userID"],
             "fullName" : result["userName"],
@@ -618,6 +617,103 @@ def deleteDataShoppers(id):
         res_delete = queryHasura(query, {"id" : id })
         result = {
             "deleted_rows" : res_delete["data"]["delete_Maestro_Shopper"]["affected_rows"]
+        }
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
+def requestVisualBD():
+    try:
+        query = """
+
+        query BD_syop {
+            rows: BD_SOP(order_by: {month: asc, year: asc}, where: {}) {
+            id
+            clasificacion
+            BPU
+            nart
+            nartdesc
+            SPGR
+            spgrdesc
+            year
+            month
+            BrandCategory
+            ApplicationForm
+            units
+            netsales   
+            }
+        }
+        """
+        res = queryHasura(query)
+        columns = [{
+                "name": "id",
+                "prop": "id",
+                "size": 120
+            },
+            {
+                "name": "clasificacion",
+                "prop": "clasificacion",
+                "size": 200
+            },
+            {
+                "name": "BPU",
+                "prop": "BPU",
+                "size": 200
+            },
+            {
+                "name": "nart",
+                "prop": "nart",
+                "size": 200
+            },
+            {
+                "name": "nartdesc",
+                "prop": "nartdesc",
+                "size": 500
+            },
+            {
+                "name": "SPGR",
+                "prop": "SPGR",
+                "size": 200
+            },
+            {
+                "name": "spgrdesc",
+                "prop": "spgrdesc",
+                "size": 500
+            },
+            {
+                "name": "year",
+                "prop": "year",
+                "size": 120
+            },
+            {
+                "name": "month",
+                "prop": "month",
+                "size": 120
+            },
+            {
+                "name": "BrandCategory",
+                "prop": "BrandCategory",
+                "size": 200
+            },
+            {
+                "name": "ApplicationForm",
+                "prop": "ApplicationForm",
+                "size": 200
+            },
+            {
+                "name": "units",
+                "prop": "units",
+                "size": 200
+            },
+            {
+                "name": "netsales",
+                "prop": "netsales",
+                "size": 200
+            }]
+
+        result = {
+            "columns" : columns,
+            "rows" : res["data"]["rows"]
         }
         return result
     except SystemError as err:

@@ -25,4 +25,4 @@ class ChangePassword(Resource):
                 return { 'error': "No tiene permisos para hacer cambios en este usuario"}, 401
         except:
             print(sys.exc_info()[1])
-            return { 'error' : "correo o contraseña incorrecto" }, 400
+            return { 'error' : "error en lectura de variables" }, 400

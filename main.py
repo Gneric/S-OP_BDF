@@ -1,5 +1,6 @@
 from flask_jwt_extended.utils import create_refresh_token, decode_token
 from api.routes.changepwd import ChangePassword
+from api.routes.getVisualBD import GetVisualBD
 from api.routes.modifyUser import ModifyUser
 from api.routes.welcome import Welcome
 from api.routes.userList import UserList
@@ -11,7 +12,7 @@ from api.routes.getData import GetData
 from api.routes.deleteData import DeleteData
 
 from api.routes.login import LogIn
-from api.routes.signin import SignIn
+from api.routes.signin import CreateUser
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -79,9 +80,10 @@ api.add_resource(DeleteData, '/api/del_data')
 api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(GetTemplates, '/api/getTemplate')
 api.add_resource(UserList, '/api/user_info')
+api.add_resource(GetVisualBD, '/api/getVisualBD')
 
 api.add_resource(LogIn, '/api/login')
-api.add_resource(SignIn, '/api/signin')
+api.add_resource(CreateUser, '/api/signin')
 api.add_resource(ModifyUser, '/api/modify_user')
 api.add_resource(ChangePassword, '/api/change_pwd')
 #api.add_resource(ModifyUser, '/api/add_user')
