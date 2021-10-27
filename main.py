@@ -30,8 +30,8 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=24)
 app.config["PROPAGATE_EXCEPTIONS"] = True
 jwt = JWTManager(app)
-api = Api(app)
 CORS(app, expose_headers=["filename"], resources={r"*": {"origins": "*"}})
+api = Api(app)
 
 @app.route("/api/refresh", methods=["POST"])
 def refresh():
