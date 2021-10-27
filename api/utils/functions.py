@@ -151,6 +151,9 @@ def createUser(new_user):
             "name": new_user['name'],
             "role": new_user['role']
         }
+        check_mail = checkMailExists(user['mail'])
+        if check_mail != "":
+            return { 'error' : 'el correo ingresado ya se encuentra registrado' }, 400
         res = insertUser(user)
         if res != "":
             return { 'result': "ok" }, 200

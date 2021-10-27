@@ -128,6 +128,23 @@ def checkPassword(email):
         return result
     except:
         ""
+def checkMailExists(email):
+    try:
+        query = """
+        query MyQuery($mail: String) {
+        Users(where: {mail: {_eq: $mail}}) {
+        userName
+        }
+        }
+        """
+        res_insert = queryHasura(query, {"email" : email})
+        result = res_insert["data"]["Users"]
+        if len(result) > 0:
+            return result[0]
+        else:
+            return ""
+    except:
+        ""
 def checkPasswordByID(id):
     try:
         query = """
@@ -142,6 +159,7 @@ def checkPasswordByID(id):
         return result
     except:
         ""
+
 def changepw(user_id, new_pwd):
     try:
         query = """
