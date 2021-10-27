@@ -152,7 +152,7 @@ def createUser(new_user):
             "role": new_user['role']
         }
         res = insertUser(user)
-        if res != "" or res != None:
+        if res != "":
             return { 'result': "ok" }, 200
         else:
             return { 'error': 'error ingresando usuario' }, 400
