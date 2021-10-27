@@ -151,11 +151,11 @@ def createUser(new_user):
             "name": new_user['name'],
             "role": new_user['role']
         }
-        result = insertUser(user)
-        if result:
-            return { 'result': result }, 200
-        else:
+        res = insertUser(user)
+        if res != "" or res != None:
             return { 'error': 'error ingresando usuario' }, 400
+        else:
+            return { 'result': "ok" }, 200
     except:
         print(sys.exc_info()[1])
         return { 'error' : 'Failed to registerUser' }, 400
@@ -178,7 +178,7 @@ def modUser(user, permissions):
         user['hash_password'] = pwd["hash_password"]
         permission2 = [{'userID': user['userID'], 'permissionID': p['permissionID'], 'isEnabled': p['isEnabled']} for p in permissions ]
         res = modifyUser(user, permission2)
-        if res == "":
+        if res != "" or res != None:
             return { "error": "error al modificar el usuario" }, 400
         else:
             return { "result" : "ok" }
