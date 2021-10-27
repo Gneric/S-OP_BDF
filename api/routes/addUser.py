@@ -13,7 +13,7 @@ class CreateUser(Resource):
             print(f"{current_user=}")
             data = request.json.get('data', '')
             new_user = {
-                "username": data['userName'],
+                "username": data['username'],
                 "password": data['password'],
                 "confirm_password": data['confirm_password'],
                 "name": data['name'],
