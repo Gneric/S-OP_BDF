@@ -163,15 +163,18 @@ def insertUser(user):
         mutation MyMutation($user: [Users_insert_input!] = {}) {
             insert_Users(objects: $user) {
                 returning {
-                    userName
+                    affected_rows
                 }
             }
         }
         """
         res_insert = queryHasura(query, {"user" : user})
         print(f'{res_insert=}')
-        result = res_insert['data']['insert_Users']['userName']
-        return res_insert
+        result = res_insert['data']['insert_Users']['affected_rows']
+        if result >= 1:
+            return "ok"
+        else:
+            return ""
     except:
         print(sys.exc_info()[1])
         return ""
