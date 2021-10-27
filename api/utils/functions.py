@@ -153,9 +153,9 @@ def createUser(new_user):
         }
         res = insertUser(user)
         if res != "" or res != None:
-            return { 'error': 'error ingresando usuario' }, 400
-        else:
             return { 'result': "ok" }, 200
+        else:
+            return { 'error': 'error ingresando usuario' }, 400
     except:
         print(sys.exc_info()[1])
         return { 'error' : 'Failed to registerUser' }, 400

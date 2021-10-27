@@ -169,8 +169,7 @@ def insertUser(user):
         }
         """
         res_insert = queryHasura(query, {"user" : user})
-        print(f'{res_insert=}')
-        result = res_insert['data']['insert_Users']['returning']['userName']
+        result = res_insert['data']['insert_Users']['returning'][0]['userName']
         return result
     except:
         print(sys.exc_info()[1])
