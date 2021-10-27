@@ -1,7 +1,6 @@
 from api.utils.functions import createUser
 from flask_restful import Resource
 from flask import request
-import json
 
 
 class CreateUser(Resource):
@@ -21,7 +20,7 @@ class CreateUser(Resource):
             if data['password'] != data['confirm_password']:
                 return { 'error', 'las contraseñas no coinciden' }, 400
             res = createUser(new_user)
-            return res, 200
+            return res
         except:
             return { 'error', 'error en lectura de variables' }, 400
 

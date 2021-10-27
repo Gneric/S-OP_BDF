@@ -140,19 +140,20 @@ def logUser(email, password):
 def createUser(new_user):
     try:
         hash_pwd = bcrypt.hashpw(new_user['password'].encode('utf-8'), bcrypt.gensalt())
+        decoded_pwd = hash_pwd.decode('utf-8')
         print(f"hash_password for user {new_user['username']} : {hash_pwd}")
         user = {
-            "userName": new_user['userName'],
-            "hash_password": hash_pwd.decode('utf-8'),
-            "name": new_user['name'],
             "mail": new_user['mail'],
+            "hash_password": decoded_pwd,
+            "userName": new_user['username'],
             "phone": new_user['phone'],
             "isEnabled": new_user['isEnabled'],
+            "name": new_user['name'],
             "role": new_user['role']
         }
         result = insertUser(user)
         if result:
-            return result
+            return { 'result': result }, 200
         else:
             return { 'error': 'error ingresando usuario' }, 400
     except:
