@@ -45,20 +45,17 @@ def refresh():
 
 @jwt.token_verification_failed_loader
 def token_verification_failed_loader_callback(jwt_header, jwt_payload):
-  response = { "error" : "token invalido" }
-  response.status_code = 401
+  response = { "error" : "token invalido" }, 401
   return response
 
 @jwt.invalid_token_loader
 def invalid_token_loader_callback(jwt_header):
-  response = { "error" : "token invalido" }
-  response.status_code = 401
+  response = { "error" : "token invalido" }, 401
   return response
 
 @jwt.unauthorized_loader
 def unauthorized_loader_callback(jwt_header):
-  response = { "error" : "token invalido" }
-  response.status_code = 401
+  response = { "error" : "token invalido" }, 401
   return response
 
 @jwt.expired_token_loader
@@ -68,8 +65,7 @@ def expired_token_loader_callback(jwt_header, two):
 
 @jwt.needs_fresh_token_loader
 def needs_fresh_token_loader(jwt_header):
-  response = { "error" : "token invalido" }
-  response.status_code = 401
+  response = { "error" : "token invalido" }, 401
   return response
 
 api.add_resource(Welcome, '/api/')
