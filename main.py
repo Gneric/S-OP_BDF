@@ -86,7 +86,6 @@ api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')
 api.add_resource(ModifyUser, '/api/modify_user')
 api.add_resource(ChangePassword, '/api/change_pwd')
-#api.add_resource(ModifyUser, '/api/add_user')
 
 if __name__ == '__main__':
   from waitress import serve

@@ -158,7 +158,7 @@ def createUser(new_user):
             return { 'error': 'error ingresando usuario' }, 400
     except:
         print(sys.exc_info()[1])
-        return "Failed to registerUser"
+        return { 'error' : 'Failed to registerUser' }, 400
 
 def userInfo(id = ""):
     try:
