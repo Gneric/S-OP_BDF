@@ -1,11 +1,15 @@
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.utils.functions import createUser
 from flask_restful import Resource
 from flask import request
 
 
 class CreateUser(Resource):
+    @jwt_required
     def post(self):
         try:
+            current_user = get_jwt_identity()
+            print(f"{current_user=}")
             data = request.json.get('data', '')
             new_user = {
                 "username": data['userName'],

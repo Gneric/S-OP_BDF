@@ -30,8 +30,8 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=24)
 app.config["PROPAGATE_EXCEPTIONS"] = True
 jwt = JWTManager(app)
-CORS(app, expose_headers=["filename"], resources=r'/api/*')
 api = Api(app)
+CORS(app, expose_headers=["filename"], resources=r'/api/*')
 
 @app.route("/api/refresh", methods=["POST"])
 def refresh():
@@ -79,8 +79,8 @@ api.add_resource(GetInfoMes, '/api/get_info')
 api.add_resource(DeleteData, '/api/del_data')
 api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(GetTemplates, '/api/getTemplate')
-api.add_resource(UserList, '/api/user_info')
 api.add_resource(GetVisualBD, '/api/getVisualBD')
+api.add_resource(UserList, '/api/user_info')
 
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')
@@ -88,6 +88,6 @@ api.add_resource(ModifyUser, '/api/modify_user')
 api.add_resource(ChangePassword, '/api/change_pwd')
 
 if __name__ == '__main__':
-  from waitress import serve
-  serve(app, host="0.0.0.0", port=3100, threads=8)
-  #app.run(host='0.0.0.0', port=3100, debug=True)
+  #from waitress import serve
+  #serve(app, host="0.0.0.0", port=3100, threads=8)
+  app.run(host='0.0.0.0', port=3100, debug=True)
