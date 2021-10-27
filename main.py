@@ -12,12 +12,12 @@ from api.routes.getData import GetData
 from api.routes.deleteData import DeleteData
 
 from api.routes.login import LogIn
-from api.routes.signin import CreateUser
+from api.routes.addUser import CreateUser
 
 from flask import Flask, request
 from flask_cors import CORS
 from flask_restful import Api
-from flask_jwt_extended import JWTManager, get_jwt_identity, create_access_token, jwt_required
+from flask_jwt_extended import JWTManager, create_access_token
 
 from datetime import timedelta
 
