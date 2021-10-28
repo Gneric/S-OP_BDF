@@ -15,7 +15,7 @@ class GetPermissions(Resource):
                 return { 'error': 'el usuario no tiene permisos para esta accion' }, 400
             else:
                 res = getPermissionbyActions(action)
-                return { 'result' : res }, 200
+                return res
         except:
             return {'error':'error en lectura de varibales'},400
 
