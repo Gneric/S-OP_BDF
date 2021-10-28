@@ -93,11 +93,12 @@ def checkUser(email):
         search_permissions(args: {email: $email}, where: {isEnabled: {_eq: 1}}) {
             action
             subject
-            conditions
+            condition
         }
         }
         """
         res_insert = queryHasura(query, {"email" : email})
+        print(f'{res_insert=}')
         result = res_insert["data"]["Users"][0]
         permissions = res_insert["data"]["search_permissions"]
         abilities = [ { "action": i['action'], "subject": i['subject'], "conditions": i['condition'] } if i['condition'] else { "action": i['action'], "subject": i['subject'] } for i in permissions ]
@@ -175,6 +176,44 @@ def changepw(user_id, new_pwd):
         return result
     except:
         ""
+def getPermissions(action):
+    try:
+        query = """
+        query MyQuery($actions: [String!] = "") {
+        Permissions(order_by: {permissionID: asc}, where: {action: {_in: $actions}}) {
+            permissionID
+            action
+            subject
+            conditions
+            isBlocked
+        }
+        }
+        """
+        res = queryHasura(query, {'actions': action})
+        return res['data']['Permissions']
+    except:
+        print(sys.exc_info()[1])
+        return ""
+
+def updatePermissionByList(permissions):
+    try:
+        query = """
+        query MyQuery($actions: [String!] = "") {
+        Permissions(order_by: {permissionID: asc}, where: {action: {_in: $actions}}) {
+            permissionID
+            action
+            subject
+            conditions
+            isBlocked
+        }
+        }
+        """
+        res = queryHasura(query, {'actions': permissions})
+        return res['data']['Permissions']
+    except:
+        print(sys.exc_info()[1])
+        return ""
+
 def insertUser(user):
     try:
         query = """

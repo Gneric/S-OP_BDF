@@ -132,6 +132,7 @@ def logUser(email, password):
     if user_info == "":
         return { 'error' : 'No existe usuario' }
     else:
+        print(f"{user_info.get('hash_password')}")
         if bcrypt.checkpw(password.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
             return checkUser(email)
         else:
@@ -194,20 +195,34 @@ def pwdChange(user_id, pwd, new_pwd):
         user_info = checkPasswordByID(user_id)
         if user_info == "":
             return { 'error' : 'No existe usuario' }
-        else:
-            if bcrypt.checkpw(pwd.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
-                hashed_pwd = bcrypt.hashpw(new_pwd.encode('utf-8'), bcrypt.gensalt())
-                decoded_pwd = hashed_pwd.decode("utf-8")
-                res = changepw(user_id, hashed_pwd.decode('utf-8'))
-                if res != "" or res != None:
-                    return { "result" : "ok" }, 200
-                else:
-                    return { "error", "error al cambiar la contraseña" }, 400
+        if bcrypt.checkpw(pwd.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
+            hashed_pwd = bcrypt.hashpw(new_pwd.encode('utf-8'), bcrypt.gensalt())
+            decoded_pwd = hashed_pwd.decode("utf-8")
+            res = changepw(user_id, hashed_pwd.decode('utf-8'))
+            if res != "" or res != None:
+                return { "result" : "ok" }, 200
             else:
-                { "error" : "La contraseña ingresada con coincide con la contraseña actual" }, 400
+                return { "error", "error al cambiar la contraseña" }, 400
+        else:
+            { "error" : "La contraseña ingresada con coincide con la contraseña actual" }, 400
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al cambiar la contraseña del usuario" }, 400
 
 def getVisualBD():
     return requestVisualBD()
+
+def getPermissionbyActions(action):
+    try:
+        permission_list = getPermissions(action)
+        return  { 'result' : permission_list }, 200
+    except:
+        print(sys.exc_info()[1])
+        return { "error" : "Error al retornar permisos" }, 400
+
+def updatePermissions(permissions):
+    try:
+        print("")
+    except:
+        print(sys.exc_info()[1])
+        return { "error" : "Error al actualizar permisos" }, 400
