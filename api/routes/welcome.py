@@ -17,7 +17,6 @@ class Welcome(Resource):
             print( ability.can('read', 'Marketing') )
             print( ability.can('read', 'launch') )
             home_json = { "Bienvenido": "" }
-            response = jsonify(home_json)
-            return response
+            return { 'payload': payload }
         else:
             return 'Resource not found', 400
