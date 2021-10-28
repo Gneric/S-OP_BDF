@@ -7,7 +7,8 @@ from flask_restful import Resource
 class GetInfoMes(Resource):
     @jwt_required()
     def post(self):
-        current_user = get_jwt_identity()
+        payload = get_jwt_identity()
+        current_user = payload["current_id"]
         print(f"{current_user=}")
         year = str(request.json['year'])
         month = str(request.json['month'])

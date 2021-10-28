@@ -7,7 +7,8 @@ import sys
 class GetData(Resource):
     @jwt_required()
     def post(self):
-        current_user = get_jwt_identity()
+        payload = get_jwt_identity()
+        current_user = payload["current_id"]
         print(f"{current_user=}")
         id = request.json['file_id']
         area_id = request.json['area_id']

@@ -5,10 +5,11 @@ from flask_restful import Resource
 import sys
 
 class GetVisualBD(Resource):
-    # @jwt_required()
+    @jwt_required()
     def post(self):
-        # current_user = get_jwt_identity()
-        # print(f"{current_user=}")
+        payload = get_jwt_identity()
+        current_user = payload["current_id"]
+        print(f"{current_user=}")
         try:
             res = getVisualBD()
             if res == "":

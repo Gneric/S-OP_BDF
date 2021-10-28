@@ -24,7 +24,8 @@ from datetime import timedelta
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "3jeYU\@++MhuRc6LmNXYD+ddq&M%jP@:uK2^SSB"
+#app.config['SECRET_KEY'] = "3jeYU\@++MhuRc6LmNXYD+ddq&M%jP@:uK2^SSB"
+app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
@@ -37,11 +38,11 @@ api = Api(app)
 @app.route("/api/refresh", methods=["POST"])
 def refresh():
     token = request.json.get('refreshToken', '')
-    identity = decode_token(token)["sub"]
+    payload = decode_token(token)
     if token == '':
       return { 'error': 'token no enviado' }, 401
-    access_token = create_access_token(identity=identity)
-    refresh_token = create_refresh_token(identity=identity)
+    access_token = create_access_token(identity=payload)
+    refresh_token = create_refresh_token(identity=payload)
     return { "accessToken" : access_token, "refreshToken": refresh_token }
 
 @jwt.token_verification_failed_loader
@@ -88,6 +89,6 @@ api.add_resource(GetPermissions, '/api/get_permission')
 api.add_resource(UpdatePermissions, '/api/update_permissions')
 
 if __name__ == '__main__':
-  #from waitress import serve
-  #serve(app, host="0.0.0.0", port=3100, threads=8)
-  app.run(host='0.0.0.0', port=3100, debug=True)
+  from waitress import serve
+  serve(app, host="0.0.0.0", port=3100, threads=8)
+  #app.run(host='0.0.0.0', port=3100, debug=True)

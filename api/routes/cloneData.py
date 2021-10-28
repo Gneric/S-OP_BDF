@@ -11,7 +11,8 @@ class CloneData(Resource):
     @jwt_required()
     def post(self):
         try:
-            current_user = get_jwt_identity()
+            payload = get_jwt_identity()
+            current_user = payload["current_id"]
             print(f"{current_user=}")
             file_id = str(request.json['file_id'])
             area_id = int(request.json['area_id'])

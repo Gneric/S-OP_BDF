@@ -8,7 +8,8 @@ class Welcome(Resource):
     @jwt_required()
     def get(self):
         if 1 == 1:
-            current_user = get_jwt_identity()
+            payload = get_jwt_identity()
+            current_user = payload["current_id"]
             ability = ability_for(current_user)
             print(f"{current_user=}")
             print( ability.can('read', 'Auth') )

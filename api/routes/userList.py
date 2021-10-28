@@ -9,7 +9,8 @@ class UserList(Resource):
     @jwt_required()
     def post(self):
         if 1 == 1:
-            current_user = get_jwt_identity()
+            payload = get_jwt_identity()
+            current_user = payload["current_id"]
             print(f"{current_user=}")
             if request.json == None or 'id' not in request.json.keys():
                 res = userInfo("")

@@ -226,3 +226,17 @@ def updatePermissions(permissions):
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al actualizar permisos" }, 400
+
+def generate_token(user):
+    is_admin = user['role'] == "admin"
+    user_roles = ["user"]
+    admin_roles = ["user","admin"]
+    payload = {
+        "current_id": user['userID'],
+        "https://hasura.io/jwt/claims": {
+            "x-hasura-allowed-roles" : admin_roles if is_admin else user_roles,
+            "x-hasura-default-roles": "admin" if is_admin else "user",
+            "x-hasura-user-id": user['userID']
+        }
+    }
+    return payload

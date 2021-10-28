@@ -9,7 +9,8 @@ class UploadExcel(Resource):
     @jwt_required()
     def post(self):
         try:
-            current_user = get_jwt_identity()
+            payload = get_jwt_identity()
+            current_user = payload["current_id"]
             print(current_user)
             if 'year' in request.form.keys():
                 year = request.form['year']
