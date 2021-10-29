@@ -182,7 +182,7 @@ def modUser(user, permissions):
         user['hash_password'] = pwd["hash_password"]
         permission2 = [{'userID': user['userID'], 'permissionID': p['permissionID'], 'isEnabled': p['isEnabled']} for p in permissions ]
         res = modifyUser(user, permission2)
-        if res != "" or res != None:
+        if res != "":
             return { "error": "error al modificar el usuario" }, 400
         else:
             return { "result" : "ok" }
@@ -199,7 +199,7 @@ def pwdChange(user_id, pwd, new_pwd):
             hashed_pwd = bcrypt.hashpw(new_pwd.encode('utf-8'), bcrypt.gensalt())
             decoded_pwd = hashed_pwd.decode("utf-8")
             res = changepw(user_id, hashed_pwd.decode('utf-8'))
-            if res != "" or res != None:
+            if res != "":
                 return { "result" : "ok" }, 200
             else:
                 return { "error", "error al cambiar la contraseña" }, 400
