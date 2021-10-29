@@ -1,6 +1,6 @@
 from flask_jwt_extended.utils import create_refresh_token, decode_token
 from api.routes.changepwd import ChangePassword
-from api.routes.visuales import GetVisualBD, PrepareSummary
+from api.routes.visuals import GetVisualBD, PrepareSummary
 from api.routes.modifyUser import ModifyUser
 from api.routes.permissions import GetPermissions, UpdatePermissions
 from api.routes.welcome import Welcome

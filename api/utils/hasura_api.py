@@ -781,21 +781,47 @@ def requestVisualBD():
 def requestPrepareSummary():
     try:
         query = """
-        query BD_syop {
-            rows: BD_SOP(order_by: {month: asc, year: asc}, where: {}) {
-            id
-            clasificacion
-            BPU
-            nart
-            nartdesc
-            SPGR
-            spgrdesc
-            year
-            month
-            BrandCategory
-            ApplicationForm
-            units
-            netsales   
+        query NartyClasificacion {
+            rows: visual_x_nart_y_clasif {
+                clasificacion
+                nart
+                nartdesc
+                unid_mes1
+                unid_mes2
+                unid_mes3
+                unid_mes4
+                unid_mes5
+                unid_mes6
+                unid_mes7
+                unid_mes8
+                unid_mes9
+                unid_mes10
+                unid_mes11
+                unid_mes12
+                unid_mes13
+                unid_mes14
+                unid_mes15
+                unid_mes16
+                unid_mes17
+                unid_mes18
+                nets_mes1
+                nets_mes2
+                nets_mes3
+                nets_mes4
+                nets_mes5
+                nets6_mes
+                nets_mes7
+                nets_mes8
+                nets_mes9
+                nets_mes10
+                nets_mes11
+                nets_mes12
+                nets_mes13
+                nets_mes14
+                nets_mes15
+                nets_mes16
+                nets_mes17
+                nets_mes18
             }
         }
         """
