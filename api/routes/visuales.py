@@ -1,5 +1,5 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from api.utils.functions import getVisualBD
+from api.utils.functions import getPrepareSummary, getVisualBD
 from flask import request
 from flask_restful import Resource
 import sys
@@ -12,6 +12,20 @@ class GetVisualBD(Resource):
         print(f"{current_user=}")
         try:
             res = getVisualBD()
+            if res == "":
+                return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+            return { "result" : res }, 200
+        except:
+            return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+
+class PrepareSummary(Resource):
+    @jwt_required()
+    def post(self):
+        payload = get_jwt_identity()
+        current_user = payload["current_id"]
+        print(f"{current_user=}")
+        try:
+            res = getPrepareSummary()
             if res == "":
                 return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
             return { "result" : res }, 200

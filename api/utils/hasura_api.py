@@ -777,3 +777,33 @@ def requestVisualBD():
     except SystemError as err:
         print(err)
         return ""
+
+def requestPrepareSummary():
+    try:
+        query = """
+        query BD_syop {
+            rows: BD_SOP(order_by: {month: asc, year: asc}, where: {}) {
+            id
+            clasificacion
+            BPU
+            nart
+            nartdesc
+            SPGR
+            spgrdesc
+            year
+            month
+            BrandCategory
+            ApplicationForm
+            units
+            netsales   
+            }
+        }
+        """
+        res = queryHasura(query)
+        size_list = [{'name':'nart','size':200},{'name':'nartdesc','size':500}]
+        colum_list = [{'name': i,'prop': i,'size': 150, 'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
+        result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
+        return result
+    except SystemError as err:
+        print(err)
+        return ""

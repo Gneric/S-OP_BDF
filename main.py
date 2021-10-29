@@ -1,6 +1,6 @@
 from flask_jwt_extended.utils import create_refresh_token, decode_token
 from api.routes.changepwd import ChangePassword
-from api.routes.getVisualBD import GetVisualBD
+from api.routes.visuales import GetVisualBD, PrepareSummary
 from api.routes.modifyUser import ModifyUser
 from api.routes.permissions import GetPermissions, UpdatePermissions
 from api.routes.welcome import Welcome
@@ -78,7 +78,6 @@ api.add_resource(GetInfoMes, '/api/get_info')
 api.add_resource(DeleteData, '/api/del_data')
 api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(GetTemplates, '/api/getTemplate')
-api.add_resource(GetVisualBD, '/api/getVisualBD')
 api.add_resource(UserList, '/api/user_info')
 
 api.add_resource(LogIn, '/api/login')
@@ -88,6 +87,10 @@ api.add_resource(ChangePassword, '/api/change_pwd')
 
 api.add_resource(GetPermissions, '/api/get_permission')
 api.add_resource(UpdatePermissions, '/api/update_permissions')
+
+api.add_resource(GetVisualBD, '/api/getVisualBD')
+api.add_resource(PrepareSummary, '/api/prepare_summary')
+
 
 if __name__ == '__main__':
   from waitress import serve

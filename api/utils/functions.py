@@ -212,6 +212,9 @@ def pwdChange(user_id, pwd, new_pwd):
 def getVisualBD():
     return requestVisualBD()
 
+def getPrepareSummary():
+    return requestPrepareSummary()
+
 def getPermissionbyActions(action):
     try:
         permission_list = getPermissions(action)
