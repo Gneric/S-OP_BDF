@@ -38,7 +38,8 @@ api = Api(app)
 @app.route("/api/refresh", methods=["POST"])
 def refresh():
     token = request.json.get('refreshToken', '')
-    payload = decode_token(token)
+    payload = decode_token(token)['sub']
+    print(payload)
     if token == '':
       return { 'error': 'token no enviado' }, 401
     access_token = create_access_token(identity=payload)
