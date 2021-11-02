@@ -1,9 +1,23 @@
 from flask_jwt_extended.view_decorators import jwt_required
 from flask_jwt_extended import get_jwt_identity
-from api.utils.functions import createUser, userInfo, pwdChange
+from api.utils.functions import createUser, userInfo, pwdChange, modUser
 from flask_restful import Resource
 from flask import request
 
+class UserList(Resource):
+    @jwt_required()
+    def post(self):
+        if 1 == 1:
+            payload = get_jwt_identity()
+            current_user = payload["current_id"]
+            print(f"{current_user=}")
+            if request.json == None or 'id' not in request.json.keys():
+                res = userInfo("")
+            else:
+                res = userInfo(request.json['id'])
+            return res
+        else:
+            return 'Resource not found', 400
 
 class CreateUser(Resource):
     @jwt_required()
@@ -30,22 +44,6 @@ class CreateUser(Resource):
         except:
             return { 'error', 'error en lectura de variables' }, 400
 
-class UserList(Resource):
-    @jwt_required()
-    def post(self):
-        if 1 == 1:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
-            print(f"{current_user=}")
-            if request.json == None or 'id' not in request.json.keys():
-                res = userInfo("")
-            else:
-                res = userInfo(request.json['id'])
-            return res
-        else:
-            return 'Resource not found', 400
-
-
 class ChangePassword(Resource):
     @jwt_required()
     def post(self):
@@ -65,6 +63,33 @@ class ChangePassword(Resource):
                 return pwdChange(user_id, pwd, new_pwd)
             else:
                 return { 'error': "No tiene permisos para hacer cambios en este usuario"}, 401
+        except:
+            print(sys.exc_info()[1])
+            return { 'error' : "error en lectura de variables" }, 400
+
+class ModifyUser(Resource):
+    @jwt_required()
+    def post(self):
+        try:
+            payload = get_jwt_identity()
+            current_user = payload["current_id"]
+            data = request.json.get('data','')
+            print(data)
+            user = {
+                "userID" : data['userID'], 
+                "profileImageUrl" : data['profileImageUrl'],
+                "userName" : data['userName'],
+                "name" : data['name'],
+                "mail" : data['mail'],
+                "phone": data['phone'],
+                "isEnabled": data['isEnabled'],
+                "role" : data['role']
+            }
+            permissions = data['permissions']
+            if current_user == 1 or current_user == user['userID']:
+                return modUser(user, permissions)
+            else:
+                return {"error": "correo o contraseña incorrecto"}, 401
         except:
             print(sys.exc_info()[1])
             return { 'error' : "error en lectura de variables" }, 400

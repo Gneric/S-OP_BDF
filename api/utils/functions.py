@@ -129,14 +129,13 @@ def getTemplates(year, month, area_id):
 
 def logUser(email, password):
     user_info = checkPassword(email)
-    if user_info == "":
-        return { 'error' : 'No existe usuario' }
+    if user_info == None:
+        return None
     else:
-        print(f"{user_info.get('hash_password')}")
         if bcrypt.checkpw(password.encode('utf-8'), user_info.get('hash_password').encode('utf-8')):
             return checkUser(email)
         else:
-            raise
+            return None
 
 def createUser(new_user):
     try:
@@ -236,11 +235,13 @@ def generate_token(user):
     user_roles = ["user"]
     admin_roles = ["user","admin"]
     payload = {
-        "current_id": user['id'],
-        "https://hasura.io/jwt/claims": {
+        "current_id": user['id']
+    }
+    hasura_token = {
+        "hasura_claims": {
             "x-hasura-allowed-roles" : admin_roles if is_admin else user_roles,
             "x-hasura-default-roles": "admin" if is_admin else "user",
-            "x-hasura-user-id": user['id']
+            "x-hasura-user-id": str(user['id'])
         }
     }
-    return payload
+    return payload, hasura_token

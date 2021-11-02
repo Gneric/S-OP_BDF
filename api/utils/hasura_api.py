@@ -98,7 +98,6 @@ def checkUser(email):
         }
         """
         res_insert = queryHasura(query, {"email" : email})
-        print(f'{res_insert=}')
         result = res_insert["data"]["Users"][0]
         permissions = res_insert["data"]["search_permissions"]
         abilities = [ { "action": i['action'], "subject": i['subject'], "conditions": i['condition'] } if i['condition'] else { "action": i['action'], "subject": i['subject'] } for i in permissions ]
