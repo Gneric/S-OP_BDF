@@ -71,8 +71,7 @@ class ModifyUser(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             data = request.json.get('data','')
             print(data)
             user = {

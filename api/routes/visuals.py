@@ -7,8 +7,7 @@ import sys
 class GetVisualBD(Resource):
     @jwt_required()
     def post(self):
-        payload = get_jwt_identity()
-        current_user = payload["current_id"]
+        current_user = get_jwt_identity()
         print(f"{current_user=}")
         try:
             res = getVisualBD()
@@ -21,8 +20,7 @@ class GetVisualBD(Resource):
 class PrepareSummary(Resource):
     @jwt_required()
     def post(self):
-        payload = get_jwt_identity()
-        current_user = payload["current_id"]
+        current_user = get_jwt_identity()
         print(f"{current_user=}")
         try:
             res = getPrepareSummary()

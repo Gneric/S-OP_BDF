@@ -10,8 +10,7 @@ from flask import request
 class GetData(Resource):
     @jwt_required()
     def post(self):
-        payload = get_jwt_identity()
-        current_user = payload["current_id"]
+        current_user = get_jwt_identity()
         print(f"{current_user=}")
         id = request.json['file_id']
         area_id = request.json['area_id']
@@ -30,8 +29,7 @@ class DeleteData(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(f"{current_user=}")
             if 'year' in request.form.keys():
                 year = str(request.form['year'])
@@ -53,8 +51,7 @@ class CloneData(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(f"{current_user=}")
             file_id = str(request.json['file_id'])
             area_id = int(request.json['area_id'])
@@ -80,8 +77,7 @@ class GetTemplates(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(f"{current_user=}")
             year = str(request.json['year'])
             month = str(request.json['month'])
@@ -107,8 +103,7 @@ class GetTemplates(Resource):
 class GetInfoMes(Resource):
     @jwt_required()
     def post(self):
-        payload = get_jwt_identity()
-        current_user = payload["current_id"]
+        current_user = get_jwt_identity()
         print(f"{current_user=}")
         year = str(request.json['year'])
         month = str(request.json['month'])
@@ -125,8 +120,7 @@ class UploadExcel(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(current_user)
             if 'year' in request.form.keys():
                 year = request.form['year']

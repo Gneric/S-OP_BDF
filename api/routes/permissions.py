@@ -8,8 +8,7 @@ class GetPermissions(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(f"{current_user=}")
             action = request.json.get('action', None)
             if current_user != 1:
@@ -24,8 +23,7 @@ class UpdatePermissions(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(f"{current_user=}")
             permissions = request.json.get('data', None)
             if current_user != 1:
