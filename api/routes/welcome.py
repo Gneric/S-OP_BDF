@@ -9,7 +9,7 @@ class Welcome(Resource):
     def get(self):
         if 1 == 1:
             current_user = get_jwt_identity()
-            ability = ability_for(current_user)
+            ability = ability_for(int(current_user))
             print(f"{current_user=}")
             print( ability.can('read', 'Auth') )
             print( ability.can('read', 'supply') )

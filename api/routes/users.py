@@ -59,7 +59,7 @@ class ChangePassword(Resource):
                 confirm_pwd = request.json.get('confirm_password', '')
                 if confirm_pwd != new_pwd:
                     return { 'error': 'los campos de nueva contraseña no coinciden'}, 400
-            if current_user == user_id or current_user == 1:
+            if current_user == str(user_id) or current_user == "1":
                 return pwdChange(user_id, pwd, new_pwd)
             else:
                 return { 'error': "No tiene permisos para hacer cambios en este usuario"}, 401
@@ -85,7 +85,7 @@ class ModifyUser(Resource):
                 "role" : data['role']
             }
             permissions = data['permissions']
-            if current_user == 1 or current_user == user['userID']:
+            if current_user == "1" or current_user == str(user['userID']):
                 return modUser(user, permissions)
             else:
                 return {"error": "correo o contraseña incorrecto"}, 401
