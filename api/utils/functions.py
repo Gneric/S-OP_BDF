@@ -238,7 +238,7 @@ def generate_token(user):
     hasura_token = {
         "hasura_claims": {
             "x-hasura-allowed-roles" : admin_roles if is_admin else user_roles,
-            "x-hasura-default-roles": "admin" if is_admin else "user",
+            "x-hasura-default-role": "admin" if is_admin else "user",
             "x-hasura-user-id": str(user['id'])
         }
     }
