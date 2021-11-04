@@ -178,10 +178,11 @@ def userInfo(id = ""):
 def modUser(user, permissions):
     try:
         pwd = checkPassword(user['mail'])
+        print(f'{pwd=}')
         user['hash_password'] = pwd["hash_password"]
         permission2 = [{'userID': user['userID'], 'permissionID': p['permissionID'], 'isEnabled': p['isEnabled']} for p in permissions ]
         res = modifyUser(user, permission2)
-        if res != "":
+        if res == "":
             return { "error": "error al modificar el usuario" }, 400
         else:
             return { "result" : "ok" }

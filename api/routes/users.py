@@ -71,7 +71,6 @@ class ModifyUser(Resource):
         try:
             current_user = get_jwt_identity()
             data = request.json.get('data','')
-            print(data)
             user = {
                 "userID" : data['userID'], 
                 "profileImageUrl" : data['profileImageUrl'],

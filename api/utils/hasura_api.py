@@ -124,6 +124,7 @@ def checkPassword(email):
             }
         """
         res_insert = queryHasura(query, {"email" : email})
+        print(res_insert)
         result = res_insert["data"]["Users"][0]
         return result
     except:
