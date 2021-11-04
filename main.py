@@ -17,8 +17,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=2)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=24)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=48)
 app.config["PROPAGATE_EXCEPTIONS"] = True
 jwt = JWTManager(app)
 CORS(app, expose_headers=["filename"], resources={r"*": {"origins": "*"}})
