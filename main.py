@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=2)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=24)
 app.config["PROPAGATE_EXCEPTIONS"] = True
 jwt = JWTManager(app)
@@ -28,11 +28,13 @@ api = Api(app)
 def refresh():
     token = request.json.get('refreshToken', '')
     payload = decode_token(token)['sub']
+    hasura_token = {}
+    hasura_token["hasura_claims"] = decode_token(token)['hasura_claims']
     print(payload)
     if token == '':
       return { 'error': 'token no enviado' }, 401
-    access_token = create_access_token(identity=payload)
-    refresh_token = create_refresh_token(identity=payload)
+    access_token = create_access_token(identity=payload, additional_claims=hasura_token)
+    refresh_token = create_refresh_token(identity=payload, additional_claims=hasura_token)
     return { "accessToken" : access_token, "refreshToken": refresh_token }
 
 @jwt.token_verification_failed_loader

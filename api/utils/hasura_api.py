@@ -197,18 +197,14 @@ def getPermissions(action):
 def updatePermissionByList(permissions):
     try:
         query = """
-        query MyQuery($actions: [String!] = "") {
-        Permissions(order_by: {permissionID: asc}, where: {action: {_in: $actions}}) {
-            permissionID
-            action
-            subject
-            conditions
-            isBlocked
+        mutation MyMutation($objects: [Permissions_insert_input!] = {}) {
+        insert_Permissions(objects: $objects, on_conflict: {constraint: Permissions_pkey, update_columns: isBlocked}) {
+            affected_rows
         }
         }
         """
-        res = queryHasura(query, {'actions': permissions})
-        return res['data']['Permissions']
+        res = queryHasura(query, {'objects': permissions})
+        return res['data']['insert_Permissions']['affected_rows']
     except:
         print(sys.exc_info()[1])
         return ""

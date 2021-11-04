@@ -224,7 +224,11 @@ def getPermissionbyActions(action):
 
 def updatePermissions(permissions):
     try:
-        print("")
+        rows_affected = updatePermissionByList(permissions)
+        if rows_affected == "":
+            return { "error" : "Error al actualizar permisos" }, 400
+        else:
+            return { 'result' : 'ok' }, 200
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al actualizar permisos" }, 400

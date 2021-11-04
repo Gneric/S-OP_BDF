@@ -30,6 +30,7 @@ class UpdatePermissions(Resource):
                 return { 'error': 'el usuario no tiene permisos para esta accion' }, 400
             else:
                 res = updatePermissions(permissions)
+                return res
         except:
             return {'error':'error en lectura de varibales'},400
 
