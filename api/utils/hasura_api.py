@@ -118,7 +118,7 @@ def checkPassword(email):
     try:
         query = """
             query MyQuery($email: String) {
-                Users(where: {isEnabled: {_eq: 1}, mail: {_eq: $email}}) {
+                Users(where: {mail: {_eq: $email}}) {
                     hash_password
                 }
             }
