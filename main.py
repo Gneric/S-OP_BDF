@@ -82,8 +82,8 @@ api.add_resource(UpdatePermissions, '/api/update_permissions')
 
 api.add_resource(GetVisualBD, '/api/getVisualBD')
 api.add_resource(PrepareSummary, '/api/prepare_summary')
-api.add_resource(UnitsxBPU, '/api/prepare_summary')
-api.add_resource(NetSalesxPBU, '/api/prepare_summary')
+api.add_resource(UnitsxBPU, '/api/unitxbpu')
+api.add_resource(NetSalesxPBU, '/api/salesxbpu')
 
 
 if __name__ == '__main__':
