@@ -4,6 +4,8 @@ from flask import request
 from flask_restful import Resource
 import sys
 
+from api.utils.hasura_api import demand_simulation_netsales, demand_simulation_units
+
 class GetVisualBD(Resource):
     @jwt_required()
     def post(self):
@@ -21,9 +23,36 @@ class PrepareSummary(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
+        id = request.json.get('id', '')
         print(f"{current_user=}")
         try:
-            res = getPrepareSummary()
+            res = getPrepareSummary(id)
+            if res == "":
+                return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+            return { "result" : res }, 200
+        except:
+            return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+
+class UnitsxBPU(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
+        try:
+            res = demand_simulation_units()
+            if res == "":
+                return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+            return { "result" : res }, 200
+        except:
+            return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+
+class NetSalesxPBU(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
+        try:
+            res = demand_simulation_netsales()
             if res == "":
                 return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
             return { "result" : res }, 200

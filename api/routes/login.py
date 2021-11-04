@@ -12,7 +12,7 @@ class LogIn(Resource):
             password = request.json.get('password', None)
             user = logUser(email, password)
             if user == None:
-                return {"error": "correo o contraseña incorrecto"}, 401
+                return {"error": "correo o contraseña incorrecto"}, 400
             payload, hasura_token = generate_token(user)
             token = create_access_token(identity=payload, additional_claims=hasura_token)
             refresh_token = create_refresh_token(identity=payload, additional_claims=hasura_token)

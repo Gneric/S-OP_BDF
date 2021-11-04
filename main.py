@@ -8,7 +8,7 @@ from datetime import timedelta
 from api.routes.login import LogIn
 from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
-from api.routes.visuals import GetVisualBD, PrepareSummary
+from api.routes.visuals import GetVisualBD, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
 from api.routes.data import GetData, DeleteData, CloneData, UploadExcel, GetTemplates, GetInfoMes
 
@@ -82,6 +82,8 @@ api.add_resource(UpdatePermissions, '/api/update_permissions')
 
 api.add_resource(GetVisualBD, '/api/getVisualBD')
 api.add_resource(PrepareSummary, '/api/prepare_summary')
+api.add_resource(UnitsxBPU, '/api/prepare_summary')
+api.add_resource(NetSalesxPBU, '/api/prepare_summary')
 
 
 if __name__ == '__main__':

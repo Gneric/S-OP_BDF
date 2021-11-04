@@ -211,8 +211,14 @@ def pwdChange(user_id, pwd, new_pwd):
 def getVisualBD():
     return requestVisualBD()
 
-def getPrepareSummary():
-    return requestPrepareSummary()
+def getPrepareSummary(id):
+    return requestPrepareSummary(id)
+
+def getSimulationUnits():
+    return demand_simulation_units()
+
+def getSimmulationNetSales():
+    return demand_simulation_netsales()
 
 def getPermissionbyActions(action):
     try:

@@ -774,56 +774,112 @@ def requestVisualBD():
         print(err)
         return ""
 
-def requestPrepareSummary():
+def requestPrepareSummary(id):
     try:
         query = """
-        query NartyClasificacion {
-            rows: visual_x_nart_y_clasif {
-                clasificacion
-                nart
-                nartdesc
-                unid_mes1
-                unid_mes2
-                unid_mes3
-                unid_mes4
-                unid_mes5
-                unid_mes6
-                unid_mes7
-                unid_mes8
-                unid_mes9
-                unid_mes10
-                unid_mes11
-                unid_mes12
-                unid_mes13
-                unid_mes14
-                unid_mes15
-                unid_mes16
-                unid_mes17
-                unid_mes18
-                nets_mes1
-                nets_mes2
-                nets_mes3
-                nets_mes4
-                nets_mes5
-                nets6_mes
-                nets_mes7
-                nets_mes8
-                nets_mes9
-                nets_mes10
-                nets_mes11
-                nets_mes12
-                nets_mes13
-                nets_mes14
-                nets_mes15
-                nets_mes16
-                nets_mes17
-                nets_mes18
-            }
+        query NartyClasificacion($id:String) {
+        rows: prepare_summary(where: {id:{_eq:$id}}) {
+            clasificacion
+            nart
+            nartdesc
+            unid_mes1
+            unid_mes2
+            unid_mes3
+            unid_mes4
+            unid_mes5
+            unid_mes6
+            unid_mes7
+            unid_mes8
+            unid_mes9
+            unid_mes10
+            unid_mes11
+            unid_mes12
+            unid_mes13
+            unid_mes14
+            unid_mes15
+            unid_mes16
+            unid_mes17
+            unid_mes18
+            nets_mes1
+            nets_mes2
+            nets_mes3
+            nets_mes4
+            nets_mes5
+            nets_mes6
+            nets_mes7
+            nets_mes8
+            nets_mes9
+            nets_mes10
+            nets_mes11
+            nets_mes12
+            nets_mes13
+            nets_mes14
+            nets_mes15
+            nets_mes16
+            nets_mes17
+            nets_mes18
+        }
+        }
+        """
+        res = queryHasura(query, { 'variables' : id })
+        size_list = [{'name':'nart','size':200},{'name':'nartdesc','size':500}]
+        colum_list = [{'name': i,'prop': i,'size': 150, 'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
+        result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
+
+
+def demand_simulation_units():
+    try:
+        query = """
+        query unitsxBPU {
+        rows: BD_unitsxBPUView {
+            year
+            BPU
+            month
+            totmesxbpu
+            totq1xbpu
+            totq2xbpu
+            totq3xbpu
+            totq4xbpu
+            totanoxbpu
+            totano
+        }
         }
         """
         res = queryHasura(query)
-        size_list = [{'name':'nart','size':200},{'name':'nartdesc','size':500}]
-        colum_list = [{'name': i,'prop': i,'size': 150, 'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
+        size_list = [{'name':'year','size':150},{'name':'BPU','size':250},{'name':'month','size':150},{'name':'totmesxbpu','size':150},{'name':'totq1xbpu','size':150},{'name':'totq2xbpu','size':150},{'name':'totq3xbpu','size':150},{'name':'totq4xbpu','size':150},{'name':'totanoxbpu','size':150},{'name':'totano','size':150}]
+        colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
+        result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
+
+
+def demand_simulation_netsales():
+    try:
+        query = """
+        query unitsxBPU {
+        rows: BD_netsalesxBPUView {
+            year
+            BPU
+            month
+            totmesxbpu
+            totq1xbpu
+            totq2xbpu
+            totq3xbpu
+            totq4xbpu
+            totanoxbpu
+            totano
+        }
+        }
+        """
+        res = queryHasura(query)
+        size_list = [{'name':'year','size':150},{'name':'BPU','size':250},{'name':'month','size':150},{'name':'totmesxbpu','size':150},{'name':'totq1xbpu','size':150},{'name':'totq2xbpu','size':150},{'name':'totq3xbpu','size':150},{'name':'totq4xbpu','size':150},{'name':'totanoxbpu','size':150},{'name':'totano','size':150}]
+        colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
         result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
         return result
     except SystemError as err:
