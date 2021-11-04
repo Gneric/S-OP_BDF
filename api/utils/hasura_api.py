@@ -204,6 +204,7 @@ def updatePermissionByList(permissions):
         }
         """
         res = queryHasura(query, {'objects': permissions})
+        print(res)
         return res['data']['insert_Permissions']['affected_rows']
     except:
         print(sys.exc_info()[1])

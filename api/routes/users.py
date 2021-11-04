@@ -3,13 +3,13 @@ from flask_jwt_extended import get_jwt_identity
 from api.utils.functions import createUser, userInfo, pwdChange, modUser
 from flask_restful import Resource
 from flask import request
+import sys
 
 class UserList(Resource):
     @jwt_required()
     def post(self):
         if 1 == 1:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(f"{current_user=}")
             if request.json == None or 'id' not in request.json.keys():
                 res = userInfo("")
@@ -23,8 +23,7 @@ class CreateUser(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             print(f"{current_user=}")
             data = request.json.get('data', '')
             new_user = {
@@ -48,8 +47,7 @@ class ChangePassword(Resource):
     @jwt_required()
     def post(self):
         try:
-            payload = get_jwt_identity()
-            current_user = payload["current_id"]
+            current_user = get_jwt_identity()
             user_id = request.json.get('user_id','')
             pwd = request.json.get('old_password','')
             new_pwd = request.json.get('new_password','')
