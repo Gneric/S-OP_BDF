@@ -886,3 +886,27 @@ def demand_simulation_netsales():
     except SystemError as err:
         print(err)
         return ""
+
+
+def demand_simulation_db():
+    try:
+        query = """
+        query DemandSimulation {
+        rows: BD_DemandSimulation {    
+            BPU
+            year
+            month
+            quarter
+            units
+            netsales
+        }
+        }
+        """
+        res = queryHasura(query)
+        size_list = [{'name':'BPU','size':250},{'name':'year','size':150},{'name':'month','size':150},{'name':'quarter','size':150},{'name':'units','size':150},{'name':'netsales','size':150}]
+        colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
+        result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
+        return result
+    except SystemError as err:
+        print(err)
+        return ""

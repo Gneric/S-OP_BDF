@@ -221,6 +221,9 @@ def getSimulationUnits():
 def getSimmulationNetSales():
     return demand_simulation_netsales()
 
+def getDemandSimulationDB():
+    return demand_simulation_db()
+
 def getPermissionbyActions(action):
     try:
         permission_list = getPermissions(action)

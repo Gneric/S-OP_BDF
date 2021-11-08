@@ -8,7 +8,7 @@ from datetime import timedelta
 from api.routes.login import LogIn
 from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
-from api.routes.visuals import GetVisualBD, PrepareSummary, NetSalesxPBU, UnitsxBPU
+from api.routes.visuals import DemandSimulation, GetVisualBD, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
 from api.routes.data import GetData, DeleteData, CloneData, UploadExcel, GetTemplates, GetInfoMes
 
@@ -62,28 +62,30 @@ def needs_fresh_token_loader(jwt_header):
   response = { "error" : "token invalido" }, 401
   return response
 
+# root
 api.add_resource(Welcome, '/api/')
-
+# data
 api.add_resource(GetData, '/api/get_excel_data')
 api.add_resource(DeleteData, '/api/del_data')
 api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(UploadExcel, '/api/upload_excel')
 api.add_resource(GetTemplates, '/api/getTemplate')
 api.add_resource(GetInfoMes, '/api/get_info')
-
+# user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')
 api.add_resource(ModifyUser, '/api/modify_user')
 api.add_resource(UserList, '/api/user_info')
 api.add_resource(ChangePassword, '/api/change_pwd')
-
+# permissions
 api.add_resource(GetPermissions, '/api/get_permission')
 api.add_resource(UpdatePermissions, '/api/update_permissions')
-
+# visuals
 api.add_resource(GetVisualBD, '/api/getVisualBD')
 api.add_resource(PrepareSummary, '/api/prepare_summary')
 api.add_resource(UnitsxBPU, '/api/unitxbpu')
 api.add_resource(NetSalesxPBU, '/api/salesxbpu')
+api.add_resource(DemandSimulation, '/api/demand_simulation')
 
 
 if __name__ == '__main__':

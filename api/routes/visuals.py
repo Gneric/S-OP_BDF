@@ -1,10 +1,8 @@
+from api.utils.functions import getDemandSimulationDB, getPrepareSummary, getSimmulationNetSales, getSimulationUnits, getVisualBD
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from api.utils.functions import getPrepareSummary, getVisualBD
 from flask import request
 from flask_restful import Resource
 import sys
-
-from api.utils.hasura_api import demand_simulation_netsales, demand_simulation_units
 
 class GetVisualBD(Resource):
     @jwt_required()
@@ -39,7 +37,7 @@ class UnitsxBPU(Resource):
         current_user = get_jwt_identity()
         print(f"{current_user=}")
         try:
-            res = demand_simulation_units()
+            res = getSimulationUnits()
             if res == "":
                 return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
             return { "result" : res }, 200
@@ -52,7 +50,20 @@ class NetSalesxPBU(Resource):
         current_user = get_jwt_identity()
         print(f"{current_user=}")
         try:
-            res = demand_simulation_netsales()
+            res = getSimmulationNetSales()
+            if res == "":
+                return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+            return { "result" : res }, 200
+        except:
+            return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+
+class DemandSimulation(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
+        try:
+            res = getDemandSimulationDB()
             if res == "":
                 return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
             return { "result" : res }, 200
