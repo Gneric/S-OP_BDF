@@ -778,54 +778,20 @@ def requestVisualBD():
 def requestPrepareSummary(id):
     try:
         query = """
-        query NartyClasificacion($id:String) {
-        rows: prepare_summary(where: {id:{_eq:$id}}) {
-            clasificacion
+        query BD_Prepare_Summary($id:String) {
+        rows: BD_Prepare_Summary(where: {id:{_eq:$id}}) {
+            input
             nart
-            nartdesc
-            unid_mes1
-            unid_mes2
-            unid_mes3
-            unid_mes4
-            unid_mes5
-            unid_mes6
-            unid_mes7
-            unid_mes8
-            unid_mes9
-            unid_mes10
-            unid_mes11
-            unid_mes12
-            unid_mes13
-            unid_mes14
-            unid_mes15
-            unid_mes16
-            unid_mes17
-            unid_mes18
-            nets_mes1
-            nets_mes2
-            nets_mes3
-            nets_mes4
-            nets_mes5
-            nets_mes6
-            nets_mes7
-            nets_mes8
-            nets_mes9
-            nets_mes10
-            nets_mes11
-            nets_mes12
-            nets_mes13
-            nets_mes14
-            nets_mes15
-            nets_mes16
-            nets_mes17
-            nets_mes18
+            descripcion
+            year
+            mes
+            units
+            netsales 
         }
         }
         """
-        res = queryHasura(query, { 'variables' : id })
-        size_list = [{'name':'nart','size':200},{'name':'nartdesc','size':500}]
-        colum_list = [{'name': i,'prop': i,'size': 150, 'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
-        result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
+        res = queryHasura(query, { 'id' : id })
+        result = {"rows" : res["data"]["rows"]}
         return result
     except SystemError as err:
         print(err)
