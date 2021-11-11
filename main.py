@@ -10,7 +10,7 @@ from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, GetVisualBD, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.data import GetData, DeleteData, CloneData, UploadExcel, GetTemplates, GetInfoMes
+from api.routes.data import AddRow, GetData, DeleteData, CloneData, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
 
 
 app = Flask(__name__)
@@ -71,6 +71,8 @@ api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(UploadExcel, '/api/upload_excel')
 api.add_resource(GetTemplates, '/api/getTemplate')
 api.add_resource(GetInfoMes, '/api/get_info')
+api.add_resource(UpdateDbData, '/api/update_inputs')
+api.add_resource(AddRow, '/api/new_row')
 # user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')
@@ -86,6 +88,7 @@ api.add_resource(PrepareSummary, '/api/prepare_summary')
 api.add_resource(UnitsxBPU, '/api/unitxbpu')
 api.add_resource(NetSalesxPBU, '/api/salesxbpu')
 api.add_resource(DemandSimulation, '/api/demand_simulation')
+
 
 
 if __name__ == '__main__':

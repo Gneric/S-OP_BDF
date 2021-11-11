@@ -257,3 +257,38 @@ def generate_token(user):
         }
     }
     return payload, hasura_token
+
+def add_new_row(data):
+    try:
+        table_name = data['clasificacion']
+        if table_name == 'BASELINE':
+            return addRow({'id':data['id'],'clasificacion':data['clasificacion'],'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'cantidad':data['cantidad']})
+        elif table_name == 'LAUNCH':
+            return addRow({'id':data['id'],'clasificacion':data['clasificacion'], 'canal': data['canal'], 'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'cantidad':data['cantidad']})
+        elif table_name == 'PROMO':
+            return addRow({'id':data['id'], 'clasificacion':data['clasificacion'], 'tipo_promo':data['tipo_promo'], 'canal': data['canal'], 'application_form': data['application_form'], 'nart':data['nart'], 'descripcion':data['descripcion'], 'year':data['year'], 'month':data['month'], 'cantidad':data['cantidad']})
+        elif table_name == 'VALORIZACION':
+            return addRow({'id':data['id'],'clasificacion':data['clasificacion'],'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'value':data['value'],'cantidad':data['cantidad']})
+        elif table_name == 'SHOPPER':
+            return addRow({'id':data['id'],'clasificacion':data['clasificacion'], 'tipo_promo':data['tipo_promo'], 'canal': data['canal'], 'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'], 'cantidad':data['cantidad']})
+    except:
+        print(sys.exc_info())
+        return 0
+
+
+def update_changes_bd(data):
+    try:
+        result = {}
+        upd_table = []
+        upd_table.append({ 'name': 'BASELINE', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='BASELINE']})
+        upd_table.append({ 'name': 'LAUNCH', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='LAUNCH']})
+        upd_table.append({ 'name': 'PROMO', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'application_form':x['ApplicationForm'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='PROMO']})
+        upd_table.append({ 'name': 'VALORIZACION', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='VALORIZACION']})
+        upd_table.append({ 'name': 'SHOPPER', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='SHOPPER']})
+        for table in upd_table:
+                result[table['name']] = updateInputTable(table['name'], table['rows'])
+        return result
+    except:
+        print(sys.exc_info())
+        return { 'error', 'error actualizando data' }, 400
+    

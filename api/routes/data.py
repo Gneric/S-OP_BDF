@@ -2,7 +2,7 @@ import sys
 from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
-from api.utils.functions import allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, join
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, join, update_changes_bd
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -115,6 +115,31 @@ class GetInfoMes(Resource):
                 return res
             except:
                 return "Error buscando data del mes", 400
+
+class UpdateDbData(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
+        data = request.json.get('data', '')
+        if data == '':
+            return { 'error': 'error en la lectura de data' }, 400
+        res = update_changes_bd(data)
+        return res
+
+class AddRow(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
+        data = request.json.get('data', '')
+        if data == '':
+            return { 'error': 'error en la lectura de data' }, 400
+        res = add_new_row(data)
+        if res == 0:
+            return { 'error': 'error en el añadido de la fila' }, 400
+        return { 'result' : 'ok' }, 200
+
 
 class UploadExcel(Resource):
     @jwt_required()

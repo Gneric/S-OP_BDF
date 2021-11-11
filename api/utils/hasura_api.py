@@ -700,72 +700,9 @@ def requestVisualBD():
         }
         """
         res = queryHasura(query)
-        columns = [{
-                "name": "id",
-                "prop": "id",
-                "size": 120
-            },
-            {
-                "name": "clasificacion",
-                "prop": "clasificacion",
-                "size": 200
-            },
-            {
-                "name": "BPU",
-                "prop": "BPU",
-                "size": 200
-            },
-            {
-                "name": "nart",
-                "prop": "nart",
-                "size": 200
-            },
-            {
-                "name": "nartdesc",
-                "prop": "nartdesc",
-                "size": 500
-            },
-            {
-                "name": "SPGR",
-                "prop": "SPGR",
-                "size": 200
-            },
-            {
-                "name": "spgrdesc",
-                "prop": "spgrdesc",
-                "size": 500
-            },
-            {
-                "name": "year",
-                "prop": "year",
-                "size": 120
-            },
-            {
-                "name": "month",
-                "prop": "month",
-                "size": 120
-            },
-            {
-                "name": "BrandCategory",
-                "prop": "BrandCategory",
-                "size": 200
-            },
-            {
-                "name": "ApplicationForm",
-                "prop": "ApplicationForm",
-                "size": 200
-            },
-            {
-                "name": "units",
-                "prop": "units",
-                "size": 200
-            },
-            {
-                "name": "netsales",
-                "prop": "netsales",
-                "size": 200
-            }]
-
+        columns = [{"name": "id","prop": "id","size": 120},{"name": "clasificacion","prop": "clasificacion","size": 200},{"name": "BPU","prop": "BPU","size": 200},{"name": "nart","prop": "nart","size": 200},{"name": "nartdesc","prop": "nartdesc","size": 500},
+                   {"name": "SPGR","prop": "SPGR","size": 200},{"name": "spgrdesc","prop": "spgrdesc","size": 500},{"name": "year","prop": "year","size": 120},{"name": "month","prop": "month","size": 120},{"name": "BrandCategory","prop": "BrandCategory","size": 200},
+                   {"name": "ApplicationForm","prop": "ApplicationForm","size": 200},{"name": "units","prop": "units","size": 200},{"name": "netsales","prop": "netsales","size": 200}]
         result = {
             "columns" : columns,
             "rows" : res["data"]["rows"]
@@ -876,3 +813,82 @@ def demand_simulation_db():
     except SystemError as err:
         print(err)
         return ""
+
+def addRow(row):
+    try:
+        table_name = row['clasificacion']
+        if table_name == 'BASELINE':
+            query = """mutation MyMutation($objects: [Maestro_baseline_insert_input!]) { insert_Maestro_baseline(objects: $objects) {affected_rows}} """
+            res = queryHasura(query, { 'objects' : row })
+            return res['data']['insert_Maestro_baseline']['affected_rows']
+        elif table_name == 'LAUNCH':
+            query = """mutation MyMutation($objects: [Maestro_launch_insert_input!] = {}) {insert_Maestro_launch(objects: $objects) {affected_rows }}"""
+            res = queryHasura(query, { 'objects' : row })
+            return res['data']['insert_Maestro_launch']['affected_rows']
+        elif table_name == 'PROMO':
+            query = """mutation MyMutation($objects1: [Maestro_promo_insert_input!] = {}) {insert_Maestro_promo(objects: $objects1) {affected_rows}}"""
+            res = queryHasura(query, { 'objects' : row })
+            return res['data']['insert_Maestro_promo']['affected_rows']
+        elif table_name == 'SHOPPER':
+            query = """mutation MyMutation($objects: [Maestro_Shopper_insert_input!] = {}) {insert_Maestro_Shopper(objects: $objects) {affected_rows}}"""
+            res = queryHasura(query, { 'objects' : row })
+            return res['data']['insert_Maestro_Shopper']['affected_rows']
+        elif table_name == 'VALORIZACION':
+            query = """mutation MyMutation($objects1: [Maestro_valorizacion_insert_input!] = {}) {insert_Maestro_valorizacion(objects: $objects1) {affected_rows}}"""
+            res = queryHasura(query, { 'objects' : row })
+            return res['data']['insert_Maestro_valorizacion']['affected_rows']
+    except SyntaxError as err:
+        print(err)
+        return 0
+
+
+def updateInputTable(table_name, rows):
+    try:
+        if table_name == 'BASELINE':
+            query = """ mutation MyMutation($objects: [Maestro_baseline_insert_input!]) { insert_Maestro_baseline(objects: $objects, on_conflict: {constraint: Maestro_baseline_pkey1, update_columns: cantidad}) { affected_rows } } """
+            res = queryHasura(query, { 'objects': rows })
+            result = res['data']['insert_Maestro_baseline']['affected_rows']
+            return result
+        elif table_name == 'LAUNCH':
+            rows_affected = 0
+            for row in rows:
+                query = """ 
+                mutation MyMutation($id:String, $nart: String, $desc: String, $year: numeric, $month: numeric, $cantidad: numeric) {
+                update_Maestro_launch(where: {id: {_eq: $id}, nart: {_eq: $nart}, descripcion: {_eq: $desc}, year: {_eq: $year}, month: {_eq: $month}}, _set: {cantidad: $cantidad}) {affected_rows}} 
+                """
+                res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'desc': row['descripcion'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+                rows_affected += res['data']['update_Maestro_launch']['affected_rows']
+            return rows_affected
+        elif table_name == 'PROMO':
+            rows_affected = 0
+            for row in rows:
+                query = """ 
+                mutation MyMutation($id: String, $app_form: String = "", $nart: String = "", $desc: String = "", $year: numeric = "",$month: numeric = "", $cantidad: numeric = "") {
+                update_Maestro_promo(where: {id: {_eq: $id}, application_form: {_eq: $app_form}, nart: {_eq: $nart}, descripcion: {_eq: $desc}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
+                """
+                res = queryHasura(query, { 'id': row['id'], 'app_form': row['application_form'], 'nart': row['nart'], 'desc': row['descripcion'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+                rows_affected += res['data']['update_Maestro_launch']['affected_rows']
+            return rows_affected
+        elif table_name == 'SHOPPER':
+            rows_affected = 0
+            for row in rows:
+                query = """ 
+                mutation MyMutation($id: String = "", $clasificacion: String = "", $app_form: String = "", $nart: String = "", $desc: String = "", $year: numeric = "", $month: numeric = "", $cantidad: numeric = "") {
+                update_Maestro_Shopper(where: {id: {_eq: $id}, clasificacion: {_eq: $clasificacion}, application_form: {_eq: $app_form}, nart: {_eq: $nart}, descripcion: {_eq: $desc}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
+                """
+                res = queryHasura(query, { 'id': row['id'], 'clasificacion': row['clasificacion'], 'app_form': row['application_form'], 'nart': row['nart'], 'desc': row['descripcion'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+                rows_affected += res['data']['update_Maestro_launch']['affected_rows']
+            return rows_affected
+        # elif table_name == 'VALORIZACION':
+        #     rows_affected = 0
+        #     for row in rows:
+        #         query = """ 
+        #         mutation MyMutation($id: String = "", $clasificacion: String = "", $nart: String = "", $desc: String = "", $year: numeric = "", $month: numeric = "", $value: String = "", $cantidad: numeric = "") {
+        #         update_Maestro_valorizacion(where: {id: {_eq: $id}, clasificacion: {_eq: $clasificacion}, nart: {_eq: $nart}, descripcion: {_eq: $desc}, year: {_eq: $year}, month: {_eq: $month}, value: {_eq: $value}, cantidad: {_eq: $cantidad}}) {affected_rows}}
+        #         """
+        #         res = queryHasura(query, { 'id': row['id'], 'clasificacion': row['clasificacion'], 'nart': row['nart'], 'desc': row['descripcion'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+        #         rows_affected += res['data']['update_Maestro_launch']['affected_rows']
+        #     return rows_affected
+    except SyntaxError as err:
+        print(err)
+        return 0
