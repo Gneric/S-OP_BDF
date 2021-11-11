@@ -210,6 +210,9 @@ def pwdChange(user_id, pwd, new_pwd):
         return { "error" : "Error al cambiar la contraseña del usuario" }, 400
 
 def getVisualBD():
+    return db_last_id()
+
+def get_db_historico():
     return requestVisualBD()
 
 def getPrepareSummary(id):
@@ -280,11 +283,11 @@ def update_changes_bd(data):
     try:
         result = {}
         upd_table = []
-        upd_table.append({ 'name': 'BASELINE', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='BASELINE']})
-        upd_table.append({ 'name': 'LAUNCH', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='LAUNCH']})
-        upd_table.append({ 'name': 'PROMO', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'application_form':x['ApplicationForm'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='PROMO']})
-        upd_table.append({ 'name': 'VALORIZACION', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='VALORIZACION']})
-        upd_table.append({ 'name': 'SHOPPER', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'descripcion':x['nartdesc'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='SHOPPER']})
+        upd_table.append({ 'name': 'BASELINE', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='BASELINE']})
+        upd_table.append({ 'name': 'LAUNCH', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='LAUNCH']})
+        upd_table.append({ 'name': 'PROMO', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='PROMO']})
+        upd_table.append({ 'name': 'VALORIZACION', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='VALORIZACION']})
+        upd_table.append({ 'name': 'SHOPPER', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='SHOPPER']})
         for table in upd_table:
                 result[table['name']] = updateInputTable(table['name'], table['rows'])
         return result

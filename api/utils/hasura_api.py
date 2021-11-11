@@ -814,6 +814,47 @@ def demand_simulation_db():
         print(err)
         return ""
 
+def db_last_id():
+    try:
+        query = """
+        query BD_LastID {
+            rows: BD_LastID(order_by: {month: asc, year: asc}, where: {}) {
+                id
+                clasificacion
+                BPU
+                nart
+                nartdesc
+                SPGR
+                spgrdesc
+                year
+                month
+                BrandCategory
+                ApplicationForm
+                units
+                netsales
+            }
+        }
+        """
+        res = queryHasura(query)
+        size_list = [
+            {'name':'id','size':120},{'name':'clasificacion','size':500},{'name':'BPU','size':200},{'name':'nart','size':200},{'name':'nartdesc','size':500},{'name':'SPGR','size':200},{'name':'spgrdesc','size':500},
+            {'name':'year','size':120},{'name':'month','size':120},{'name':'BrandCategory','size':200},{'name':'ApplicationForm','size':200},{'name':'units','size':200},{'name':'netsales','size':200}
+        ]
+        colum_list = []
+        for col in res["data"]["rows"][0].keys():
+            if col == 'units':
+                colum_list.append({'name':col,'prop':col,'size':getSizebyColumnName(size_list,col),'autoSize':True,'sortable':True,'readonly':False})
+            if col not in [x['name'] for x in size_list]:
+                colum_list.append({'name': col,'prop': col,'autoSize':True,'sortable':True,'readonly':True})
+            else:
+                colum_list.append({'name':col,'prop':col,'size':getSizebyColumnName(size_list,col),'autoSize':True,'sortable':True,'readonly':True})
+        result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
+
+
 def addRow(row):
     try:
         table_name = row['clasificacion']
@@ -845,7 +886,10 @@ def addRow(row):
 def updateInputTable(table_name, rows):
     try:
         if table_name == 'BASELINE':
-            query = """ mutation MyMutation($objects: [Maestro_baseline_insert_input!]) { insert_Maestro_baseline(objects: $objects, on_conflict: {constraint: Maestro_baseline_pkey1, update_columns: cantidad}) { affected_rows } } """
+            query = """ 
+            mutation MyMutation($id:String, $nart: String, $year: numeric, $month: numeric, $cantidad: numeric) {
+            update_Maestro_launch(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}}, _set: {cantidad: $cantidad}) {affected_rows}} 
+            """
             res = queryHasura(query, { 'objects': rows })
             result = res['data']['insert_Maestro_baseline']['affected_rows']
             return result
@@ -853,30 +897,30 @@ def updateInputTable(table_name, rows):
             rows_affected = 0
             for row in rows:
                 query = """ 
-                mutation MyMutation($id:String, $nart: String, $desc: String, $year: numeric, $month: numeric, $cantidad: numeric) {
-                update_Maestro_launch(where: {id: {_eq: $id}, nart: {_eq: $nart}, descripcion: {_eq: $desc}, year: {_eq: $year}, month: {_eq: $month}}, _set: {cantidad: $cantidad}) {affected_rows}} 
+                mutation MyMutation($id:String, $nart: String, $year: numeric, $month: numeric, $cantidad: numeric) {
+                update_Maestro_launch(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}}, _set: {cantidad: $cantidad}) {affected_rows}} 
                 """
-                res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'desc': row['descripcion'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+                res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
                 rows_affected += res['data']['update_Maestro_launch']['affected_rows']
             return rows_affected
         elif table_name == 'PROMO':
             rows_affected = 0
             for row in rows:
                 query = """ 
-                mutation MyMutation($id: String, $app_form: String = "", $nart: String = "", $desc: String = "", $year: numeric = "",$month: numeric = "", $cantidad: numeric = "") {
-                update_Maestro_promo(where: {id: {_eq: $id}, application_form: {_eq: $app_form}, nart: {_eq: $nart}, descripcion: {_eq: $desc}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
+                mutation MyMutation($id: String, $nart: String = "", $year: numeric = "",$month: numeric = "", $cantidad: numeric = "") {
+                update_Maestro_promo(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
                 """
-                res = queryHasura(query, { 'id': row['id'], 'app_form': row['application_form'], 'nart': row['nart'], 'desc': row['descripcion'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+                res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
                 rows_affected += res['data']['update_Maestro_launch']['affected_rows']
             return rows_affected
         elif table_name == 'SHOPPER':
             rows_affected = 0
             for row in rows:
                 query = """ 
-                mutation MyMutation($id: String = "", $clasificacion: String = "", $app_form: String = "", $nart: String = "", $desc: String = "", $year: numeric = "", $month: numeric = "", $cantidad: numeric = "") {
-                update_Maestro_Shopper(where: {id: {_eq: $id}, clasificacion: {_eq: $clasificacion}, application_form: {_eq: $app_form}, nart: {_eq: $nart}, descripcion: {_eq: $desc}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
+                mutation MyMutation($id: String = "", $nart: String = "", $year: numeric = "", $month: numeric = "", $cantidad: numeric = "") {
+                update_Maestro_Shopper(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
                 """
-                res = queryHasura(query, { 'id': row['id'], 'clasificacion': row['clasificacion'], 'app_form': row['application_form'], 'nart': row['nart'], 'desc': row['descripcion'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+                res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
                 rows_affected += res['data']['update_Maestro_launch']['affected_rows']
             return rows_affected
         # elif table_name == 'VALORIZACION':
