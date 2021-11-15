@@ -844,7 +844,7 @@ def db_last_id():
         for col in res["data"]["rows"][0].keys():
             if col == 'units':
                 colum_list.append({'name':col,'prop':col,'size':getSizebyColumnName(size_list,col),'autoSize':True,'sortable':True,'readonly':False})
-            if col not in [x['name'] for x in size_list]:
+            elif col not in [x['name'] for x in size_list]:
                 colum_list.append({'name': col,'prop': col,'autoSize':True,'sortable':True,'readonly':True})
             else:
                 colum_list.append({'name':col,'prop':col,'size':getSizebyColumnName(size_list,col),'autoSize':True,'sortable':True,'readonly':True})
