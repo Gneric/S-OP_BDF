@@ -281,6 +281,7 @@ def add_new_row(data):
 
 def update_changes_bd(data):
     try:
+        print(data)
         result = {}
         upd_table = []
         upd_table.append({ 'name': 'BASELINE', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='BASELINE']})
@@ -289,7 +290,12 @@ def update_changes_bd(data):
         upd_table.append({ 'name': 'VALORIZACION', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='VALORIZACION']})
         upd_table.append({ 'name': 'SHOPPER', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units'] } for x in data if x['clasificacion']=='SHOPPER']})
         for table in upd_table:
+            if len(table['rows']) > 0:
+                print(f'Cambio en tabla {table["name"]}')
                 result[table['name']] = updateInputTable(table['name'], table['rows'])
+            else:
+                print(f'No hay cambios en tabla {table["name"]}')
+        print(upd_table)
         return result
     except:
         print(sys.exc_info())

@@ -886,13 +886,15 @@ def addRow(row):
 def updateInputTable(table_name, rows):
     try:
         if table_name == 'BASELINE':
-            query = """ 
-            mutation MyMutation($id:String, $nart: String, $year: numeric, $month: numeric, $cantidad: numeric) {
-            update_Maestro_launch(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}}, _set: {cantidad: $cantidad}) {affected_rows}} 
-            """
-            res = queryHasura(query, { 'objects': rows })
-            result = res['data']['insert_Maestro_baseline']['affected_rows']
-            return result
+            rows_affected = 0
+            for row in rows:
+                query = """ 
+                mutation MyMutation($id:String, $nart: String, $year: numeric, $month: numeric, $cantidad: numeric) {
+                update_Maestro_baseline(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}}, _set: {cantidad: $cantidad}) {affected_rows}}
+                """
+                res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
+                rows_affected += res['data']['update_Maestro_baseline']['affected_rows']
+            return rows_affected
         elif table_name == 'LAUNCH':
             rows_affected = 0
             for row in rows:
@@ -911,7 +913,7 @@ def updateInputTable(table_name, rows):
                 update_Maestro_promo(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
                 """
                 res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
-                rows_affected += res['data']['update_Maestro_launch']['affected_rows']
+                rows_affected += res['data']['update_Maestro_promo']['affected_rows']
             return rows_affected
         elif table_name == 'SHOPPER':
             rows_affected = 0
@@ -921,7 +923,7 @@ def updateInputTable(table_name, rows):
                 update_Maestro_Shopper(where: {id: {_eq: $id}, nart: {_eq: $nart}, year: {_eq: $year}, month: {_eq: $month}, cantidad: {_eq: $cantidad}}) {affected_rows}}
                 """
                 res = queryHasura(query, { 'id': row['id'], 'nart': row['nart'], 'year': row['year'], 'month': row['month'], 'cantidad': row['cantidad']})
-                rows_affected += res['data']['update_Maestro_launch']['affected_rows']
+                rows_affected += res['data']['update_Maestro_Shopper']['affected_rows']
             return rows_affected
         # elif table_name == 'VALORIZACION':
         #     rows_affected = 0
