@@ -264,7 +264,6 @@ def generate_token(user):
 
 def add_new_row(data):
     try:
-        print(data.keys())
         table_name = data['clasificacion']
         id = f'{datetime.now().strftime("%Y%m")}'
         if table_name == 'BASELINE':

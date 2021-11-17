@@ -861,23 +861,58 @@ def addRow(row):
         if table_name == 'BASELINE':
             query = """mutation MyMutation($objects: [Maestro_baseline_insert_input!]!) { insert_Maestro_baseline(objects: $objects) {affected_rows}} """
             res = queryHasura(query, { 'objects' : row })
-            return res['data']['insert_Maestro_baseline']['affected_rows']
+            error = res.get('errors', '')
+            if error == '':
+                return res['data']['insert_Maestro_baseline']['affected_rows']
+            else:
+                if error[0]['extensions']['code'] == 'constraint-violation':
+                    return { 'error': 'la fila ingresada ya existe' }
+                else:
+                    return 0
         elif table_name == 'LAUNCH':
             query = """mutation MyMutation($objects: [Maestro_launch_insert_input!]!) {insert_Maestro_launch(objects: $objects) {affected_rows }}"""
             res = queryHasura(query, { 'objects' : row })
-            return res['data']['insert_Maestro_launch']['affected_rows']
+            error = res.get('errors', '')
+            if error == '':
+                return res['data']['insert_Maestro_launch']['affected_rows']
+            else:
+                if error[0]['extensions']['code'] == 'constraint-violation':
+                    return { 'error': 'la fila ingresada ya existe' }
+                else:
+                    return 0   
         elif table_name == 'PROMO':
             query = """mutation MyMutation($objects1: [Maestro_promo_insert_input!]!) {insert_Maestro_promo(objects: $objects1) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
-            return res['data']['insert_Maestro_promo']['affected_rows']
+            error = res.get('errors', '')
+            if error == '':
+                return res['data']['insert_Maestro_promo']['affected_rows']
+            else:
+                if error[0]['extensions']['code'] == 'constraint-violation':
+                    return { 'error': 'la fila ingresada ya existe' }
+                else:
+                    return 0
         elif table_name == 'SHOPPER':
             query = """mutation MyMutation($objects: [Maestro_Shopper_insert_input!]!) {insert_Maestro_Shopper(objects: $objects) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
-            return res['data']['insert_Maestro_Shopper']['affected_rows']
+            error = res.get('errors', '')
+            if error == '':
+                return res['data']['insert_Maestro_Shopper']['affected_rows']
+            else:
+                if error[0]['extensions']['code'] == 'constraint-violation':
+                    return { 'error': 'la fila ingresada ya existe' }
+                else:
+                    return 0   
         elif table_name == 'VALORIZACION':
             query = """mutation MyMutation($objects1: [Maestro_valorizacion_insert_input!]!) {insert_Maestro_valorizacion(objects: $objects1) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
-            return res['data']['insert_Maestro_valorizacion']['affected_rows']
+            error = res.get('errors', '')
+            if error == '':
+                return res['data']['insert_Maestro_valorizacion']['affected_rows']
+            else:
+                if error[0]['extensions']['code'] == 'constraint-violation':
+                    return { 'error': 'la fila ingresada ya existe' }
+                else:
+                    return 0
     except SyntaxError as err:
         print(f' Error addRow {err}')
         return 0

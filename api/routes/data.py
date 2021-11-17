@@ -137,7 +137,9 @@ class AddRow(Resource):
             return { 'error': 'error en la lectura de data' }, 400
         res = add_new_row(data)
         if res == 0:
-            return { 'error': 'error en el añadido de la fila' }, 400
+            return { 'error': 'error al agregar fila' }, 400
+        if res.get('error','') != '':
+            return res, 200
         return { 'result' : 'ok' }, 200
 
 
