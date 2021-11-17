@@ -859,27 +859,27 @@ def addRow(row):
     try:
         table_name = row['clasificacion']
         if table_name == 'BASELINE':
-            query = """mutation MyMutation($objects: [Maestro_baseline_insert_input!]) { insert_Maestro_baseline(objects: $objects) {affected_rows}} """
+            query = """mutation MyMutation($objects: [Maestro_baseline_insert_input!]!) { insert_Maestro_baseline(objects: $objects) {affected_rows}} """
             res = queryHasura(query, { 'objects' : row })
             return res['data']['insert_Maestro_baseline']['affected_rows']
         elif table_name == 'LAUNCH':
-            query = """mutation MyMutation($objects: [Maestro_launch_insert_input!] = {}) {insert_Maestro_launch(objects: $objects) {affected_rows }}"""
+            query = """mutation MyMutation($objects: [Maestro_launch_insert_input!]!) {insert_Maestro_launch(objects: $objects) {affected_rows }}"""
             res = queryHasura(query, { 'objects' : row })
             return res['data']['insert_Maestro_launch']['affected_rows']
         elif table_name == 'PROMO':
-            query = """mutation MyMutation($objects1: [Maestro_promo_insert_input!] = {}) {insert_Maestro_promo(objects: $objects1) {affected_rows}}"""
+            query = """mutation MyMutation($objects1: [Maestro_promo_insert_input!]!) {insert_Maestro_promo(objects: $objects1) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
             return res['data']['insert_Maestro_promo']['affected_rows']
         elif table_name == 'SHOPPER':
-            query = """mutation MyMutation($objects: [Maestro_Shopper_insert_input!] = {}) {insert_Maestro_Shopper(objects: $objects) {affected_rows}}"""
+            query = """mutation MyMutation($objects: [Maestro_Shopper_insert_input!]!) {insert_Maestro_Shopper(objects: $objects) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
             return res['data']['insert_Maestro_Shopper']['affected_rows']
         elif table_name == 'VALORIZACION':
-            query = """mutation MyMutation($objects1: [Maestro_valorizacion_insert_input!] = {}) {insert_Maestro_valorizacion(objects: $objects1) {affected_rows}}"""
+            query = """mutation MyMutation($objects1: [Maestro_valorizacion_insert_input!]!) {insert_Maestro_valorizacion(objects: $objects1) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
             return res['data']['insert_Maestro_valorizacion']['affected_rows']
     except SyntaxError as err:
-        print(err)
+        print(f' Error addRow {err}')
         return 0
 
 
