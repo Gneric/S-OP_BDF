@@ -3,6 +3,7 @@ from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
 import bcrypt
+from datetime import datetime
 
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
@@ -264,16 +265,17 @@ def generate_token(user):
 def add_new_row(data):
     try:
         table_name = data['clasificacion']
+        id = f'{datetime.now().strftime("%Y%m")}'
         if table_name == 'BASELINE':
-            return addRow({'id':data['id'],'clasificacion':data['clasificacion'],'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'cantidad':data['cantidad']})
+            return addRow({'id':id,'clasificacion':data['clasificacion'],'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'cantidad':data['cantidad']})
         elif table_name == 'LAUNCH':
-            return addRow({'id':data['id'],'clasificacion':data['clasificacion'], 'canal': data['canal'], 'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'cantidad':data['cantidad']})
+            return addRow({'id':id,'clasificacion':data['clasificacion'], 'canal': data['canal'], 'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'cantidad':data['cantidad']})
         elif table_name == 'PROMO':
-            return addRow({'id':data['id'], 'clasificacion':data['clasificacion'], 'tipo_promo':data['tipo_promo'], 'canal': data['canal'], 'application_form': data['application_form'], 'nart':data['nart'], 'descripcion':data['descripcion'], 'year':data['year'], 'month':data['month'], 'cantidad':data['cantidad']})
+            return addRow({'id':id, 'clasificacion':data['clasificacion'], 'tipo_promo':data['tipo_promo'], 'canal': data['canal'], 'application_form': data['application_form'], 'nart':data['nart'], 'descripcion':data['descripcion'], 'year':data['year'], 'month':data['month'], 'cantidad':data['cantidad']})
         elif table_name == 'VALORIZACION':
-            return addRow({'id':data['id'],'clasificacion':data['clasificacion'],'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'value':data['value'],'cantidad':data['cantidad']})
+            return addRow({'id':id,'clasificacion':data['clasificacion'],'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'],'value':data['value'],'cantidad':data['cantidad']})
         elif table_name == 'SHOPPER':
-            return addRow({'id':data['id'],'clasificacion':data['clasificacion'], 'tipo_promo':data['tipo_promo'], 'canal': data['canal'], 'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'], 'cantidad':data['cantidad']})
+            return addRow({'id':id,'clasificacion':data['clasificacion'], 'tipo_promo':data['tipo_promo'], 'canal': data['canal'], 'nart':data['nart'],'descripcion':data['descripcion'],'year':data['year'],'month':data['month'], 'cantidad':data['cantidad']})
     except:
         print(sys.exc_info())
         return 0
