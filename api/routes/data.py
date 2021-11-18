@@ -138,7 +138,7 @@ class AddRow(Resource):
         res = add_new_row(data)
         if res == 0:
             return { 'error': 'error al agregar fila' }, 400
-        if res.get('error','') != '':
+        if type(res) != int and res.get('error','') != '':
             return res, 200
         return { 'result' : 'ok' }, 200
 

@@ -8,7 +8,7 @@ from datetime import timedelta
 from api.routes.login import LogIn
 from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
-from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetVisualBD, PrepareSummary, NetSalesxPBU, UnitsxBPU
+from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
 from api.routes.data import AddRow, GetData, DeleteData, CloneData, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
 
@@ -90,6 +90,7 @@ api.add_resource(UnitsxBPU, '/api/unitxbpu')
 api.add_resource(NetSalesxPBU, '/api/salesxbpu')
 api.add_resource(DemandSimulation, '/api/demand_simulation')
 api.add_resource(FCSimulation, '/api/fc_simulation')
+api.add_resource(GraphDataset, '/api/graph_dataset')
 
 
 

@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from os import error
 import requests
 import json
@@ -913,7 +914,7 @@ def addRow(row):
                 else:
                     return 0   
         elif table_name == 'PROMO':
-            query = """mutation MyMutation($objects1: [Maestro_promo_insert_input!]!) {insert_Maestro_promo(objects: $objects1) {affected_rows}}"""
+            query = """mutation MyMutation($objects: [Maestro_promo_insert_input!]!) {insert_Maestro_promo(objects: $objects) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
             error = res.get('errors', '')
             if error == '':
@@ -935,7 +936,7 @@ def addRow(row):
                 else:
                     return 0   
         elif table_name == 'VALORIZACION':
-            query = """mutation MyMutation($objects1: [Maestro_valorizacion_insert_input!]!) {insert_Maestro_valorizacion(objects: $objects1) {affected_rows}}"""
+            query = """mutation MyMutation($objects: [Maestro_valorizacion_insert_input!]!) {insert_Maestro_valorizacion(objects: $objects) {affected_rows}}"""
             res = queryHasura(query, { 'objects' : row })
             error = res.get('errors', '')
             if error == '':
@@ -1005,3 +1006,66 @@ def updateInputTable(table_name, rows):
     except SyntaxError as err:
         print(err)
         return 0
+
+def graph_dataset():
+    try:
+        query = """
+        query
+        {
+            Grafico_de_Barras_SellIn(order_by:{
+                    month: desc,
+                year: desc
+            }) {
+                year,
+                month,
+                sum,
+                clasificacion
+            }
+            Grafico_de_Tendencia_Sellout(order_by:{
+                    month: desc,
+                year: desc
+            }) {
+                year,
+                month,
+                sum
+            }
+        }
+        """
+        res = queryHasura(query)
+        datasets = []
+        data = res["data"]
+        datos_fijos = { 'REALES': {
+                            '2019': {'backgroundColor':'#77aaff','stack':'Stack 0', 'label': "Sell in 2019"},
+                            '2020':{'backgroundColor':"#3366ff",'stack':'Stack 1','label': "Sell in 2020"}, 
+                            '2021':{'backgroundColor':"#3366ff",'stack':'Stack 2', 'label': "Sell in 2021"} },               
+                        'BASELINE':{'backgroundColor': "red",'stack': 'Stack 2', 'label': "Baseline"},
+                        'SHOPPER':{'backgroundColor': "green",'stack': 'Stack 2', 'label': "Shopper"},
+                        'LAUNCH':{'backgroundColor': "yellow", 'stack': 'Stack 2', 'label': "Launch"},
+                        'PROMO': {'backgroundColor': "purple", 'stack': 'Stack 2', 'label': "Promo"},
+                        'SELLOUT':{'type': 'line', 'label': "Sell Out 2021"}    }
+        sellin = data['Grafico_de_Barras_SellIn']
+        sellout = data['Grafico_de_Tendencia_Sellout']
+        clasificaciones = list(set([i['clasificacion'] for i in sellin]))
+        year = f'{datetime.now().strftime("%Y")}'
+        month1 = f'{datetime.now().strftime("%m")}'
+        month2 = f'{(datetime.now().replace(day=1) - timedelta(days=1)).strftime("%m")}'
+        for input in datos_fijos:
+            if input == 'REALES':
+                for k in datos_fijos['REALES']:
+                    dataset = datos_fijos['REALES'][k]
+                    dataset['data'] = [0] * 12
+                    dataset['data'] = [ x['sum'] if x['year'] == int(k) and x['clasificacion'] == "REALES" else 0 for x in sellin ]   
+                    datasets.append(dataset)
+            else:
+                if input != '':
+                    dataset = datos_fijos[input]
+                    dataset['data'] = [ x['sum'] if x['year'] == year and x['month'] in [month1, month2] and x['clasificacion'] == datos_fijos[input] else 0 for x in sellin ]
+                else:
+                    dataset = datos_fijos[input]
+                    dataset['data'] = [0] * 12
+                datasets.append(dataset)
+        print(f'{datasets=}')
+        return datasets
+    except SystemError as err:
+        print(err)
+        return ""

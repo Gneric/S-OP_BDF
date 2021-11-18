@@ -231,6 +231,9 @@ def getDemandSimulationDB():
 def getFCSimulation():
     return fc_simulation()
 
+def getGraphDataset():
+    return graph_dataset()
+
 def getPermissionbyActions(action):
     try:
         permission_list = getPermissions(action)
