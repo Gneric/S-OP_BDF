@@ -838,7 +838,7 @@ def fc_simulation():
         }
         """
         res = queryHasura(query)
-        size_list = [{'name':'BPU','size':250},{'name':'year','size':150},{'name':'month','size':150},{'name':'quarter','size':150},{'name':'units','size':150},{'name':'netsales','size':150}]
+        size_list = [{'name':'clasificacion','size':200},{'name':'year','size':120},{'name':'enero','size':200},{'name':'febrero','size':200},{'name':'marzo','size':200},{'name':'abril','size':200},{'name':'mayo','size':200},{'name':'junio','size':200},{'name':'julio','size':200},{'name':'agosto','size':200},{'name':'septiembre','size':200},{'name':'octubre','size':200},{'name':'noviembre','size':200},{'name':'diciembre','size':200}]
         colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
         result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
         return result
