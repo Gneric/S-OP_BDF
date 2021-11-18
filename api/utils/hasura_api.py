@@ -814,6 +814,38 @@ def demand_simulation_db():
         print(err)
         return ""
 
+
+def fc_simulation():
+    try:
+        query = """
+        query FC_Simulation {
+        rows: FC_Simulation {    
+            clasificacion
+            year
+            enero
+            febrero
+            marzo
+            abril
+            mayo
+            junio
+            julio
+            agosto
+            septiembre
+            octubre
+            noviembre
+            diciembre
+        }
+        }
+        """
+        res = queryHasura(query)
+        size_list = [{'name':'BPU','size':250},{'name':'year','size':150},{'name':'month','size':150},{'name':'quarter','size':150},{'name':'units','size':150},{'name':'netsales','size':150}]
+        colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res["data"]["rows"][0].keys()]
+        result = {"columns" : colum_list, "rows" : res["data"]["rows"]}
+        return result
+    except SystemError as err:
+        print(err)
+        return ""
+
 def db_last_id():
     try:
         query = """
@@ -837,7 +869,7 @@ def db_last_id():
         """
         res = queryHasura(query)
         size_list = [
-            {'name':'id','size':120},{'name':'clasificacion','size':500},{'name':'BPU','size':200},{'name':'nart','size':200},{'name':'nartdesc','size':500},{'name':'SPGR','size':200},{'name':'spgrdesc','size':500},
+            {'name':'id','size':120},{'name':'clasificacion','size':200},{'name':'BPU','size':200},{'name':'nart','size':200},{'name':'nartdesc','size':500},{'name':'SPGR','size':200},{'name':'spgrdesc','size':500},
             {'name':'year','size':120},{'name':'month','size':120},{'name':'BrandCategory','size':200},{'name':'ApplicationForm','size':200},{'name':'units','size':200},{'name':'netsales','size':200}
         ]
         colum_list = []
