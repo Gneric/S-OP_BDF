@@ -795,7 +795,7 @@ def demand_simulation_db():
     try:
         query = """
         query DemandSimulation {
-        rows: BD_Demand_Simulation {    
+        rows: BD_DemandSimulation {    
             BPU
             year
             month
