@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
+import pandas as pd
 from os import error
+from pandas.core.indexes.base import Index
 import requests
 import json
 import sys
@@ -1013,7 +1015,7 @@ def graph_dataset():
         query
         {
             Grafico_de_Barras_SellIn(order_by:{
-                    month: desc,
+                month: desc,
                 year: desc
             }) {
                 year,
@@ -1022,7 +1024,7 @@ def graph_dataset():
                 clasificacion
             }
             Grafico_de_Tendencia_Sellout(order_by:{
-                    month: desc,
+                month: desc,
                 year: desc
             }) {
                 year,
@@ -1044,28 +1046,55 @@ def graph_dataset():
                         'PROMO': {'backgroundColor': "purple", 'stack': 'Stack 2', 'label': "Promo"},
                         'SELLOUT':{'type': 'line', 'label': "Sell Out 2021"}    }
         sellin = data['Grafico_de_Barras_SellIn']
-        sellout = data['Grafico_de_Tendencia_Sellout']
-        clasificaciones = list(set([i['clasificacion'] for i in sellin]))
+        sellout = sorted(data['Grafico_de_Tendencia_Sellout'], key=lambda i: i['month'])
+
         year = f'{datetime.now().strftime("%Y")}'
         month1 = f'{datetime.now().strftime("%m")}'
         month2 = f'{(datetime.now().replace(day=1) - timedelta(days=1)).strftime("%m")}'
+
+        def fillMonths(array):
+            month_range = [ i for i in range(12)]
+            array_range = []
+            for m in month_range:
+                try:
+                    if array[m]['month']-1 in month_range:
+                        array_range.append(array[m]['sum'])
+                except:
+                        array_range.append(0)
+            return array_range
+
         for input in datos_fijos:
+            #print(f'input: {input}')
             if input == 'REALES':
+                years = list(set([ str(x['year']) for x in sellin if x['clasificacion'] == "REALES"]))
                 for k in datos_fijos['REALES']:
                     dataset = datos_fijos['REALES'][k]
-                    dataset['data'] = [0] * 12
-                    dataset['data'] = [ x['sum'] if x['year'] == int(k) and x['clasificacion'] == "REALES" else 0 for x in sellin ]   
+                    if k in years:
+                        #print(f'year: {k}')
+                        data = [ { 'sum':x['sum'], 'year':x['year'], 'month':x['month'] } for x in sorted(sellin, key=lambda i: i['month']) if x['clasificacion'] == "REALES" and x['year'] == int(k) ]
+                        filled_data = fillMonths(data)
+                        dataset['data'] = filled_data
+                    else:
+                        dataset['data'] = [0] * 12  
                     datasets.append(dataset)
             else:
-                if input != '':
+                if input == 'SELLOUT':
                     dataset = datos_fijos[input]
-                    dataset['data'] = [ x['sum'] if x['year'] == year and x['month'] in [month1, month2] and x['clasificacion'] == datos_fijos[input] else 0 for x in sellin ]
+                    data = [ { 'sum':x['sum'], 'year':x['year'], 'month':x['month'] } for x in sellout if x['year'] == int(year)]
+                    filled_data = fillMonths(data)
+                    dataset['data'] = filled_data
+                elif input != '':
+                    data = sorted([{ 'sum': i['sum'], 'year':i['year'], 'month':i['month']} for i in sellin if i["clasificacion"] == input and i["year"] == int(year) and str(i["month"]) in [month1, month2]], key=lambda i: i['month'])
+                    dataset = datos_fijos[input]
+                    dataset['data'] = fillMonths(data)
                 else:
                     dataset = datos_fijos[input]
                     dataset['data'] = [0] * 12
                 datasets.append(dataset)
-        print(f'{datasets=}')
         return datasets
     except SystemError as err:
         print(err)
+        return ""
+    except:
+        print(sys.exc_info())
         return ""
