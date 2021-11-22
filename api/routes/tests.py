@@ -10,7 +10,10 @@ class ActionTest(Resource):
     def post(self):
         try:
             #current_user = get_jwt_identity()
-            print(f"{request=}")
+            print(f"{request.view_args=}")
+            print(f"{request.input_stream=}")
+            print(f"{request.headers=}")
+            print(f"{request.json=}")
             numbers = request.get('numbers', None)
             res = getActionTest(numbers)
             return res
