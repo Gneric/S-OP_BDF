@@ -10,11 +10,8 @@ class ActionTest(Resource):
     def post(self):
         try:
             #current_user = get_jwt_identity()
-            print(f"{request.view_args=}")
-            print(f"{request.input_stream=}")
-            print(f"{request.headers=}")
-            print(f"{request.json=}")
-            numbers = request.get('numbers', None)
+            inputs = request.json['input']['arg1']
+            numbers = inputs.get('numbers', None)
             res = getActionTest(numbers)
             return res
         except:
