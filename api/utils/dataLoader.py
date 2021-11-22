@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 from os.path import join
 import xlsxwriter
 
-from api.utils.hasura_api import *
+from api.utils.hasura_api import sendDataBaseline, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
 
 def Loadbaseline(df, year, month):
     try:

@@ -1039,7 +1039,7 @@ def graph_dataset():
         datos_fijos = { 'REALES': {
                             '2019': {'backgroundColor':'#77aaff','stack':'Stack 0', 'label': "Sell in 2019"},
                             '2020':{'backgroundColor':"#3366ff",'stack':'Stack 1','label': "Sell in 2020"}, 
-                            '2021':{'backgroundColor':"#3366ff",'stack':'Stack 2', 'label': "Sell in 2021"} },               
+                            '2021':{'backgroundColor':"#3366ff",'stack':'Stack 2', 'label': "Sell in 2021"}},               
                         'BASELINE':{'backgroundColor': "red",'stack': 'Stack 2', 'label': "Baseline"},
                         'SHOPPER':{'backgroundColor': "green",'stack': 'Stack 2', 'label': "Shopper"},
                         'LAUNCH':{'backgroundColor': "yellow", 'stack': 'Stack 2', 'label': "Launch"},
@@ -1075,7 +1075,7 @@ def graph_dataset():
                         filled_data = fillMonths(data)
                         dataset['data'] = filled_data
                     else:
-                        dataset['data'] = [0] * 12  
+                        dataset['data'] = [0] * 12
                     datasets.append(dataset)
             else:
                 if input == 'SELLOUT':
@@ -1098,3 +1098,9 @@ def graph_dataset():
     except:
         print(sys.exc_info())
         return ""
+
+def request_action_test(numbers):
+    try:
+        return { 'sum': sum(numbers) }, 200
+    except:
+        return { 'error': 'error sumando numeros' }, 500

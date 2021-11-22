@@ -1,4 +1,5 @@
-from api.utils.dataLoader import *
+from api.utils.hasura_api import *
+from api.utils.dataLoader import LoadLaunch, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate
 from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
@@ -233,6 +234,9 @@ def getFCSimulation():
 
 def getGraphDataset():
     return graph_dataset()
+
+def getActionTest(numbers):
+    return request_action_test(numbers)
 
 def getPermissionbyActions(action):
     try:

@@ -3,9 +3,11 @@ from flask import Flask, request
 from flask_cors import CORS
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, create_access_token
-from datetime import timedelta
+
+from api.config.app_config import app_config
 
 from api.routes.login import LogIn
+from api.routes.tests import ActionTest
 from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
@@ -14,12 +16,13 @@ from api.routes.data import AddRow, GetData, DeleteData, CloneData, UpdateDbData
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
-app.config["JWT_COOKIE_SECURE"] = False
-app.config["JWT_TOKEN_LOCATION"] = ["headers"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=48)
-app.config["PROPAGATE_EXCEPTIONS"] = True
+app.config = app_config
+# app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
+# app.config["JWT_COOKIE_SECURE"] = False
+# app.config["JWT_TOKEN_LOCATION"] = ["headers"]
+# app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
+# app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=48)
+# app.config["PROPAGATE_EXCEPTIONS"] = True
 jwt = JWTManager(app)
 CORS(app, expose_headers=["filename"], resources={r"*": {"origins": "*"}})
 api = Api(app)
@@ -91,7 +94,8 @@ api.add_resource(NetSalesxPBU, '/api/salesxbpu')
 api.add_resource(DemandSimulation, '/api/demand_simulation')
 api.add_resource(FCSimulation, '/api/fc_simulation')
 api.add_resource(GraphDataset, '/api/graph_dataset')
-
+# tests
+api.add_resource(ActionTest, '/api/test_action_hasura')
 
 
 if __name__ == '__main__':
