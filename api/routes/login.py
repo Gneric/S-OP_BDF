@@ -7,7 +7,6 @@ import sys
 class LogIn(Resource):
     def post(self):
         try:
-            print('Log in method')
             email = request.json.get('email', None)
             password = request.json.get('password', None)
             user = logUser(email, password)

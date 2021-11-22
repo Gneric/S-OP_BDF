@@ -10,7 +10,8 @@ class ActionTest(Resource):
     def post(self):
         try:
             #current_user = get_jwt_identity()
-            numbers = request.json.get('numbers', None)
+            print(f"{request=}")
+            numbers = request.get('numbers', None)
             res = getActionTest(numbers)
             return res
         except:

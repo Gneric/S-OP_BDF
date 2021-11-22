@@ -81,7 +81,6 @@ def requestIDbyPeriod(period):
         return ""
 
 def checkUser(email):
-    print('Entering checkUser')
     try:
         query = """
         query MyQuery($email: String) {
