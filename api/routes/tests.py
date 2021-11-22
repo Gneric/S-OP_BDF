@@ -14,4 +14,4 @@ class ActionTest(Resource):
             res = getActionTest(numbers)
             return res
         except:
-            return {'error':'error en lectura de varibales'}, 500
+            return {'error':'error en lectura de varibales'}, 400

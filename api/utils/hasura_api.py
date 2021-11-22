@@ -1103,4 +1103,4 @@ def request_action_test(numbers):
     try:
         return { 'sum': sum(numbers) }, 200
     except:
-        return { 'error': 'error sumando numeros' }, 500
+        return { 'error': 'error sumando numeros' }, 400
