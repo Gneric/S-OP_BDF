@@ -7,10 +7,9 @@ from flask import request
 from api.utils.functions import getActionTest
 
 class ActionTest(Resource):
-    @jwt_required()
     def post(self):
         try:
-            current_user = get_jwt_identity()
+            #current_user = get_jwt_identity()
             numbers = request.json.get('numbers', None)
             res = getActionTest(numbers)
             return res
