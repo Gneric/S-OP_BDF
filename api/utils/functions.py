@@ -1,5 +1,5 @@
 from api.utils.hasura_api import *
-from api.utils.dataLoader import LoadLaunch, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate
+from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate
 from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
@@ -47,6 +47,8 @@ def checkExcelFiles(area_id, year, month):
                     return LoadValorizacion(df, year, month)
                 if area_id == 5:
                     return LoadShoppers(df, year, month)
+                if area_id == 9:
+                    return LoadForecast(df, year, month)
                 else:
                     return "El Area ID enviado no se encuentra en el listado de IDs aprovados", "error"
             else:

@@ -15,7 +15,6 @@ from api.routes.data import AddRow, GetData, DeleteData, CloneData, UpdateDbData
 
 
 app = Flask(__name__)
-#app.config = app_config
 app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
 app.config["JWT_COOKIE_SECURE"] = False
 app.config["JWT_TOKEN_LOCATION"] = ["headers"]

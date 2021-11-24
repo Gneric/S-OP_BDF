@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 from os.path import join
 import xlsxwriter
 
-from api.utils.hasura_api import sendDataBaseline, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
+from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
 
 def Loadbaseline(df, year, month):
     try:
@@ -135,6 +135,30 @@ def LoadShoppers(df, year, month):
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
         return f"No se encontraron las columna(s): {column_error} en el archivo 'SHOPPERS'", "error"
+    except:
+        return str(sys.exc_info()), "error"
+
+
+def LoadForecast(df, year, month):
+    try:
+        df["id"] = str(year)+str(month)
+        d1 = df[["id","Input","CLASIF","BPU","Brand Category","Application Form","year","month","R&O","MSO","Net Sales S/. ('000)"]]
+        d1.columns = ["id","input","clasificacion","bpu","brand_category","application_form","year","month","r_o","mso","net_sales"]
+        d1['year'].fillna(0,inplace=True)
+        d1['month'].fillna(0,inplace=True)
+        d1['r_o'].fillna(0,inplace=True)
+        d1['mso'].fillna(0,inplace=True)
+        d1['net_sales'].fillna(0,inplace=True)
+        d1.fillna('N/A', inplace=True)
+        d1.is_copy = False
+        result = d1.to_json(orient="records")
+        parsed = json.loads(result)
+        res = sendDataForecast(parsed)
+        return res, ""
+    except KeyError as err:
+        error = str(err.__str__()).split(sep=": ")
+        column_error = error[1].replace("[","").replace("]","").replace("\"","")
+        return f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'", "error"
     except:
         return str(sys.exc_info()), "error"
 

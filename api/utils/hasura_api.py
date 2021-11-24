@@ -1104,3 +1104,17 @@ def request_action_test(numbers):
         return { 'sum': sum(numbers) }, 200
     except:
         return { 'error': 'error sumando numeros' }, 400
+
+def sendDataForecast(data):
+    # SendInsert
+    query = """
+    mutation MyMutation($objects: [Forecast_insert_input!] = {}) {
+    insert_Forecast(objects: $objects, on_conflict: {constraint: Forecast_pkey, update_columns: [r_o, mso, net_sales]}) {
+        affected_rows
+    }
+    }
+    """
+    res_insert = queryHasura(query, {"objects" : data})
+    print(res_insert)
+    result = { "file_id" : res_insert["data"]["insert_Forecast"]["affected_rows"], "area_name" : "Forecast" }
+    return result

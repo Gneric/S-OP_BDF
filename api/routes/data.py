@@ -64,7 +64,7 @@ class CloneData(Resource):
                 data_path = join(getcwd(),'api','data')
                 try:
                     result = send_from_directory(
-                        data_path, res, as_attachment=True
+                        directory=data_path, filename=res, as_attachment=True, environ=request.environ 
                     )
                     result.headers['filename'] = res
                     return result
@@ -90,10 +90,9 @@ class GetTemplates(Resource):
                 data_path = join(getcwd(),'api','data')
                 try:
                     result = send_from_directory(
-                        data_path, res, as_attachment=True
+                        data_path, res, as_attachment=True, environ=request.environ
                     )
                     result.headers['filename'] = res
-                    cleanDataFolder()
                     return result
                 except FileNotFoundError:
                     abort(404)
