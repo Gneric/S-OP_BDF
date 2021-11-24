@@ -4,7 +4,7 @@ from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
 import bcrypt
-from datetime import datetime
+from datetime import date, datetime
 
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
@@ -97,14 +97,19 @@ def cloneData(file_id, area_id):
     try:
         data = []
         if area_id == 1:
+            print('Clonning Baseline')
             data = requestDataBaseline(file_id)
         if area_id == 2:
+            print('Clonning Launch')
             data = requestDataLaunch(file_id)
         if area_id == 3:
+            print('Clonning Promo')
             data = requestDataPromo(file_id)
         if area_id == 4:
+            print('Clonning Valorizacion')
             data = requestDataValorizacion(file_id)
         if area_id == 5:
+            print('Clonning Shoppers')
             data = requestDataShoppers(file_id)
         if data == []:
             return "area_id not found"
@@ -123,6 +128,10 @@ def cloneData(file_id, area_id):
 
 def getTemplates(year, month, area_id):
     try:
+        if year == "":
+            year = str(datetime.today().strftime('%Y'))
+        if month == "":
+            month = str(datetime.today().strftime('%m'))
         path = createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
         if path == "":
             return ""
