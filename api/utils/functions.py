@@ -318,4 +318,20 @@ def update_changes_bd(data):
     except:
         print(sys.exc_info())
         return { 'error', 'error actualizando data' }, 400
+
+def getinfo_db_main(data):
+    try:
+        result = {}
+        return requestinfo_db_main(data['clasificacion'], data['year'], data['month'])
+    except:
+        print(sys.exc_info())
+        return { 'error', 'error actualizando data' }, 400
+
+def update_db_main(data):
+    try:
+        result = {}
+        
+    except:
+        print(sys.exc_info())
+        return { 'error', 'error actualizando data' }, 400
     

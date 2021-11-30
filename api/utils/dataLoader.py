@@ -88,7 +88,7 @@ def LoadValorizacion(df, year, month):
         new_header = map(lambda x,y: str(x) if str(y)=='nan' else str(x)+'|'+ str(y).upper(), pd.Series(list(df.columns)), pd.Series(list(df.iloc[0])))
         data = df[1:]
         data.columns = new_header
-        data = data.melt(id_vars = ["CLASIFICACION", "NART", "DESCRIPCION"], var_name = "FECHA_VALUE", value_name = "QUANTITY")
+        data = data.melt(id_vars = ["BRAND CATEGORY", "NART", "DESCRIPCION"], var_name = "FECHA_VALUE", value_name = "QUANTITY")
         split = data["FECHA_VALUE"].str.split("|", n = 1, expand = True)
         data["FECHA"] = split[0]
         data["VALUE"] = split[1]
@@ -97,9 +97,9 @@ def LoadValorizacion(df, year, month):
         data["YEAR"] = data["FECHA2"].dt.year
         data["MONTH"] = data["FECHA2"].dt.month
         data["KEY"] = str(year)+str(month)
-        d1 = data[["KEY","CLASIFICACION", "NART", "DESCRIPCION", "YEAR", "MONTH", "VALUE", "QUANTITY"]]
+        d1 = data[["KEY","BRAND CATEGORY", "NART", "DESCRIPCION", "YEAR", "MONTH", "VALUE", "QUANTITY"]]
         d1 = d1[d1['QUANTITY'].notna()]
-        d1.columns = ["id","clasificacion","nart","descripcion","year","month","value","cantidad"]
+        d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad"]
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
         res = sendDataValorizacion(parsed)

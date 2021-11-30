@@ -2,7 +2,7 @@ import sys
 from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
-from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, join, update_changes_bd
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, update_changes_bd, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -189,3 +189,33 @@ class UploadExcel(Resource):
         except:
             cleanDataFolder()
             return { 'Error' : str(sys.exc_info()[1]) }, 400
+
+class GetInfoDB_Main(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
+        data = request.json.get('data', '')
+        if data == '':
+            return { 'error': 'error en la lectura de data' }, 400
+        res = getinfo_db_main(data)
+        if res == 0:
+            return { 'error': 'error actualizar data' }, 400
+        if type(res) != int and res.get('error','') != '':
+            return res, 200
+        return { 'result' : 'ok' }, 200
+
+class UpdateDB_Main(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        print(f"{current_user=}")
+        data = request.json.get('data', '')
+        if data == '':
+            return { 'error': 'error en la lectura de data' }, 400
+        res = update_db_main(data)
+        if res == 0:
+            return { 'error': 'error actualizar data' }, 400
+        if type(res) != int and res.get('error','') != '':
+            return res, 200
+        return { 'result' : 'ok' }, 200
