@@ -1129,7 +1129,7 @@ def requestinfo_db_main(clasificacion, year, month):
         }
         }
         """
-        res_insert = queryHasura(query, {"clasificaciones": clasificacion, "year": year, "month": month})
+        res_insert = queryHasura(query, {"clasificacion": clasificacion, "year": year, "month": month})
         print(res_insert)
         result = { "file_id" : res_insert["data"]["insert_Forecast"]["affected_rows"], "area_name" : "Forecast" }
         return result
