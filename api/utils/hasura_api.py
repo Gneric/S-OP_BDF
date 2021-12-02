@@ -1131,7 +1131,7 @@ def requestinfo_db_main(clasificacion, year, month):
         """
         res_insert = queryHasura(query, {"clasificacion": clasificacion, "year": year, "month": month})
         print(res_insert)
-        result = { "file_id" : res_insert["data"]["insert_Forecast"]["affected_rows"], "area_name" : "Forecast" }
+        result = { 'result': res_insert["data"]["DB_Main"]}
         return result
     except:
         print(sys.exc_info())

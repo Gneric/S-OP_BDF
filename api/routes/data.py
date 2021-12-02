@@ -201,9 +201,9 @@ class GetInfoDB_Main(Resource):
         res = getinfo_db_main(data)
         if res == 0:
             return { 'error': 'error al obtener datos' }, 400
-        if type(res) != int and res.get('error','') != '':
+        if res.get('error','') != '':
             return res, 200
-        return { 'result' : 'ok' }, 200
+        return res, 200
 
 class UpdateDB_Main(Resource):
     @jwt_required()
