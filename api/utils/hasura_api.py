@@ -1120,36 +1120,32 @@ def sendDataForecast(data):
     return result
 
 def requestinfo_db_main(clasificacion, year, month):
-    if clasificacion == 'BASELINE':
+    try:
         query = """
         query MyQuery($clasificacion: String, $year: Int, $month: Int) {
         DB_Main(where: {clasificacion: {_eq: $clasificacion}, year: {_eq: $year}, month: {_eq: $month}}) {
-            spgr
+            promo_spgr
             units
         }
         }
         """
-    elif clasificacion == 'LAUNCH':
-        """
-        query MyQuery($clasificacion: String, $year: Int, $month: Int) {
-        DB_Main(where: {clasificacion: {_eq: $clasificacion}, year: {_eq: $year}, month: {_eq: $month}}) {
-            spgr
-            units
+        res_insert = queryHasura(query, {"clasificaciones": clasificacion, "year": year, "month": month})
+        print(res_insert)
+        result = { "file_id" : res_insert["data"]["insert_Forecast"]["affected_rows"], "area_name" : "Forecast" }
+        return result
+    except:
+        print(sys.exc_info())
+        return 0
+
+def update_db_main_table(data):
+    try:
+        query = """
+        mutation MyMutation($objects: [DB_Main_insert_input!] = {}) {
+        insert_DB_Main(objects: $objects, on_conflict: {constraint: DB_Main_pkey, update_columns: [old_units, ajuste_units, netsales]}) {
+            affected_rows
         }
         }
         """
-    elif clasificacion == 'PROMO':
-        """
-        query MyQuery($clasificacion: String, $year: Int, $month: Int) {
-        DB_Main(where: {clasificacion: {_eq: $clasificacion}, year: {_eq: $year}, month: {_eq: $month}}) {
-            spgr
-            units
-        }
-        }
-        """
-    else:
-        return { 'error', 'e' }
-    res_insert = queryHasura(query, {"clasificaciones": clasificacion, "year": year, "month": month})
-    print(res_insert)
-    result = { "file_id" : res_insert["data"]["insert_Forecast"]["affected_rows"], "area_name" : "Forecast" }
-    return result
+    except:
+        print(sys.exc_info())
+        return 0

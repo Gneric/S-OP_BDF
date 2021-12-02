@@ -200,7 +200,7 @@ class GetInfoDB_Main(Resource):
             return { 'error': 'error en la lectura de data' }, 400
         res = getinfo_db_main(data)
         if res == 0:
-            return { 'error': 'error actualizar data' }, 400
+            return { 'error': 'error al obtener datos' }, 400
         if type(res) != int and res.get('error','') != '':
             return res, 200
         return { 'result' : 'ok' }, 200

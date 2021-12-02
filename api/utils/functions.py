@@ -321,7 +321,6 @@ def update_changes_bd(data):
 
 def getinfo_db_main(data):
     try:
-        result = {}
         return requestinfo_db_main(data['clasificacion'], data['year'], data['month'])
     except:
         print(sys.exc_info())
@@ -329,8 +328,16 @@ def getinfo_db_main(data):
 
 def update_db_main(data):
     try:
-        result = {}
-        
+        row = [
+            {
+                'id':data['id'], 'clasificacion':data['clasificacion'], 
+                'bpu':data['bpu'], 'brand_category':data['brand_category'], 'application_form':data['application_form'], 
+                'promo_spgr':data['promo_spgr'], 'year':data['year'], 'month':data['month'], 
+                'old_units':data['old_units'], 'ajuste_units':data['ajuste_units'], 'units':data['units'],
+                'comentario':data['comentario'], 'netsales':data['netsales']
+            }
+        ]
+        update_db_main_table(data)        
     except:
         print(sys.exc_info())
         return { 'error', 'error actualizando data' }, 400
