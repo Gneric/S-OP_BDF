@@ -333,7 +333,7 @@ def update_db_main(data):
                 if i['promo_spgr'] == "" or i['ajuste_units'] == 0:
                     data,remove(i)
                 else:
-                    i['id'] == datetime.now().strftime("%Y%m")
+                    i['id'] = str(datetime.now().strftime("%Y%m"))
         return update_db_main_table(data)
         #audit = audit_db_main(data)
     except:
