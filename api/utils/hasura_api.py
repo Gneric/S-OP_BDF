@@ -1158,6 +1158,8 @@ def update_db_main_table(data):
         }
         """
         res = queryHasura(query, {'objects': data})
+        print('res:', res)
+        return res
     except:
         print(sys.exc_info())
         return 0
