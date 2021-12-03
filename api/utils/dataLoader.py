@@ -197,6 +197,7 @@ def createTemplateValorizacion(filename, template_path, data_path, year, month):
     try:
         file_path = join(template_path, filename)
         df = pd.read_excel(file_path)
+        print('filePath', file_path)
         print(df)
         # month_list = []
         # curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
@@ -209,7 +210,7 @@ def createTemplateValorizacion(filename, template_path, data_path, year, month):
         # writer = pd.ExcelWriter(new_file_path, engine='xlsxwriter')
         # df.to_excel(writer, filename[0:-5], index=False)
         # writer.save()
-        return filename
+        return ""
     except:
         print(sys.exc_info()[1])
         return ""

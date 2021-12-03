@@ -133,13 +133,9 @@ def getTemplates(year, month, area_id):
         if month == "":
             month = str(datetime.today().strftime('%m'))
         if db_table_area[str(area_id)] == 'valorizacion':
-            #path = createTemplateValorizacion(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
-            path = createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
+            return createTemplateValorizacion(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
         if db_table_area[str(area_id)] != 'valorizacion':
-            path = createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
-        if path == "":
-            return ""
-        return path
+            return createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
     except:
         print(sys.exc_info()[1])
         return ""
@@ -336,9 +332,8 @@ def update_db_main(data):
             if i['id'] == 0: #Si es comodin
                 if i['promo_spgr'] == "" or i['ajuste_units'] == 0:
                     data,remove(i)
-        update = update_db_main_table(data)
+        return update_db_main_table(data)
         #audit = audit_db_main(data)
-        return update
     except:
         print(sys.exc_info())
         return { 'error', 'error actualizando data' }, 400

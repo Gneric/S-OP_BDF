@@ -15,15 +15,15 @@ class GetData(Resource):
         id = request.json['file_id']
         area_id = request.json['area_id']
         if id == "" or area_id == "":
-            return 'No se encontro parametros de id y/o area', 400
+            return { 'error':'No se encontro parametros de id y/o area' }, 400
         else:
             try:
                 res = getData(id, int(area_id))
                 if res == "":
-                    return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+                    return { 'error':'error intentando obtener datos' }, 400
                 return { "result" : res }, 200
             except:
-                return f"Error intentando obtener datos, {sys.exc_info()[0]}", 400
+                return { 'error':'error intentando obtener datos' }, 400
 
 class DeleteData(Resource):
     @jwt_required()
@@ -84,8 +84,9 @@ class GetTemplates(Resource):
             area_id = int(request.json['area_id'])
             cleanDataFolder()
             res = getTemplates(year, month, area_id)
-            if res == "":
-                return "Error creando template", 400
+            print('res :', res)
+            if res == "" or res is None:
+                return { 'error': 'error creando template' }, 400
             else:
                 data_path = join(getcwd(),'api','data')
                 try:
@@ -97,7 +98,7 @@ class GetTemplates(Resource):
                 except FileNotFoundError:
                     abort(404)
         except:
-            return f"Error buscando data del mes, {sys.exc_info()[1]}", 400
+            return { 'error': 'error creando template' }, 400
 
 class GetInfoMes(Resource):
     @jwt_required()
@@ -113,7 +114,7 @@ class GetInfoMes(Resource):
                 res = checkInfoMonth(year, month)
                 return res
             except:
-                return "Error buscando data del mes", 400
+                return { 'error', 'error creando template' }, 400
 
 class UpdateDbData(Resource):
     @jwt_required()
@@ -216,6 +217,4 @@ class UpdateDB_Main(Resource):
         res = update_db_main(data)
         if res == 0:
             return { 'error': 'error actualizar data' }, 400
-        if res.get('error','') != '':
-            return res, 200
         return { 'result' : 'ok' }, 200
