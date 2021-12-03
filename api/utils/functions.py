@@ -1,5 +1,5 @@
 from api.utils.hasura_api import *
-from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate
+from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate, createTemplateValorizacion
 from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
@@ -132,7 +132,11 @@ def getTemplates(year, month, area_id):
             year = str(datetime.today().strftime('%Y'))
         if month == "":
             month = str(datetime.today().strftime('%m'))
-        path = createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
+        if db_table_area[str(area_id)] == 'valorizacion':
+            #path = createTemplateValorizacion(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
+            path = createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
+        if db_table_area[str(area_id)] != 'valorizacion':
+            path = createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
         if path == "":
             return ""
         return path

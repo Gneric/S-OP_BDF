@@ -11,7 +11,7 @@ from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.data import AddRow, GetData, DeleteData, CloneData, GetInfoDB_Main, NewRowDB_Main, UpdateDB_Main, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
+from api.routes.data import AddRow, GetData, DeleteData, CloneData, GetInfoDB_Main, UpdateDB_Main, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
 
 
 app = Flask(__name__)
