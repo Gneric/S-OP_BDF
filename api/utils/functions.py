@@ -328,12 +328,13 @@ def getinfo_db_main(data):
 
 def update_db_main(data):
     try:
+        id = data[0]['id'] 
         for i in data:
             if i['id'] == 0: #Si es comodin
                 if i['promo_spgr'] == "" or i['ajuste_units'] == 0:
                     data,remove(i)
                 else:
-                    i['id'] = str(datetime.now().strftime("%Y%m"))
+                    i['id'] = id
         return update_db_main_table(data)
         #audit = audit_db_main(data)
     except:
