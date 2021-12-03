@@ -328,16 +328,13 @@ def getinfo_db_main(data):
 
 def update_db_main(data):
     try:
-        row = [
-            {
-                'id':data['id'], 'clasificacion':data['clasificacion'], 
-                'bpu':data['bpu'], 'brand_category':data['brand_category'], 'application_form':data['application_form'], 
-                'promo_spgr':data['promo_spgr'], 'year':data['year'], 'month':data['month'], 
-                'old_units':data['old_units'], 'ajuste_units':data['ajuste_units'], 'units':data['units'],
-                'comentario':data['comentario'], 'netsales':data['netsales']
-            }
-        ]
-        update_db_main_table(data)        
+        for i in data:
+            if i['id'] == 0: #Si es comodin
+                if i['promo_spgr'] == "" or i['ajuste_units'] == 0:
+                    data,remove(i)
+        update = update_db_main_table(data)
+        #audit = audit_db_main(data)
+        return update
     except:
         print(sys.exc_info())
         return { 'error', 'error actualizando data' }, 400

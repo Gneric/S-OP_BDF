@@ -1124,8 +1124,19 @@ def requestinfo_db_main(clasificacion, year, month):
         query = """
         query MyQuery($clasificacion: String, $year: Int, $month: Int) {
         DB_Main(where: {clasificacion: {_eq: $clasificacion}, year: {_eq: $year}, month: {_eq: $month}}) {
+            id
+            clasificacion
+            bpu
+            brand_category
+            application_form
+            year
+            month
             promo_spgr
             units
+            ajuste_units
+            precio_promedio
+            netsales
+            comentario
         }
         }
         """
@@ -1141,11 +1152,12 @@ def update_db_main_table(data):
     try:
         query = """
         mutation MyMutation($objects: [DB_Main_insert_input!] = {}) {
-        insert_DB_Main(objects: $objects, on_conflict: {constraint: DB_Main_pkey, update_columns: [old_units, ajuste_units, netsales]}) {
+        insert_DB_Main(objects: $objects, on_conflict: {constraint: DB_Main_pkey, update_columns: [ajuste_units, netsales]}) {
             affected_rows
         }
         }
         """
+        res = queryHasura(query, {'objects': data})
     except:
         print(sys.exc_info())
         return 0
