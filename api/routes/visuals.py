@@ -9,7 +9,6 @@ class GetVisualBD(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         try:
             res = getVisualBD()
             if res == "":
@@ -22,7 +21,6 @@ class GetBDHistorico(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         try:
             res = get_db_historico()
             if res == "":
@@ -36,7 +34,6 @@ class PrepareSummary(Resource):
     def post(self):
         current_user = get_jwt_identity()
         id = request.json.get('id', '')
-        print(f"{current_user=}")
         try:
             res = getPrepareSummary(id)
             if res == "":
@@ -49,7 +46,6 @@ class UnitsxBPU(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         try:
             res = getSimulationUnits()
             if res == "":
@@ -62,7 +58,6 @@ class NetSalesxPBU(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         try:
             res = getSimmulationNetSales()
             if res == "":
@@ -75,7 +70,6 @@ class DemandSimulation(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         try:
             res = getDemandSimulationDB()
             if res == "":
@@ -88,7 +82,6 @@ class FCSimulation(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         try:
             res = getFCSimulation()
             if res == "":
@@ -101,7 +94,6 @@ class GraphDataset(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         try:
             res = getGraphDataset()
             if res == "":

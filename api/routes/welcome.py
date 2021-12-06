@@ -10,11 +10,6 @@ class Welcome(Resource):
         if 1 == 1:
             current_user = get_jwt_identity()
             ability = ability_for(int(current_user))
-            print(f"{current_user=}")
-            print( ability.can('read', 'Auth') )
-            print( ability.can('read', 'supply') )
-            print( ability.can('read', 'Marketing') )
-            print( ability.can('read', 'launch') )
             home_json = { "Bienvenido": "" }, 200
             return home_json
         else:

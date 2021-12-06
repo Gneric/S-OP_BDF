@@ -11,12 +11,6 @@ class ActionTest(Resource):
         try:
             #current_user = get_jwt_identity()
             numbers = request.json['input']['arg1']['numbers']
-            print(f"{request.json=}")
-            print(f"{request.headers=}")
-            print(f"{request.data=}")
-            print(f"{request.json['input']['arg1']=}")
-            print(f"{request.json['input']['arg1']['numbers']=}")
-            print(f"{request.authorization=}")
             res = getActionTest(numbers)
             return res
         except:

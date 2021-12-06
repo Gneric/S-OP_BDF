@@ -11,7 +11,6 @@ class GetData(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         id = request.json['file_id']
         area_id = request.json['area_id']
         if id == "" or area_id == "":
@@ -30,7 +29,6 @@ class DeleteData(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            print(f"{current_user=}")
             if 'year' in request.form.keys():
                 year = str(request.form['year'])
             if 'month' in request.form.keys():
@@ -52,11 +50,9 @@ class CloneData(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            print(f"{current_user=}")
             file_id = str(request.json['file_id'])
             area_id = int(request.json['area_id'])
             cleanDataFolder()
-            print("a")
             res = cloneData(file_id, area_id)
             if res == "":
                 return "Error clonando data del mes", 400
@@ -78,15 +74,14 @@ class GetTemplates(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            print(f"{current_user=}")
             year = str(request.json['year'])
             month = str(request.json['month'])
             area_id = int(request.json['area_id'])
             cleanDataFolder()
             res = getTemplates(year, month, area_id)
-            print('res :', res)
+            print('(GetTemplate) res:', res)
             if res == "" or res is None:
-                return { 'error': 'error creando template' }, 400
+                return { 'error': 'error creando template / template vacio' }, 400
             else:
                 data_path = join(getcwd(),'api','data')
                 try:
@@ -104,7 +99,6 @@ class GetInfoMes(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         year = str(request.json['year'])
         month = str(request.json['month'])
         if year == "" or month == "":
@@ -120,7 +114,6 @@ class UpdateDbData(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         data = request.json.get('data', '')
         if data == '':
             return { 'error': 'error en la lectura de data' }, 400
@@ -131,7 +124,6 @@ class AddRow(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         data = request.json.get('data', '')
         if data == '':
             return { 'error': 'error en la lectura de data' }, 400
@@ -148,7 +140,6 @@ class UploadExcel(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            print(current_user)
             if 'year' in request.form.keys():
                 year = request.form['year']
             if 'month' in request.form.keys():
@@ -195,7 +186,6 @@ class GetInfoDB_Main(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         data = request.json.get('data', '')
         if data == '':
             return { 'error': 'error en la lectura de data' }, 400
@@ -210,7 +200,6 @@ class UpdateDB_Main(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        print(f"{current_user=}")
         data = request.json.get('data', '')
         if data == '':
             return { 'error': 'error en la lectura de data' }, 400

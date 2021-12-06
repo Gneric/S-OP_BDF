@@ -9,7 +9,6 @@ class GetPermissions(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            print(f"{current_user=}")
             action = request.json.get('action', None)
             if current_user != "1":
                 return { 'error': 'el usuario no tiene permisos para esta accion' }, 400
@@ -24,7 +23,6 @@ class UpdatePermissions(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            print(f"{current_user=}")
             permissions = request.json.get('data', None)
             if current_user != "1":
                 return { 'error': 'el usuario no tiene permisos para esta accion' }, 400

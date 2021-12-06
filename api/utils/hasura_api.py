@@ -57,7 +57,6 @@ def requestIDbyPeriod(period):
         }
         """
         res_insert = queryHasura(query, {"id" : period[:3]})
-        print(res_insert)
         
         result = []
         
@@ -126,7 +125,6 @@ def checkPassword(email):
             }
         """
         res_insert = queryHasura(query, {"email" : email})
-        print(res_insert)
         result = res_insert["data"]["Users"][0]
         return result
     except:
@@ -173,7 +171,6 @@ def changepw(user_id, new_pwd):
         }
         """
         res_insert = queryHasura(query, {"id" : user_id, 'hash_password': new_pwd})
-        print(f'result changepwd {res_insert}')
         result = res_insert["data"]["update_Users"]["affected_rows"]
         return result
     except:
@@ -207,7 +204,6 @@ def updatePermissionByList(permissions):
         }
         """
         res = queryHasura(query, {'objects': permissions})
-        print(res)
         return res['data']['insert_Permissions']['affected_rows']
     except:
         print(sys.exc_info()[1])
@@ -225,7 +221,6 @@ def insertUser(user):
         }
         """
         res_insert = queryHasura(query, {"user" : user})
-        print(f'{res_insert=}')
         result = res_insert['data']['insert_Users']['returning'][0]['userName']
         return result
     except:
@@ -254,7 +249,6 @@ def checkPermissions(id):
 def listUsers(id):
     try:
         if id:
-            print('Entering if id exists')
             query = """
             query MyQuery($id: Int) {
             Users(where: {userID: {_eq: $id}}) {
@@ -293,7 +287,6 @@ def listUsers(id):
             }
             return user
         else:
-            print('Entering if id doenst exist')
             query = """
             query MyQuery {
                 Users {
@@ -340,7 +333,6 @@ def ListUsers():
         return []
 def modifyUser(userData, permissions):
     try:
-        print('Entering modifyUser')
         query = """
         mutation MyMutation($permissions: [UserPermissions_insert_input!] = {}, $userData: [Users_insert_input!] = {}) {
         insert_Users(objects: $userData, on_conflict: {constraint: Users_mail_key, update_columns: [mail, userName, name, role, isEnabled]}) {
@@ -352,7 +344,6 @@ def modifyUser(userData, permissions):
         }
         """
         res = queryHasura(query, {'permissions': permissions, 'userData': userData })
-        print(res)
         return res
     except:
         print(sys.exc_info()[1])
@@ -1063,13 +1054,11 @@ def graph_dataset():
             return array_range
 
         for input in datos_fijos:
-            #print(f'input: {input}')
             if input == 'REALES':
                 years = list(set([ str(x['year']) for x in sellin if x['clasificacion'] == "REALES"]))
                 for k in datos_fijos['REALES']:
                     dataset = datos_fijos['REALES'][k]
                     if k in years:
-                        #print(f'year: {k}')
                         data = [ { 'sum':x['sum'], 'year':x['year'], 'month':x['month'] } for x in sorted(sellin, key=lambda i: i['month']) if x['clasificacion'] == "REALES" and x['year'] == int(k) ]
                         filled_data = fillMonths(data)
                         dataset['data'] = filled_data
@@ -1100,7 +1089,6 @@ def graph_dataset():
 
 def request_action_test(numbers):
     try:
-        print(f'{numbers=}')
         return { 'sum': sum(numbers) }, 200
     except:
         return { 'error': 'error sumando numeros' }, 400
@@ -1115,7 +1103,6 @@ def sendDataForecast(data):
     }
     """
     res_insert = queryHasura(query, {"objects" : data})
-    print(res_insert)
     result = { "file_id" : res_insert["data"]["insert_Forecast"]["affected_rows"], "area_name" : "Forecast" }
     return result
 
@@ -1141,7 +1128,6 @@ def requestinfo_db_main(clasificacion, year, month):
         }
         """
         res_insert = queryHasura(query, {"clasificacion": clasificacion, "year": year, "month": month})
-        print(res_insert)
         result = { 'result': res_insert["data"]["DB_Main"]}
         return result
     except:
@@ -1158,7 +1144,6 @@ def update_db_main_table(data):
         }
         """
         res = queryHasura(query, {'objects': data})
-        print('res:', res)
         return res
     except:
         print(sys.exc_info())

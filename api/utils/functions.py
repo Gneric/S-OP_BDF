@@ -24,13 +24,8 @@ def checkFiles():
     return len(listdir(data_path))
 
 
-db_table_area = {
-    "1" : "baseline",
-    "2" : "launch",
-    "3" : "promo",
-    "4" : "valorizacion",
-    "5" : "shoppers"
-}
+db_table_area = {"1" : "baseline","2" : "launch","3" : "promo","4" : "valorizacion","5" : "shoppers"}
+
 def checkExcelFiles(area_id, year, month):
     for f in scandir(data_path):
         xl = pd.ExcelFile(f)
@@ -55,7 +50,6 @@ def checkExcelFiles(area_id, year, month):
                 return "No se encontro la hoja con el nombre correcto 'Hoja 1'", "error"
 
 def getData(id, area_id):
-    print(area_id)
     if area_id == 1:
         return requestDataBaseline(id)
     if area_id == 2:
@@ -97,19 +91,14 @@ def cloneData(file_id, area_id):
     try:
         data = []
         if area_id == 1:
-            print('Clonning Baseline')
             data = requestDataBaseline(file_id)
         if area_id == 2:
-            print('Clonning Launch')
             data = requestDataLaunch(file_id)
         if area_id == 3:
-            print('Clonning Promo')
             data = requestDataPromo(file_id)
         if area_id == 4:
-            print('Clonning Valorizacion')
             data = requestDataValorizacion(file_id)
         if area_id == 5:
-            print('Clonning Shoppers')
             data = requestDataShoppers(file_id)
         if data == []:
             return "area_id not found"
@@ -117,7 +106,6 @@ def cloneData(file_id, area_id):
         values = [ list(i.values()) for i in data["rows"] ]
         xslx_name = f"{db_table_area[str(area_id)]}.xlsx"
         xslx_path = join(data_path, xslx_name)
-        print(xslx_path)
         excel_path = createExcelFile(values,column_list,file_id,xslx_path)
         if excel_path == "":
             return ""
@@ -154,7 +142,6 @@ def createUser(new_user):
     try:
         hash_pwd = bcrypt.hashpw(new_user['password'].encode('utf-8'), bcrypt.gensalt())
         decoded_pwd = hash_pwd.decode('utf-8')
-        print(f"hash_password for user {new_user['username']} : {hash_pwd}")
         user = {
             "mail": new_user['mail'],
             "hash_password": decoded_pwd,
@@ -191,7 +178,6 @@ def userInfo(id = ""):
 def modUser(user, permissions):
     try:
         pwd = checkPassword(user['mail'])
-        print(f'{pwd=}')
         user['hash_password'] = pwd["hash_password"]
         permission2 = [{'userID': user['userID'], 'permissionID': p['permissionID'], 'isEnabled': p['isEnabled']} for p in permissions ]
         res = modifyUser(user, permission2)
@@ -269,7 +255,6 @@ def updatePermissions(permissions):
         return { "error" : "Error al actualizar permisos" }, 400
 
 def generate_token(user):
-    print('Generating Token')
     is_admin = user['role'] == "Admin"
     user_roles = ["user"]
     admin_roles = ["user","admin"]
@@ -335,9 +320,9 @@ def update_db_main(data):
                     data,remove(i)
                 else:
                     i['id'] = '202111'
-        return update_db_main_table(data)
+        update = update_db_main_table(data)
         #audit = audit_db_main(data)
+        return update
     except:
         print(sys.exc_info())
         return { 'error', 'error actualizando data' }, 400
-    

@@ -10,7 +10,6 @@ class UserList(Resource):
     def post(self):
         if 1 == 1:
             current_user = get_jwt_identity()
-            print(f"{current_user=}")
             if request.json == None or 'id' not in request.json.keys():
                 res = userInfo("")
             else:
@@ -24,7 +23,6 @@ class CreateUser(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            print(f"{current_user=}")
             data = request.json.get('data', '')
             new_user = {
                 "username": data['username'],
