@@ -24,7 +24,7 @@ def checkFiles():
     return len(listdir(data_path))
 
 
-db_table_area = {"1" : "baseline","2" : "launch","3" : "promo","4" : "valorizacion","5" : "shoppers"}
+db_table_area = {"1":"baseline" ,"2":"launch", "3":"promo", "4":"valorizacion", "5":"shopper"}
 
 def checkExcelFiles(area_id, year, month):
     for f in scandir(data_path):

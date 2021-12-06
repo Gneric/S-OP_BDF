@@ -1,6 +1,7 @@
 import sys
 import json
 import pandas as pd
+import numpy as np
 from datetime import date, datetime, timedelta
 from os.path import join
 import xlsxwriter
@@ -197,8 +198,23 @@ def createTemplateValorizacion(filename, template_path, data_path, year, month):
     try:
         file_path = join(template_path, filename)
         df = pd.read_excel(file_path)
-        print('filePath', file_path)
-        print(df)
+        month_list = ['BRAND CATEGORY','NART','DESCRIPCION','VALUES']
+        curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
+        df = pd.read_excel(file_path)
+        df.loc[1, ['BRAND CATEGORY','NART','DESCRIPCION']] = ''
+        for _ in range(18):
+            month_list.append(curr_month.strftime("%Y-%m"))
+            next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
+            curr_month = next_month
+        df = df.reindex(columns=month_list)
+        df.loc[0, 'VALUES'] = 'pricelist'
+        df.loc[1, 'VALUES'] = 'discount'
+        df.loc[2, 'VALUES'] = 'rebate'
+        df.loc[3, 'VALUES'] = 'com / cop'
+        new_file_path = join(data_path, filename)
+        writer = pd.ExcelWriter(new_file_path, engine='xlsxwriter')
+        df.to_excel(writer, filename[0:-5], index=False)
+        writer.save()
         # month_list = []
         # curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
         # for _ in range(18): # Avanzando año y medio
@@ -210,7 +226,7 @@ def createTemplateValorizacion(filename, template_path, data_path, year, month):
         # writer = pd.ExcelWriter(new_file_path, engine='xlsxwriter')
         # df.to_excel(writer, filename[0:-5], index=False)
         # writer.save()
-        return ""
+        return filename
     except:
         print(sys.exc_info()[1])
         return ""

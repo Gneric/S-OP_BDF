@@ -100,5 +100,5 @@ api.add_resource(ActionTest, '/api/test_action_hasura')
 
 if __name__ == '__main__':
   from waitress import serve
-  serve(app, host="0.0.0.0", port=3100, threads=8)
-  #app.run(host='0.0.0.0', port=3200, debug=False)
+  serve(app, host="0.0.0.0", port=3200, threads=8)
+  #app.run(host='0.0.0.0', port=3200, debug=True)
