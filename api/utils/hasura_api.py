@@ -1120,14 +1120,14 @@ def requestinfo_db_main(clasificacion, year, month):
             month
             promo_spgr
             units
-            ajuste_units
-            precio_promedio
             netsales
+            ajuste_netsales
             comentario
         }
         }
         """
         res_insert = queryHasura(query, {"clasificacion": clasificacion, "year": year, "month": month})
+        print(res_insert)
         result = { 'result': res_insert["data"]["DB_Main"]}
         return result
     except:
