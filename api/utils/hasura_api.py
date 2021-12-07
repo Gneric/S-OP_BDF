@@ -1138,12 +1138,13 @@ def update_db_main_table(data):
     try:
         query = """
         mutation MyMutation($objects: [DB_Main_insert_input!] = {}) {
-        insert_DB_Main(objects: $objects, on_conflict: {constraint: DB_Main_pkey, update_columns: [ajuste_units, netsales]}) {
+        insert_DB_Main(objects: $objects, on_conflict: {constraint: DB_Main_pkey, update_columns: [netsales, ajuste_netsales]}) {
             affected_rows
         }
         }
         """
         res = queryHasura(query, {'objects': data})
+        #print('(update_db_main_table) : ', res)
         return res
     except:
         print(sys.exc_info())
