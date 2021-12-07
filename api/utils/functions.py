@@ -316,7 +316,7 @@ def update_db_main(data):
         id = data[0]['id'] 
         for i in data:
             if i['id'] == 0: #Si es comodin
-                if i['promo_spgr'] == "" or i['ajuste_units'] == 0:
+                if i['promo_spgr'] == "" or i['ajuste_netsales'] == 0:
                     data,remove(i)
                 else:
                     i['id'] = '202111'
