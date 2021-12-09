@@ -30,7 +30,7 @@ def checkExcelFiles(area_id, year, month):
     for f in scandir(data_path):
         xl = pd.ExcelFile(f)
         for sheet in xl.sheet_names:
-            if sheet == 'Hoja1':
+            if sheet == 'Hoja1' or sheet == db_table_area[area_id]:
                 df = pd.read_excel(f, sheet)
                 if area_id == 1:
                     return Loadbaseline(df, year, month)
@@ -47,7 +47,7 @@ def checkExcelFiles(area_id, year, month):
                 else:
                     return "El Area ID enviado no se encuentra en el listado de IDs aprovados", "error"
             else:
-                return "No se encontro la hoja con el nombre correcto 'Hoja 1'", "error"
+                return f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}", "error"
 
 def getData(id, area_id):
     if area_id == 1:
