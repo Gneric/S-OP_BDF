@@ -319,7 +319,7 @@ def update_db_main(data):
                 if i['promo_spgr'] == "" or i['ajuste_netsales'] == 0:
                     data,remove(i)
                 else:
-                    i['id'] = '202111'
+                    i['id'] = id
         update = update_db_main_table(data)
         #audit = audit_db_main(data)
         return update
