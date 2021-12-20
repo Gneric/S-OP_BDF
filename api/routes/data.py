@@ -2,7 +2,7 @@ import sys
 from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
-from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, update_changes_bd, update_db_main
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, update_changes_bd, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -207,3 +207,10 @@ class UpdateDB_Main(Resource):
         if res == 0:
             return { 'error': 'error actualizar data' }, 400
         return { 'result' : 'ok' }, 200
+
+class CargarDBMain(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        return request_cargar_db_main()
+        

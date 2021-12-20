@@ -326,3 +326,15 @@ def update_db_main(data):
     except:
         print(sys.exc_info())
         return { 'error', 'error actualizando data' }, 400
+
+def request_cargar_db_main():
+    try:
+        data = request_data_last_id()
+        curr_month = f'{datetime.now().strftime("%Y%m")}'
+        if data == [] or data[0]["id"] < curr_month :
+            return { 'error', 'no se encontro data en el mes actual' }, 400
+        else:
+            res = insert_data_db_main(data)
+            return { 'ok', f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
+    except:
+        return { 'error', 'error cargando nuevos datos' }, 400

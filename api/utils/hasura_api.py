@@ -1149,3 +1149,47 @@ def update_db_main_table(data):
     except:
         print(sys.exc_info())
         return 0
+
+def request_data_last_id():
+    try:
+        query = """
+        query MyQuery {
+        view_db_main_last_id {
+            id
+            clasificacion
+            bpu
+            brand_category
+            application_form
+            promo_spgr
+            year
+            month
+            units
+            netsales
+            ajuste_netsales
+            comentario
+        }
+        }
+        """
+        res = queryHasura(query)
+        return res["data"]["view_db_main_last_id"]
+    except:
+        print(sys.exc_info())
+        return []
+
+def insert_data_db_main(data):
+    try:
+        query = """
+        mutation MyMutation($data: [DB_Main_insert_input!]!) {
+        insert_DB_Main(
+            objects: $data, 
+            on_conflict: {constraint: DB_Main_pkey, update_columns: [units, netsales, ajuste_netsales, comentario]}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(query, {'data':data})
+        return res["data"]["insert_DB_Main"]["affected_rows"]
+    except:
+        print(sys.exc_info())
+        return 0
+
