@@ -100,8 +100,9 @@ def LoadValorizacion(df, year, month):
         data["KEY"] = str(year)+str(month)
         d1 = data[["KEY","BRAND CATEGORY", "NART", "DESCRIPCION", "YEAR", "MONTH", "VALUE", "QUANTITY"]]
         d1 = d1[d1['QUANTITY'].notna()]
+        d1 = d1[d1['BRAND CATEGORY'].notna()]
         d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad"]
-        result = d1.to_json(orient="records")
+        result = d1.to_json(orient="records")   
         parsed = json.loads(result)
         res = sendDataValorizacion(parsed)
         return res, ""
