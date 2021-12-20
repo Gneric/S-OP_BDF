@@ -30,7 +30,7 @@ def Loadbaseline(df, year, month):
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
         return f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'", "error"
     except:
-        return str(sys.exc_info()), "error"
+        return "Error en el archivo, por favor revisar el modelo de carga", "error"
     
 def LoadLaunch(df, year, month):
     try:

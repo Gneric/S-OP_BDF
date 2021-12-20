@@ -180,7 +180,7 @@ class UploadExcel(Resource):
                     return { "result" : res }, 200
         except:
             cleanDataFolder()
-            return { 'Error' : str(sys.exc_info()[1]) }, 400
+            return { 'Error' : str(sys.exc_info()) }, 400
 
 class GetInfoDB_Main(Resource):
     @jwt_required()

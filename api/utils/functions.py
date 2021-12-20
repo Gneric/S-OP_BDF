@@ -30,7 +30,7 @@ def checkExcelFiles(area_id, year, month):
     for f in scandir(data_path):
         xl = pd.ExcelFile(f)
         for sheet in xl.sheet_names:
-            if sheet == 'Hoja1' or sheet == db_table_area[area_id]:
+            if sheet == 'Hoja1' or sheet == db_table_area[str(area_id)]:
                 df = pd.read_excel(f, sheet)
                 if area_id == 1:
                     return Loadbaseline(df, year, month)
