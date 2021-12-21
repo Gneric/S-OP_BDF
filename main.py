@@ -99,7 +99,6 @@ api.add_resource(GraphDataset, '/api/graph_dataset')
 # tests
 api.add_resource(ActionTest, '/api/test_action_hasura')
 
-
 if __name__ == '__main__':
   from waitress import serve
   serve(app, host="0.0.0.0", port=3100, threads=8)

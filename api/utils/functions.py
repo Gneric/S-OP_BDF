@@ -334,6 +334,7 @@ def request_cargar_db_main():
         if data == [] or data[0]["id"] < curr_month :
             return { 'error', 'no se encontro data en el mes actual' }, 400
         else:
+            del_res = delete_db_main_id(data[0]["id"])
             res = insert_data_db_main(data)
             return { 'ok', f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
     except:

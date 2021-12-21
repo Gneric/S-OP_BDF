@@ -561,6 +561,7 @@ def sendDataValorizacion(data):
     }
     """
     res_insert = queryHasura(query, {"objects" : data})
+    print(res_insert)
     result = { "file_id" : res_insert["data"]["insert_Maestro_valorizacion"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_valorizacion"]["area_name"] }
     return result
 def requestDataValorizacion(id):
@@ -1189,6 +1190,21 @@ def insert_data_db_main(data):
         """
         res = queryHasura(query, {'data':data})
         return res["data"]["insert_DB_Main"]["affected_rows"]
+    except:
+        print(sys.exc_info())
+        return 0
+
+def delete_db_main_id(data):
+    try:
+        query = """
+        mutation MyMutation($eq: String) {
+        delete_DB_Main(where: {id: {_eq: $eq}}) {
+            affected_rows
+        }
+        }
+        """
+        res = queryHasura(query, {'data':data})
+        return res["data"]["delete_DB_Main"]["affected_rows"]
     except:
         print(sys.exc_info())
         return 0
