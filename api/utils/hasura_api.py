@@ -132,8 +132,8 @@ def checkPassword(email):
 def checkMailExists(email):
     try:
         query = """
-        query MyQuery($mail: String) {
-        Users(where: {mail: {_eq: $mail}}) {
+        query MyQuery($email: String) {
+        Users(where: {mail: {_eq: $email}}) {
         userName
         }
         }
