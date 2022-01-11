@@ -35,6 +35,20 @@ def queryHasura(query, variables = ""):
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(requests.status_code, query))
 
+def audit_inputs(row):
+    try:
+        q = """
+        mutation MyMutation($objects: [auditorias_auditoria_input_insert_input!]) {
+            insert_auditorias_auditoria_input(objects: $objects) {
+                affected_rows
+            }
+        }
+        """
+        res_audit = queryHasura(q, {"objects": row})
+    except:
+        return ""
+
+
 def requestIDbyPeriod(period):
     try:
         query = """
@@ -139,6 +153,7 @@ def checkMailExists(email):
         }
         """
         res_insert = queryHasura(query, {"email" : email})
+        print(res_insert)
         result = res_insert["data"]["Users"]
         if len(result) > 0:
             return result[0]
@@ -221,6 +236,7 @@ def insertUser(user):
         }
         """
         res_insert = queryHasura(query, {"user" : user})
+        print(res_insert)
         result = res_insert['data']['insert_Users']['returning'][0]['userName']
         return result
     except:

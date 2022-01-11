@@ -26,24 +26,42 @@ def checkFiles():
 
 db_table_area = {"1":"baseline" ,"2":"launch", "3":"promo", "4":"valorizacion", "5":"shopper"}
 
-def checkExcelFiles(area_id, year, month):
+def checkExcelFiles(area_id, year, month, current_user):
     for f in scandir(data_path):
         xl = pd.ExcelFile(f)
         for sheet in xl.sheet_names:
             if sheet == 'Hoja1' or sheet == db_table_area[str(area_id)]:
                 df = pd.read_excel(f, sheet)
                 if area_id == 1:
-                    return Loadbaseline(df, year, month)
+                    res = Loadbaseline(df, year, month)
+                    if res != "":
+                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "BASELINE"})
+                    return 
                 if area_id == 2:
-                    return LoadLaunch(df, year, month)
+                    res = LoadLaunch(df, year, month)
+                    if res != "":
+                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "LAUNCH"})
+                    return 
                 if area_id == 3:
-                    return LoadPromo(df, year, month)
+                    res = LoadPromo(df, year, month)
+                    if res != "":
+                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "PROMO"})
+                    return 
                 if area_id == 4:
-                    return LoadValorizacion(df, year, month)
+                    res = LoadValorizacion(df, year, month)
+                    if res != "":
+                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "VALORIZACION"})
+                    return 
                 if area_id == 5:
-                    return LoadShoppers(df, year, month)
+                    res = LoadShoppers(df, year, month)
+                    if res != "":
+                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "SHOPPER"})
+                    return 
                 if area_id == 9:
-                    return LoadForecast(df, year, month)
+                    res = LoadForecast(df, year, month)
+                    if res != "":
+                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "FORECAST"})
+                    return 
                 else:
                     return "El Area ID enviado no se encuentra en el listado de IDs aprovados", "error"
             else:
@@ -70,36 +88,61 @@ def checkInfoMonth(year, month):
     return { 'result' : info }
 
 
-def checkDeleteTable(area_id, year, month):
+def checkDeleteTable(area_id, year, month, current_user):
     area_id = int(area_id)
     if int(month) < 10 and len(month) == 1:
         month = f"0{int(month)}"
     if area_id == 1:
-        return deleteDataBaseline(year+month)
+        res = deleteDataBaseline(year+month)
+        if res != "":
+            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "BASELINE"})
+        return res
     if area_id == 2:
-        return deleteDataLaunch(year+month)
+        res = deleteDataLaunch(year+month)
+        if res != "":
+            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "LAUNCH"})
+        return res
     if area_id == 3:
-        return deleteDataPromo(year+month)
+        res = deleteDataPromo(year+month)
+        if res != "":
+            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "PROMO"})
+        return res
     if area_id == 4:
-        return deleteDataValorizacion(year+month)
+        res = deleteDataValorizacion(year+month)
+        if res != "":
+            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "VALORIZACION"})
+        return res
     if area_id == 5:
-        return deleteDataShoppers(year+month)
+        res = deleteDataShoppers(year+month)
+        if res != "":
+            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "SHOPPER"})
+        return res
     else:
         return ""
 
-def cloneData(file_id, area_id):
+def cloneData(file_id, area_id, current_user):
     try:
         data = []
         if area_id == 1:
             data = requestDataBaseline(file_id)
+            if data != "":
+                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "BASELINE"})
         if area_id == 2:
             data = requestDataLaunch(file_id)
+            if data != "":
+                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "LAUNCH"})
         if area_id == 3:
             data = requestDataPromo(file_id)
+            if data != "":
+                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "PROMO"})
         if area_id == 4:
             data = requestDataValorizacion(file_id)
+            if data != "":
+                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "VALORIZACION"})
         if area_id == 5:
             data = requestDataShoppers(file_id)
+            if data != "":
+                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "SHOPPER"})
         if data == []:
             return "area_id not found"
         column_list = list(data["rows"][0].keys())

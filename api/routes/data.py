@@ -37,7 +37,7 @@ class DeleteData(Resource):
                 area_id = request.form["area_id"]
             else:
                 return 'No se encuentran todas las varaibles necesarias', 400
-            res = checkDeleteTable(area_id, year, month)
+            res = checkDeleteTable(area_id, year, month, current_user)
             if res == "":
                 return "Error eliminando data del mes", 400
             else:
@@ -53,7 +53,7 @@ class CloneData(Resource):
             file_id = str(request.json['file_id'])
             area_id = int(request.json['area_id'])
             cleanDataFolder()
-            res = cloneData(file_id, area_id)
+            res = cloneData(file_id, area_id, current_user)
             if res == "":
                 return "Error clonando data del mes", 400
             else:
@@ -168,7 +168,7 @@ class UploadExcel(Resource):
             if checkFiles() == 0:
                 return { "error" : 'No files saved' }, 400
             else:                   
-                res, res_check = checkExcelFiles(int(area_id), year, month)
+                res, res_check = checkExcelFiles(int(area_id), year, month, current_user)
                 if res_check == "error":
                     cleanDataFolder()
                     return { "error" : res }, 400
