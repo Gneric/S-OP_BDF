@@ -349,7 +349,7 @@ def update_changes_bd(data):
 
 def getinfo_db_main(data):
     try:
-        return requestinfo_db_main(data['clasificacion'], data['year'], data['month'])
+        return requestinfo_db_main(data['clasificacion'], data['year'], data['month'], data['bpu'], data['brand_category'], data['application_form'])
     except:
         print(sys.exc_info())
         return { 'error', 'error actualizando data' }, 400

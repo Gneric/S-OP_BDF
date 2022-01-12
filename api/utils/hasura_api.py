@@ -1123,27 +1123,33 @@ def sendDataForecast(data):
     result = { "file_id" : res_insert["data"]["insert_Forecast"]["affected_rows"], "area_name" : "Forecast" }
     return result
 
-def requestinfo_db_main(clasificacion, year, month):
+def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, application_form):
     try:
+        variables = { "clasificacion": {"_eq": clasificacion}, "year": {"_eq": year}, "month": {"_eq": month}}
+        if bpu:
+            variables["bpu"]  = {"_eq": bpu}
+        if brand_category:
+            variables["brand_category"] = {"_eq": brand_category}
+        if application_form:
+            variables["application_form"] = {"_eq": application_form}
         query = """
-        query MyQuery($clasificacion: String, $year: Int, $month: Int) {
-        DB_Main(where: {clasificacion: {_eq: $clasificacion}, year: {_eq: $year}, month: {_eq: $month}}) {
-            id
-            clasificacion
-            bpu
-            brand_category
-            application_form
-            year
-            month
-            promo_spgr
-            units
-            netsales
-            ajuste_netsales
-            comentario
-        }
-        }
-        """
-        res_insert = queryHasura(query, {"clasificacion": clasificacion, "year": year, "month": month})
+        query MyQuery($variables: DB_Main_bool_exp = {}) {
+            DB_Main(where: $variables) {
+                id
+                clasificacion
+                bpu
+                brand_category
+                application_form
+                year
+                month
+                promo_spgr
+                units
+                netsales
+                ajuste_netsales
+                comentario
+            }
+        }"""
+        res_insert = queryHasura(query, {"variables": variables})
         print(res_insert)
         result = { 'result': res_insert["data"]["DB_Main"]}
         return result
