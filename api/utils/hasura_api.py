@@ -262,10 +262,39 @@ def checkPermissions(id):
         print(sys.exc_info()[1])
         return []
 
-def listUsers(id):
+def listUsers(data):
+    q = data.get('q')+"%"
+    sort = 'asc' if data['sortDesc'] == False else 'desc'
+    variables = f"limit: {data['perPage']}, offset: {(data['page'] - 1)}, order_by: "+"{"+data['sortBy']+": "+sort+"}"
     try:
-        if id:
-            query = """
+        query = """
+        query MyQuery($ilike: String = "") {
+        Users("""+variables+""", where: {_or: [{userName: {_ilike: $ilike}}, {name: {_ilike: $ilike}}, {mail: {_ilike: $ilike}}]}) {
+            userID
+            profileImageUrl
+            userName
+            name
+            mail
+            isEnabled
+            role
+        }
+        }
+        """
+        res = queryHasura(query, { 'ilike': q })
+        print(res)
+        users = res["data"]["Users"]
+        total = len(users)
+        res = []
+        for u in users:
+            res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['role'] })
+        return { 'users' : res, 'total': total }
+    except:
+        print(sys.exc_info()[1])
+        return []
+
+def listUserbyID(id):
+    try:
+        query = """
             query MyQuery($id: Int) {
             Users(where: {userID: {_eq: $id}}) {
                 userID
@@ -286,46 +315,26 @@ def listUsers(id):
             }
             }
             """
-            res = queryHasura(query, { "id": id })
-            data = res["data"]["Users"][0]
-            abilities = res["data"]["search_permissions_id_edit"]
-            permissions = [ { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "conditions": i['condition'] } if i['condition'] else { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in abilities ]
-            user = {
-                "userID": data['userID'],
-                "profileImageUrl": data['profileImageUrl'],
-                "userName": data['userName'],
-                "name": data['name'],
-                "mail": data['mail'],
-                "phone": data['phone'],
-                "isEnabled": data['isEnabled'],
-                "role" : data['role'],
-                "permissions" : permissions
-            }
-            return user
-        else:
-            query = """
-            query MyQuery {
-                Users {
-                        userID
-                        profileImageUrl
-                        userName
-                        name
-                        mail
-                        isEnabled
-                        role
-                    }
-                }
-            """
-            res = queryHasura(query)
-            users = res["data"]["Users"]
-            total = len(users)
-            res = []
-            for u in users:
-                res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['role'] })
-            return { 'users' : res, 'total': total }
+        res = queryHasura(query, { "id": id })
+        data = res["data"]["Users"][0]
+        abilities = res["data"]["search_permissions_id_edit"]
+        permissions = [ { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'], "conditions": i['condition'] } if i['condition'] else { "permissionID": i['permissionID'], "action": i['action'], "subject": i['subject'], 'isEnabled': i['isEnabled'] } for i in abilities ]
+        user = {
+            "userID": data['userID'],
+            "profileImageUrl": data['profileImageUrl'],
+            "userName": data['userName'],
+            "name": data['name'],
+            "mail": data['mail'],
+            "phone": data['phone'],
+            "isEnabled": data['isEnabled'],
+            "role" : data['role'],
+            "permissions" : permissions
+        }
+        return user
     except:
         print(sys.exc_info()[1])
         return []
+
 def ListUsers():
     try:
         query = """

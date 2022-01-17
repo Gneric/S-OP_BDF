@@ -206,14 +206,16 @@ def createUser(new_user):
         print(sys.exc_info()[1])
         return { 'error' : 'Failed to registerUser' }, 400
 
-def userInfo(id = ""):
+def userInfo(data = {}, id = ""):
     try:
-        if id == "":
-            res = listUsers("")
+        if data != {}:
+            res = listUsers(data)
+            return { 'result' : res }
+        if id != "":
+            res = listUserbyID(id)
             return { 'result' : res }
         else:
-            res = listUsers(id)
-            return { 'result' : res }
+            return { 'error', 'no se encontro data para la busqueda' }, 400
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al retornar informacion de ususarios" }
@@ -360,7 +362,7 @@ def update_db_main(data):
         for i in data:
             if i['id'] == 0: #Si es comodin
                 if i['promo_spgr'] == "" or i['ajuste_netsales'] == 0:
-                    data,remove(i)
+                    data.remove(i)
                 else:
                     i['id'] = id
         update = update_db_main_table(data)

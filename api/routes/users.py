@@ -10,10 +10,9 @@ class UserList(Resource):
     def post(self):
         if 1 == 1:
             current_user = get_jwt_identity()
-            if request.json == None or 'id' not in request.json.keys():
-                res = userInfo("")
-            else:
-                res = userInfo(request.json['id'])
+            id = request.json.get('id',"")
+            data = request.json.get('data',{})
+            res = userInfo(data, id)
             return res
         else:
             return 'Resource not found', 400
