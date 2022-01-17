@@ -263,7 +263,7 @@ def checkPermissions(id):
         return []
 
 def listUsers(data):
-    q = data.get('q')+"%"
+    q = "%"+data.get('q')+"%"
     sort = 'asc' if data['sortDesc'] == False else 'desc'
     variables = f"limit: {data['perPage']}, offset: {(data['page'] - 1)}, order_by: "+"{"+data['sortBy']+": "+sort+"}"
     try:
@@ -281,7 +281,6 @@ def listUsers(data):
         }
         """
         res = queryHasura(query, { 'ilike': q })
-        print(res)
         users = res["data"]["Users"]
         total = len(users)
         res = []
