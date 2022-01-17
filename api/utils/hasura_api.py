@@ -282,7 +282,9 @@ def listUsers(data):
         """
         res = queryHasura(query, { 'ilike': q })
         users = res["data"]["Users"]
-        total = len(users)
+        query = "query MyQuery { Users { userID } }"
+        res_total = queryHasura(query)
+        total = len(res_total['data']['Users'])
         res = []
         for u in users:
             res.append({'userID': u['userID'],'profileImageUrl': u['profileImageUrl'], 'userName': u['userName'], 'name':u['name'], 'mail':u['mail'], 'isEnabled':u['isEnabled'], 'role': u['role'] })
