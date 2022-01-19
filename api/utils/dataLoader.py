@@ -7,9 +7,11 @@ from os.path import join
 import xlsxwriter
 
 from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
+from api.utils.rowsCheker import dataCheck
 
 def Loadbaseline(df, year, month):
     try:
+        print('LoadBaseline')
         df = df.melt(id_vars = ["CLASIFICACION", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
         df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
@@ -23,6 +25,8 @@ def Loadbaseline(df, year, month):
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
+        #dataCheck_res = dataCheck(json.dumps(parsed))
+        #res = ""
         res = sendDataBaseline(parsed)
         return res, ""
     except KeyError as err:
@@ -86,6 +90,7 @@ def LoadPromo(df, year, month):
 
 def LoadValorizacion(df, year, month):
     try:
+        print('LoadValorizacion')
         new_header = map(lambda x,y: str(x) if str(y)=='nan' else str(x)+'|'+ str(y).upper(), pd.Series(list(df.columns)), pd.Series(list(df.iloc[0])))
         data = df[1:]
         data.columns = new_header
@@ -104,6 +109,7 @@ def LoadValorizacion(df, year, month):
         d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad"]
         result = d1.to_json(orient="records")   
         parsed = json.loads(result)
+        print('result : ', result)
         res = sendDataValorizacion(parsed)
         return res, ""
     except KeyError as err:

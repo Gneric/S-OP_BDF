@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import pandas as pd
 from os import error
-from pandas.core.indexes.base import Index
 import requests
 import json
 import sys
@@ -1241,3 +1240,42 @@ def delete_db_main_id(data):
         print(sys.exc_info())
         return 0
 
+def requestinfo_timeline(permissionID, timelineID):
+    try:
+        query = """
+        query MyQuery($permissionID: Int, $timelineID: Int) {
+            Permissions(where: {permissionID: {_eq: $permissionID}}) {
+                isBlocked
+            }
+            Timeline(where: {id: {_eq: $timelineID}}) {
+                estado
+            }
+        }
+        """
+        res = queryHasura(query, {'permissionID': permissionID, 'timelineID': timelineID})
+        permissions = res['data']['permissions'][0]['isBlocked']
+        timeline = res['data']['timeline'][0]['estado']
+        return { 'isBlocked': permissions, 'estado': timeline }
+    except:
+        return {}
+
+def request_setinfo_timeline(data):
+    try:
+        permission = data['permission']
+        timeline = data['timeline']
+        query = """
+        mutation MyMutation($permissionID: Int, $isBlocked: Int, $estado: Int, $timelineID: Int) {
+            update_Permissions(where: {permissionID: {_eq: $permissionID}}, _set: {isBlocked: $isBlocked}) {
+                affected_rows
+            }
+            update_Timeline(where: {id: {_eq: $timelineID}}, _set: {estado: $estado}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(query, { 'permissionID' : permission['id'], 'isBlocked': permission['isBLocked'], 'estado': timeline['estado'], 'timelineID': timeline['timelineID']})
+        rows = res['data']['update_Permissions']['affected_rows'] + res['data']['update_Timeline']['affected_rows']
+        if rows == 2:
+            return { 'result' : 'ok' }
+    except:
+        return {}

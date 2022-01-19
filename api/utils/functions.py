@@ -215,7 +215,7 @@ def userInfo(data = {}, id = ""):
             res = listUserbyID(id)
             return { 'result' : res }
         else:
-            return { 'error', 'no se encontro data para la busqueda' }, 400
+            return { 'error': 'no se encontro data para la busqueda' }, 400
     except:
         print(sys.exc_info()[1])
         return { "error" : "Error al retornar informacion de ususarios" }
@@ -347,14 +347,14 @@ def update_changes_bd(data):
         return result
     except:
         print(sys.exc_info())
-        return { 'error', 'error actualizando data' }, 400
+        return { 'error': 'error actualizando data' }, 400
 
 def getinfo_db_main(data):
     try:
         return requestinfo_db_main(data['clasificacion'], data['year'], data['month'], data['bpu'], data['brand_category'], data['application_form'])
     except:
         print(sys.exc_info())
-        return { 'error', 'error actualizando data' }, 400
+        return { 'error': 'error actualizando data' }, 400
 
 def update_db_main(data):
     try:
@@ -370,17 +370,37 @@ def update_db_main(data):
         return update
     except:
         print(sys.exc_info())
-        return { 'error', 'error actualizando data' }, 400
+        return { 'error': 'error actualizando data' }, 400
 
 def request_cargar_db_main():
     try:
         data = request_data_last_id()
         curr_month = f'{datetime.now().strftime("%Y%m")}'
         if data == [] or data[0]["id"] < curr_month :
-            return { 'error', 'no se encontro data en el mes actual' }, 400
+            return { 'error': 'no se encontro data en el mes actual' }, 400
         else:
             del_res = delete_db_main_id(data[0]["id"])
             res = insert_data_db_main(data)
-            return { 'ok', f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
+            return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
     except:
-        return { 'error', 'error cargando nuevos datos' }, 400
+        return { 'error': 'error cargando nuevos datos' }, 400
+
+def getInfoTimeline(permissionID, timelineID):
+    try:
+        res = requestinfo_timeline(permissionID, timelineID)
+        if res:
+            return res
+        else:
+            return { 'error': 'error en la busqueda de informacion' }, 400
+    except:
+        return { 'error': 'error en la busqueda de informacion' }, 400
+
+def setInfoTimeline(data):
+    try:
+        res = request_setinfo_timeline()
+        if res:
+            return res
+        else:
+            return { 'error': 'error en el retorno de informacion' }, 400
+    except:
+        return { 'error': 'error en la busqueda de informacion' }, 400

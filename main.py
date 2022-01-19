@@ -12,7 +12,7 @@ from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
 from api.routes.data import AddRow, CargarDBMain, GetData, DeleteData, CloneData, GetInfoDB_Main, UpdateDB_Main, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
-
+from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
@@ -87,6 +87,9 @@ api.add_resource(ChangePassword, '/api/change_pwd')
 # permissions
 api.add_resource(GetPermissions, '/api/get_permission')
 api.add_resource(UpdatePermissions, '/api/update_permissions')
+# timeline
+api.add_resource(GetInfoTimeline, '/api/getinfo_timeline')
+api.add_resource(SetInfoTimeline, '/api/setinfo_timeline')
 # visuals
 api.add_resource(GetVisualBD, '/api/getVisualBD')
 api.add_resource(GetBDHistorico, '/api/get_historico')
