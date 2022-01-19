@@ -1253,8 +1253,9 @@ def requestinfo_timeline(permissionID, timelineID):
         }
         """
         res = queryHasura(query, {'permissionID': permissionID, 'timelineID': timelineID})
-        permissions = res['data']['permissions'][0]['isBlocked']
-        timeline = res['data']['timeline'][0]['estado']
+        print(res)
+        permissions = res['data']['Permissions'][0]['isBlocked']
+        timeline = res['data']['Timeline'][0]['estado']
         return { 'isBlocked': permissions, 'estado': timeline }
     except:
         return {}
