@@ -7,7 +7,7 @@ from api.utils.functions import getInfoTimeline, setInfoTimeline
 
 class GetInfoTimeline(Resource):
     @jwt_required()
-    def get(self):
+    def post(self):
         data = request.json.get('data', {})
         if data:
             return getInfoTimeline(data['permissionID'], data['timelineID'])
