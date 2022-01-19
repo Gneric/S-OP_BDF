@@ -1265,20 +1265,23 @@ def requestinfo_timeline(permissionID, timelineID):
 def request_setinfo_timeline(data):
     try:
         permission = data['permission']
-        timeline = data['timeline']
-        query = """
-        mutation MyMutation($permissionID: Int, $isBlocked: Int, $estado: Int, $timelineID: Int) {
-            update_Permissions(where: {permissionID: {_eq: $permissionID}}, _set: {isBlocked: $isBlocked}) {
-                affected_rows
+        if permission != 0:
+            timeline = data['timeline']
+            query = """
+            mutation MyMutation($permissionID: Int, $isBlocked: Int, $estado: Int, $timelineID: Int) {
+                update_Permissions(where: {permissionID: {_eq: $permissionID}}, _set: {isBlocked: $isBlocked}) {
+                    affected_rows
+                }
+                update_Timeline(where: {id: {_eq: $timelineID}}, _set: {estado: $estado}) {
+                    affected_rows
+                }
             }
-            update_Timeline(where: {id: {_eq: $timelineID}}, _set: {estado: $estado}) {
-                affected_rows
-            }
-        }
-        """
-        res = queryHasura(query, { 'permissionID' : permission['id'], 'isBlocked': permission['isBLocked'], 'estado': timeline['estado'], 'timelineID': timeline['timelineID']})
-        rows = res['data']['update_Permissions']['affected_rows'] + res['data']['update_Timeline']['affected_rows']
-        if rows == 2:
-            return { 'result' : 'ok' }
+            """
+            res = queryHasura(query, { 'permissionID' : permission['id'], 'isBlocked': permission['isBLocked'], 'estado': timeline['estado'], 'timelineID': timeline['timelineID']})
+            rows = res['data']['update_Permissions']['affected_rows'] + res['data']['update_Timeline']['affected_rows']
+            if rows == 2:
+                return { 'result' : 'ok' }
+        else:
+            return {}
     except:
         return {}

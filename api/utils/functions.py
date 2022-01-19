@@ -397,7 +397,7 @@ def getInfoTimeline(permissionID, timelineID):
 
 def setInfoTimeline(data):
     try:
-        res = request_setinfo_timeline()
+        res = request_setinfo_timeline(data)
         if res:
             return res
         else:
