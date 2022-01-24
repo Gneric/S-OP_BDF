@@ -1,17 +1,21 @@
+import sys
+import json
+from api.utils.hasura_api import request_Maestro_productos
+
 def dataCheck(data):
-    print('Data check')
-    with open('readme.txt', 'w') as f:
-        f.write(data)
+    json_data = json.loads(data)
+    productos = request_Maestro_productos()
     err = []
-    for row in list(data):
-        index = data.index(row)
-        if index == 3:
-            print('Index :', index)
-            print('Row : ', row)
-            print(f'ROW {3} : {row}')
-        # Check data
-        # if row.get('nart', 'N/A') == False:
-        #     err.append({ 'fila': index, 'columna': 'NART', 'error': 'Nart vacio' })
-        # if row.get('cantidad', 0) == False:
-        #     err.append({ 'fila': index, 'columna': 'CANTIDAD', 'error': 'Cantidad vacia o 0' })
+    try:
+        for row in json_data:
+            index = json_data.index(row)
+            if row.get('nart', 'N/A') == False:
+                err.append({ 'fila': index, 'columna': 'nart', 'error': 'Nart vacio' })
+            if row.get('cantidad', 0) == False:
+                err.append({ 'fila': index, 'columna': 'cantidad', 'error': 'Cantidad vacia o 0' })
+            nart = row.get('nart','') 
+            if nart not in productos:
+                err.append({ 'fila': index, 'columna': 'nart', 'error': 'nart no encontrado en Maestro de productos' })
+    except:
+        print(sys.exc_info())
     return err

@@ -2,7 +2,7 @@ import sys
 from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
-from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, update_changes_bd, update_db_main
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, update_changes_bd, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -168,16 +168,9 @@ class UploadExcel(Resource):
             if checkFiles() == 0:
                 return { "error" : 'No files saved' }, 400
             else:                   
-                res, res_check = checkExcelFiles(int(area_id), year, month, current_user)
-                if res_check == "error":
-                    cleanDataFolder()
-                    return { "error" : res }, 400
-                if res == "":
-                    cleanDataFolder()
-                    return { "error" : "unknown error" }, 400
-                else:
-                    cleanDataFolder()
-                    return { "result" : res }, 200
+                res = checkExcelFiles(int(area_id), year, month, current_user)
+                cleanDataFolder()
+                return { "result" : res }, 200
         except:
             cleanDataFolder()
             return { 'Error' : str(sys.exc_info()) }, 400
@@ -214,3 +207,8 @@ class CargarDBMain(Resource):
         current_user = get_jwt_identity()
         return request_cargar_db_main()
         
+class CerrarMesDBMain(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        return request_cerrar_mes()

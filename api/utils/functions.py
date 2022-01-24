@@ -32,38 +32,33 @@ def checkExcelFiles(area_id, year, month, current_user):
         for sheet in xl.sheet_names:
             if sheet == 'Hoja1' or sheet == db_table_area[str(area_id)]:
                 df = pd.read_excel(f, sheet)
+                res = {}
                 if area_id == 1:
                     res = Loadbaseline(df, year, month)
-                    if res != "":
-                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "BASELINE"})
-                    return 
                 if area_id == 2:
                     res = LoadLaunch(df, year, month)
-                    if res != "":
-                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "LAUNCH"})
-                    return 
                 if area_id == 3:
                     res = LoadPromo(df, year, month)
-                    if res != "":
-                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "PROMO"})
-                    return 
                 if area_id == 4:
                     res = LoadValorizacion(df, year, month)
-                    if res != "":
-                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "VALORIZACION"})
-                    return 
                 if area_id == 5:
                     res = LoadShoppers(df, year, month)
-                    if res != "":
-                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "SHOPPER"})
-                    return 
                 if area_id == 9:
-                    res = LoadForecast(df, year, month)
-                    if res != "":
-                        audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": "FORECAST"})
-                    return 
+                    res = LoadForecast(df, year, month) 
                 else:
-                    return "El Area ID enviado no se encuentra en el listado de IDs aprovados", "error"
+                    return { 'error': 'El Area ID enviado no se encuentra en el listado de IDs aprovados' }, 400
+
+                err_check = res.get('error', False)
+                err_details = res.get('details',[])
+                err_msg = res.get('message', '')
+                if err_check:
+                    if err_details:
+                        return { 'error': err_msg, 'details': err_details }
+                    else:
+                        return { 'error': err_msg }
+                else:
+                    audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
+                    return { 'result' : 'ok' }
             else:
                 return f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}", "error"
 
@@ -382,6 +377,14 @@ def request_cargar_db_main():
             del_res = delete_db_main_id(data[0]["id"])
             res = insert_data_db_main(data)
             return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
+    except:
+        return { 'error': 'error cargando nuevos datos' }, 400
+
+def request_cerrar_mes():
+    try:
+        data = request_data_last_id()
+        del_res = backup_db_main(data)
+        return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
 

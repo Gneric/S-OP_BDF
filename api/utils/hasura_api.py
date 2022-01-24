@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from itsdangerous import exc
 import pandas as pd
 from os import error
 import requests
@@ -1225,6 +1226,21 @@ def insert_data_db_main(data):
         print(sys.exc_info())
         return 0
 
+def backup_db_main(data):
+    try:
+        query = """
+        mutation MyMutation($data: [Cierre_mes_sop_insert_input!] = {}) {
+        insert_Cierre_mes_sop(objects: $data) {
+            affected_rows
+        }
+        }
+        """
+        res = queryHasura(query, {'data':data})
+        return res["data"]["delete_DB_Main"]["affected_rows"]
+    except:
+        print(sys.exc_info())
+        return 0
+
 def delete_db_main_id(data):
     try:
         query = """
@@ -1234,7 +1250,7 @@ def delete_db_main_id(data):
         }
         }
         """
-        res = queryHasura(query, {'data':data})
+        res = queryHasura(query, {'eq': data})
         return res["data"]["delete_DB_Main"]["affected_rows"]
     except:
         print(sys.exc_info())
@@ -1301,3 +1317,13 @@ def request_setinfo_timeline(data):
             return {}
     except:
         return {}
+
+def request_Maestro_productos():
+    try:
+        q = "query MyQuery {Maestro_productos(distinct_on: Material) { Material } } "
+        res = queryHasura(q)
+        p = [  x['Material'] for x in res['data']["Maestro_productos"] ]
+        return p
+    except:
+        print('err request_Maestro_productos :', sys.exc_info())
+        return []

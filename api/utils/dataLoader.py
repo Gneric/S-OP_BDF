@@ -24,17 +24,18 @@ def Loadbaseline(df, year, month):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
+        errors = dataCheck(result)
+        if errors:
+            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
         parsed = json.loads(result)
-        #dataCheck_res = dataCheck(json.dumps(parsed))
-        #res = ""
         res = sendDataBaseline(parsed)
-        return res, ""
+        return {'error': False, 'message': res, 'details': []}
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'", "error"
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'", 'details' : []}  
     except:
-        return "Error en el archivo, por favor revisar el modelo de carga", "error"
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
     
 def LoadLaunch(df, year, month):
     try:
@@ -51,15 +52,18 @@ def LoadLaunch(df, year, month):
         d1 = d1[d1['DESCRIPCION'].notna()]
         d1.columns = ["id","clasificacion","canal","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
+        errors = dataCheck(result)
+        if errors:
+            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
         parsed = json.loads(result)
         res = sendDataLaunch(parsed)
         return res, ""
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return f"No se encontraron las columna(s): {column_error} en el archivo 'LAUNCH'", "error"
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'LAUNCH'", 'details' : []}  
     except:
-        return str(sys.exc_info()), "error"
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
 
 def LoadPromo(df, year, month):
     try:
@@ -78,15 +82,18 @@ def LoadPromo(df, year, month):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
+        errors = dataCheck(result)
+        if errors:
+            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
         parsed = json.loads(result)
         res = sendDataPromo(parsed)
         return res, ""
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return f"No se encontraron las columna(s): {column_error} en el archivo 'PROMO'", "error"
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'PROMO'", 'details' : []}  
     except:
-        return str(sys.exc_info()), "error"
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
 
 def LoadValorizacion(df, year, month):
     try:
@@ -107,7 +114,10 @@ def LoadValorizacion(df, year, month):
         d1 = d1[d1['QUANTITY'].notna()]
         d1 = d1[d1['BRAND CATEGORY'].notna()]
         d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad"]
-        result = d1.to_json(orient="records")   
+        result = d1.to_json(orient="records")
+        errors = dataCheck(result)
+        if errors:
+            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }   
         parsed = json.loads(result)
         print('result : ', result)
         res = sendDataValorizacion(parsed)
@@ -115,9 +125,9 @@ def LoadValorizacion(df, year, month):
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return f"No se encontraron las columna(s): {column_error} en el archivo 'VALORIZACION'", "error"
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'VALORZACION'", 'details' : []}  
     except:
-        return str(sys.exc_info()), "error"
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
 
 def LoadShoppers(df, year, month):
     try:
@@ -136,15 +146,18 @@ def LoadShoppers(df, year, month):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
+        errors = dataCheck(result)
+        if errors:
+            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
         parsed = json.loads(result)
         res = sendDataShoppers(parsed)
         return res, ""
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return f"No se encontraron las columna(s): {column_error} en el archivo 'SHOPPERS'", "error"
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'SHOPPER'", 'details' : []}  
     except:
-        return str(sys.exc_info()), "error"
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
 
 
 def LoadForecast(df, year, month):
@@ -162,13 +175,16 @@ def LoadForecast(df, year, month):
         result = d1.to_json(orient="records")
         parsed = json.loads(result)
         res = sendDataForecast(parsed)
+        errors = dataCheck(result)
+        if errors:
+            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
         return res, ""
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'", "error"
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'FORECAST'", 'details' : []}  
     except:
-        return str(sys.exc_info()), "error"
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
 
 
 def createExcelFile(values, column_list, file_id, data_path):

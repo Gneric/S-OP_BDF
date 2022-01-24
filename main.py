@@ -11,7 +11,7 @@ from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.data import AddRow, CargarDBMain, GetData, DeleteData, CloneData, GetInfoDB_Main, UpdateDB_Main, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
+from api.routes.data import AddRow, CargarDBMain, CerrarMesDBMain, GetData, DeleteData, CloneData, GetInfoDB_Main, UpdateDB_Main, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
 from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
 
 app = Flask(__name__)
@@ -75,6 +75,7 @@ api.add_resource(GetInfoMes, '/api/get_info')
 api.add_resource(UpdateDbData, '/api/update_inputs')
 api.add_resource(AddRow, '/api/new_row')
 # data - DB_Main
+api.add_resource(CerrarMesDBMain, '/api/cerrar_db_main')
 api.add_resource(CargarDBMain, '/api/cargar_db_main')
 api.add_resource(GetInfoDB_Main, '/api/info_db_main')
 api.add_resource(UpdateDB_Main, '/api/update_db_main')
