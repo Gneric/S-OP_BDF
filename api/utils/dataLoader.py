@@ -9,7 +9,7 @@ import xlsxwriter
 from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
 from api.utils.rowsCheker import dataCheck
 
-def  Loadbaseline(df, year, month):
+def Loadbaseline(df, year, month):
     try:
         print('LoadBaseline')
         df = df.melt(id_vars = ["CLASIFICACION", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
@@ -29,13 +29,13 @@ def  Loadbaseline(df, year, month):
             return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
-        return {'error': False, 'message': res, 'details': []}
+        return {'error': False, 'message': res}
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'", 'details' : []}  
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'"}  
     except:
-        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga" }
     
 def LoadLaunch(df, year, month):
     try:
@@ -202,9 +202,9 @@ def createTemplate(filename, template_path, data_path, year, month):
         file_path = join(template_path, filename)
         df = pd.read_excel(file_path)
         month_list = []
-        curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
+        curr_month = datetime.strptime("01/"+month+"/"+year, "%d/%m/%Y")
         for _ in range(18): # Avanzando año y medio
-            month_list.append(curr_month.strftime("%Y-%m-%d")) 
+            month_list.append(curr_month.strftime("%d/%m/%Y")) 
             next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
             curr_month = next_month
         df = df.reindex(columns=df.columns.tolist() + month_list)
@@ -222,11 +222,11 @@ def createTemplateValorizacion(filename, template_path, data_path, year, month):
         file_path = join(template_path, filename)
         df = pd.read_excel(file_path)
         month_list = ['BRAND CATEGORY','NART','DESCRIPCION','VALUES']
-        curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
+        curr_month = datetime.strptime("01/"+month+"/"+year, "%d/%m/%Y")
         df = pd.read_excel(file_path)
         df.loc[1, ['BRAND CATEGORY','NART','DESCRIPCION']] = ''
         for _ in range(18):
-            month_list.append(curr_month.strftime("%Y-%m"))
+            month_list.append(curr_month.strftime("%d/%m/%Y"))
             next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
             curr_month = next_month
         df = df.reindex(columns=month_list)
