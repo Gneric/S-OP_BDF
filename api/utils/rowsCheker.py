@@ -15,7 +15,7 @@ def dataCheck(data):
                 err.append({ 'fila': index, 'columna': 'cantidad', 'error': 'Cantidad vacia o 0' })
             nart = row.get('nart','') 
             if nart not in productos:
-                err.append({ 'fila': index, 'columna': 'nart', 'error': 'nart no encontrado en Maestro de productos' })
+                err.append({ 'fila': index, 'columna': 'nart', 'error': f'nart {nart} no encontrado en Maestro de productos' })
     except:
         print(sys.exc_info())
     return err

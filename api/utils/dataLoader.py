@@ -9,7 +9,7 @@ import xlsxwriter
 from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
 from api.utils.rowsCheker import dataCheck
 
-def Loadbaseline(df, year, month):
+def  Loadbaseline(df, year, month):
     try:
         print('LoadBaseline')
         df = df.melt(id_vars = ["CLASIFICACION", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
