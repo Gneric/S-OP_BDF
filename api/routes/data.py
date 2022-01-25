@@ -167,7 +167,7 @@ class UploadExcel(Resource):
             else:                   
                 res = checkExcelFiles(int(area_id), year, month, current_user)
                 cleanDataFolder()
-                return { "result" : res }, 200
+                return res
         except:
             cleanDataFolder()
             return { 'Error' : str(sys.exc_info()) }, 400

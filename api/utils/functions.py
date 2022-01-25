@@ -35,15 +35,15 @@ def checkExcelFiles(area_id, year, month, current_user):
                 res = {}
                 if area_id == 1:
                     res = Loadbaseline(df, year, month)
-                if area_id == 2:
+                elif area_id == 2:
                     res = LoadLaunch(df, year, month)
-                if area_id == 3:
+                elif area_id == 3:
                     res = LoadPromo(df, year, month)
-                if area_id == 4:
+                elif area_id == 4:
                     res = LoadValorizacion(df, year, month)
-                if area_id == 5:
+                elif area_id == 5:
                     res = LoadShoppers(df, year, month)
-                if area_id == 9:
+                elif area_id == 9:
                     res = LoadForecast(df, year, month) 
                 else:
                     return { 'error': 'El Area ID enviado no se encuentra en el listado de IDs aprovados' }, 400
@@ -53,14 +53,14 @@ def checkExcelFiles(area_id, year, month, current_user):
                 err_msg = res.get('message', '')
                 if err_check:
                     if err_details:
-                        return { 'error': err_msg, 'details': err_details }, 400
+                        return { 'error': err_msg, 'details': err_details }
                     else:
-                        return { 'error': err_msg }, 400
+                        return { 'error': err_msg }
                 else:
                     audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
                     return { 'result' : 'ok' }
             else:
-                return f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}", "error"
+                return { 'error': f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}" }, 400
 
 def getData(id, area_id):
     if area_id == 1:
