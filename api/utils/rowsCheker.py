@@ -10,10 +10,11 @@ def dataCheck(data):
         for row in json_data:
             index = json_data.index(row)
             if row.get('nart', 'N/A') == False:
-                err.append({ 'fila': index, 'columna': 'nart', 'error': 'Nart vacio' })
+                err.append({ 'columna': 'nart', 'error': 'Nart vacio' })
             nart = row.get('nart','')
             if nart not in productos:
-                err.append({ 'fila': index, 'columna': 'nart', 'error': f'nart {nart} no encontrado en Maestro de productos' })
+                err.append({ 'columna': 'nart', 'error': f'nart {nart} no encontrado en Maestro de productos' })
     except:
         print(sys.exc_info())
-    return err
+    new_err = [ dict(t) for t in {tuple(d.items()) for d in err} ]
+    return new_err

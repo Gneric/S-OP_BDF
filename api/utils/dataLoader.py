@@ -35,6 +35,7 @@ def Loadbaseline(df, year, month):
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
         return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'BASELINE'"}  
     except:
+        print('Error load :', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga" }
     
 def LoadLaunch(df, year, month):
@@ -61,9 +62,10 @@ def LoadLaunch(df, year, month):
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'LAUNCH'", 'details' : []}  
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'LAUNCH'"}  
     except:
-        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
+        print('Error load :', sys.exc_info())
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
 def LoadPromo(df, year, month):
     try:
@@ -91,9 +93,10 @@ def LoadPromo(df, year, month):
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'PROMO'", 'details' : []}  
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'PROMO'"}  
     except:
-        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
+        print('Error load :', sys.exc_info())
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
 def LoadValorizacion(df, year, month):
     try:
@@ -125,9 +128,10 @@ def LoadValorizacion(df, year, month):
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'VALORZACION'", 'details' : []}  
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'VALORZACION'"}  
     except:
-        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
+        print('Error load :', sys.exc_info())
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
 def LoadShoppers(df, year, month):
     try:
@@ -155,9 +159,10 @@ def LoadShoppers(df, year, month):
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'SHOPPER'", 'details' : []}  
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'SHOPPER'"}  
     except:
-        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
+        print('Error load :', sys.exc_info())
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
 
 def LoadForecast(df, year, month):
@@ -182,9 +187,10 @@ def LoadForecast(df, year, month):
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
-        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'FORECAST'", 'details' : []}  
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'FORECAST'"}  
     except:
-        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga", 'details' : [] }
+        print('Error load :', sys.exc_info())
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga" }
 
 
 def createExcelFile(values, column_list, file_id, data_path):
