@@ -29,13 +29,10 @@ class DeleteData(Resource):
     def post(self):
         try:
             current_user = get_jwt_identity()
-            if 'year' in request.form.keys():
-                year = str(request.form['year'])
-            if 'month' in request.form.keys():
-                month = str(request.form['month'])
-            if 'area_id' in request.form.keys():
-                area_id = request.form["area_id"]
-            else:
+            year = request.json.get('year','')
+            month = request.json.get('month', '')
+            area_id = request.json.get('area_id', '')
+            if area_id == "" or month == "" or year == "":
                 return 'No se encuentran todas las varaibles necesarias', 400
             res = checkDeleteTable(area_id, year, month, current_user)
             if res == "":
