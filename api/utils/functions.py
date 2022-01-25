@@ -53,9 +53,9 @@ def checkExcelFiles(area_id, year, month, current_user):
                 err_msg = res.get('message', '')
                 if err_check:
                     if err_details:
-                        return { 'error': err_msg, 'details': err_details }
+                        return { 'error': err_msg, 'details': err_details }, 400
                     else:
-                        return { 'error': err_msg }
+                        return { 'error': err_msg }, 400
                 else:
                     audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
                     return { 'result' : 'ok' }
