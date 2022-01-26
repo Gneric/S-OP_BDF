@@ -411,3 +411,13 @@ def setInfoTimeline(data):
             return { 'error': 'error en el retorno de informacion' }, 400
     except:
         return { 'error': 'error en la busqueda de informacion' }, 400
+
+def request_info_cobertura():
+    try:
+        res = request_cobertura()
+        if res:
+            return { 'result': res }
+        else:
+            return { 'error': 'error al retornar informacion' }, 400
+    except:
+        return { 'error': 'error haciendo la peticion de informacion' }, 400

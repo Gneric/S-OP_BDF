@@ -9,7 +9,7 @@ from api.routes.login import LogIn
 from api.routes.tests import ActionTest
 from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
-from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
+from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
 from api.routes.data import AddRow, CargarDBMain, CerrarMesDBMain, GetData, DeleteData, CloneData, GetInfoDB_Main, UpdateDB_Main, UpdateDbData, UploadExcel, GetTemplates, GetInfoMes
 from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
@@ -100,6 +100,7 @@ api.add_resource(NetSalesxPBU, '/api/salesxbpu')
 api.add_resource(DemandSimulation, '/api/demand_simulation')
 api.add_resource(FCSimulation, '/api/fc_simulation')
 api.add_resource(GraphDataset, '/api/graph_dataset')
+api.add_resource(GetCobertura, '/api/cobertura_graph')
 # tests
 api.add_resource(ActionTest, '/api/test_action_hasura')
 

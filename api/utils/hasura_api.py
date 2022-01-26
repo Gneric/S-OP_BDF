@@ -1327,3 +1327,29 @@ def request_Maestro_productos():
     except:
         print('err request_Maestro_productos :', sys.exc_info())
         return []
+
+def request_cobertura():
+    try:
+        q = """
+        query MyQuery {
+            rows: Cobertura {
+                codigo_item
+                BrandCategory
+                SPGR
+                Descripcion
+                FC
+                STOCK
+                COBERTURAINICIAL
+                TOTALINGRESO
+                COBFINAL
+                IMPACTO
+                netsales
+                NETSALESIMPACTO
+            }
+        }
+        """
+        res = queryHasura(q)
+        return res['data']['rows']
+    except:
+        print('error request_cobertura :', sys.exc_info())
+        return []
