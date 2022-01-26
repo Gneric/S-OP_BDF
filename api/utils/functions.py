@@ -383,8 +383,12 @@ def request_cargar_db_main():
 def request_cerrar_mes():
     try:
         data = request_data_last_id()
-        del_res = backup_db_main(data)
-        return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
+        curr_month = f'{datetime.now().strftime("%Y%m")}'
+        if data == [] or data[0]["id"] < curr_month :
+            del_res = backup_db_main(data)
+            return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
+        else:
+            return { 'error': 'no se encontraron datos del mes en curso' }, 400
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
 
