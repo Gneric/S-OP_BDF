@@ -26,11 +26,11 @@ def Loadbaseline(df, year, month):
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
-        if check_result['error_check']:
+        if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
-        if check_result['warn_check']:
+        if check_result['warn_check'] == True:
             return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
         return { 'error': False, 'message': res}
     except KeyError as err:
