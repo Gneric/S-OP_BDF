@@ -30,9 +30,9 @@ def Loadbaseline(df, year, month):
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
-        if check_result['warn_check'] == True:
+        if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
-        return { 'error': False, 'message': res}
+        return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -56,12 +56,14 @@ def LoadLaunch(df, year, month):
         d1 = d1[d1['DESCRIPCION'].notna()]
         d1.columns = ["id","clasificacion","canal","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
-        errors = dataCheck(result)
-        if errors:
-            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
+        check_result = dataCheck(result)
+        if check_result['error_check'] == True:
+            return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
         res = sendDataLaunch(parsed)
-        return res, ""
+        if check_result['warning_check'] == True:
+            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+        return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -87,12 +89,14 @@ def LoadPromo(df, year, month):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
-        errors = dataCheck(result)
-        if errors:
-            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
+        check_result = dataCheck(result)
+        if check_result['error_check'] == True:
+            return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
         res = sendDataPromo(parsed)
-        return res, ""
+        if check_result['warning_check'] == True:
+            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+        return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -121,13 +125,14 @@ def LoadValorizacion(df, year, month):
         d1 = d1[d1['BRAND CATEGORY'].notna()]
         d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad"]
         result = d1.to_json(orient="records")
-        errors = dataCheck(result)
-        if errors:
-            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }   
+        check_result = dataCheck(result)
+        if check_result['error_check'] == True:
+            return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
-        print('result : ', result)
         res = sendDataValorizacion(parsed)
-        return res, ""
+        if check_result['warning_check'] == True:
+            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+        return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -153,12 +158,14 @@ def LoadShoppers(df, year, month):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
-        errors = dataCheck(result)
-        if errors:
-            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
+        check_result = dataCheck(result)
+        if check_result['error_check'] == True:
+            return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
         res = sendDataShoppers(parsed)
-        return res, ""
+        if check_result['warning_check'] == True:
+            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+        return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -181,12 +188,14 @@ def LoadForecast(df, year, month):
         d1.fillna('N/A', inplace=True)
         d1.is_copy = False
         result = d1.to_json(orient="records")
+        check_result = dataCheck(result)
+        if check_result['error_check'] == True:
+            return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
         res = sendDataForecast(parsed)
-        errors = dataCheck(result)
-        if errors:
-            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
-        return res, ""
+        if check_result['warning_check'] == True:
+            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+        return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
