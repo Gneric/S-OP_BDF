@@ -62,7 +62,7 @@ def LoadLaunch(df, year, month):
         parsed = json.loads(result)
         res = sendDataLaunch(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
         return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
@@ -95,7 +95,7 @@ def LoadPromo(df, year, month):
         parsed = json.loads(result)
         res = sendDataPromo(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
         return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
@@ -131,7 +131,7 @@ def LoadValorizacion(df, year, month):
         parsed = json.loads(result)
         res = sendDataValorizacion(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
         return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
@@ -164,7 +164,7 @@ def LoadShoppers(df, year, month):
         parsed = json.loads(result)
         res = sendDataShoppers(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
         return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
@@ -194,7 +194,7 @@ def LoadForecast(df, year, month):
         parsed = json.loads(result)
         res = sendDataForecast(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
         return { 'error': False, 'message': res }
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
