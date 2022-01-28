@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from re import M
 from itsdangerous import exc
 import pandas as pd
 from os import error
@@ -1326,6 +1327,45 @@ def request_Maestro_productos():
         return p
     except:
         print('err request_Maestro_productos :', sys.exc_info())
+        return []
+
+def update_maestro_productos(data):
+    try:
+        q = """
+        mutation MyMutation($objects: [Maestro_productos_insert_input!] = {}) {
+            insert_Maestro_productos(objects: $objects, on_conflict: {constraint: Maestro_productos_pkey, update_columns: [ApplicationForm, BG, SPGR, TIPO, Descripcion, BrandCategory, Portafolio, BPU, EAN]}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q, {'objects': data})
+        return res['data']['rowsaffected']
+    except:
+        print('error update_maestro_productos : ', sys.exc_info())
+        return 0
+
+def request_productos_otros():
+    try:
+        q = """
+        query MyQuery {
+            Productos_otros {
+                BG
+                Material
+                SPGR
+                TIPO
+                Descripcion
+                Portafolio
+                BPU
+                BrandCategory
+                ApplicationForm
+                EAN
+            }
+            }
+        """
+        res = queryHasura(q)
+        return res['data']['Productos_otros']
+    except:
+        print('error request_productos_otros :', sys.exc_info())
         return []
 
 def request_cobertura():

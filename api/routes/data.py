@@ -2,10 +2,13 @@ import sys
 from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
-from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, update_changes_bd, update_db_main
+from api.utils.dataLoader import createFileProductosOtros
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, update_changes_bd, update_changes_maestro_productos, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
+
+from api.utils.hasura_api import request_productos_otros
 
 class GetData(Resource):
     @jwt_required()
@@ -92,6 +95,26 @@ class GetTemplates(Resource):
         except:
             return { 'error': 'error creando template' }, 400
 
+class GetProductosSinClasificar(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        cleanDataFolder()
+        data = request_productos_otros()
+        if data:
+            res = createFileProductosOtros(data)
+            if res:
+                data_path = join(getcwd(),'api','data')
+                result = send_from_directory(
+                    data_path, res, as_attachment=True, environ=request.environ
+                )
+                result.headers['filename'] = res
+                return result
+            else:
+                return { 'error': 'error en la generacion del archivo ProductosSinClasificar' }, 400
+        else:
+            return { 'error': 'error al obtener datos de productos otros' }, 400
+
 class GetInfoMes(Resource):
     @jwt_required()
     def post(self):
@@ -115,6 +138,16 @@ class UpdateDbData(Resource):
         if data == '':
             return { 'error': 'error en la lectura de data' }, 400
         res = update_changes_bd(data)
+        return res
+
+class UpdateDbMaestro(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.json.get('data', '')
+        if data == '':
+            return { 'error': 'error en la lectura de data' }, 400
+        res = update_changes_maestro_productos(data)
         return res
 
 class AddRow(Resource):

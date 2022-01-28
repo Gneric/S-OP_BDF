@@ -344,6 +344,25 @@ def update_changes_bd(data):
         print(sys.exc_info())
         return { 'error': 'error actualizando data' }, 400
 
+def update_changes_maestro_productos(data):
+    try:
+        res = update_maestro_productos(data)
+        if res:
+            return { 'result': 'ok' }
+        else:
+            return { 'error' : 'error en la actualizacion de datos de Maestro Productos' }, 400
+    except:
+        print(sys.exc_info())
+        return { 'error': 'error actualizando data' }, 400
+
+def request_productos_otros():
+    try:
+        data = request_productos_otros()
+        return data
+    except:
+        print(sys.exc_info())
+        ""
+
 def getinfo_db_main(data):
     try:
         return requestinfo_db_main(data['clasificacion'], data['year'], data['month'], data['bpu'], data['brand_category'], data['application_form'])

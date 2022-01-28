@@ -1,5 +1,6 @@
 import sys
 import json
+from openpyxl import Workbook
 import pandas as pd
 import numpy as np
 from datetime import date, datetime, timedelta
@@ -258,4 +259,43 @@ def createTemplateValorizacion(filename, template_path, data_path, year, month):
         return filename
     except:
         print(sys.exc_info()[1])
+        return ""
+
+def createFileProductosOtros(data):
+    try:
+        filename = "Productos_sin_clasificar.xlsx"
+        workbook = xlsxwriter.Workbook(f"api/data/{filename}")
+        cell_format = workbook.add_format()
+        cell_format.set_text_wrap()
+        cell_format.set_align('top')
+        cell_format.set_align('left=')
+        worksheet = workbook.add_worksheet("NoClasificados")
+        keys = list(data[0].keys())
+        worksheet.write('A1',keys[0])
+        worksheet.write('B1',keys[1])
+        worksheet.write('C1',keys[2])
+        worksheet.write('D1',keys[3])
+        worksheet.write('E1',keys[4])
+        worksheet.write('F1',keys[5])
+        worksheet.write('G1',keys[6])
+        worksheet.write('H1',keys[7])
+        worksheet.write('I1',keys[8])
+        worksheet.write('J1',keys[9])
+        rowIndex = 2
+        for row in data:
+            worksheet.write(f'A{rowIndex}', row['BG'])
+            worksheet.write(f'B{rowIndex}', row['Material'])
+            worksheet.write(f'C{rowIndex}', row['SPGR'])
+            worksheet.write(f'D{rowIndex}', row['TIPO'])
+            worksheet.write(f'E{rowIndex}', row['Descripcion'])
+            worksheet.write(f'F{rowIndex}', row['Portafolio'])
+            worksheet.write(f'G{rowIndex}', row['BPU'])
+            worksheet.write(f'H{rowIndex}', row['BrandCategory'])
+            worksheet.write(f'I{rowIndex}', row['ApplicationForm'])
+            worksheet.write(f'J{rowIndex}', row['EAN'])
+            rowIndex+=1
+        workbook.close()
+        return filename
+    except:
+        print('error createFileProductosOtros :', sys.exc_info())
         return ""
