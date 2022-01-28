@@ -50,12 +50,16 @@ def checkExcelFiles(area_id, year, month, current_user):
 
                 err_check = res.get('error', False)
                 err_details = res.get('details',[])
+                warning_check = res.get('warning', False)
                 err_msg = res.get('message', '')
                 if err_check:
                     if err_details:
                         return { 'error': err_msg, 'details': err_details }, 400
                     else:
                         return { 'error': err_msg }, 400
+                elif warning_check:
+                    audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
+                    return { 'result': 'ok', 'warning': err_details }
                 else:
                     audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
                     return { 'result' : 'ok' }

@@ -25,12 +25,14 @@ def Loadbaseline(df, year, month):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad"]
         result = d1.to_json(orient="records")
-        errors = dataCheck(result)
-        if errors:
-            return { 'error': True, 'message': 'Error en los datos enviados', 'details': errors }
+        check_result = dataCheck(result)
+        if check_result['error_check']:
+            return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
-        return {'error': False, 'message': res}
+        if check_result['warn_check']:
+            return { 'error': False, 'warning': True, 'message': 'Datos ingresados con errores', 'details': check_result['warnings'] }
+        return { 'error': False, 'message': res}
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
