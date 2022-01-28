@@ -47,7 +47,6 @@ def checkExcelFiles(area_id, year, month, current_user):
                     res = LoadForecast(df, year, month) 
                 else:
                     return { 'error': 'El Area ID enviado no se encuentra en el listado de IDs aprovados' }, 400
-                print('res :', res)
                 err_check = res.get('error', False)
                 err_details = res.get('details',[])
                 warning_check = res.get('warning', False)
