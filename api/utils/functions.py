@@ -58,10 +58,10 @@ def checkExcelFiles(area_id, year, month, current_user):
                         return { 'error': msg }, 400
                 elif warning_check:
                     audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
-                    return { 'result': 'ok', 'warning': err_details, 'file_id': msg }
+                    return { 'result': 'ok', 'warning': err_details, 'file_id': msg['file_id'] }
                 else:
                     audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
-                    return { 'result' : 'ok', 'warning': [], 'file_id': msg }
+                    return { 'result' : 'ok', 'warning': [], 'file_id': msg['file_id'] }
             else:
                 return { 'error': f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}" }, 400
 
