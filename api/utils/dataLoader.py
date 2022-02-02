@@ -34,8 +34,8 @@ def Loadbaseline(df, year, month, file_id):
         parsed = json.loads(result)
         res = sendDataBaseline(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
-        return { 'error': False, 'message': res }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'], 'file_data': res['file_data']}
+        return { 'error': False, 'message': res, 'file_data': res['file_data']}
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -67,8 +67,8 @@ def LoadLaunch(df, year, month, file_id):
         parsed = json.loads(result)
         res = sendDataLaunch(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
-        return { 'error': False, 'message': res }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'], 'file_data': res['file_data']}
+        return { 'error': False, 'message': res, 'file_data': res['file_data']}
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -102,8 +102,8 @@ def LoadPromo(df, year, month, file_id):
         parsed = json.loads(result)
         res = sendDataPromo(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
-        return { 'error': False, 'message': res }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'], 'file_data': res['file_data']}
+        return { 'error': False, 'message': res, 'file_data': res['file_data']}
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -140,8 +140,8 @@ def LoadValorizacion(df, year, month, file_id):
         parsed = json.loads(result)
         res = sendDataValorizacion(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
-        return { 'error': False, 'message': res }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'], 'file_data': res['file_data']}
+        return { 'error': False, 'message': res, 'file_data': res['file_data']}
     except KeyError as err:
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
@@ -175,8 +175,8 @@ def LoadShoppers(df, year, month, file_id):
         parsed = json.loads(result)
         res = sendDataShoppers(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
-        return { 'error': False, 'message': res }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'], 'file_data': res['file_data']}
+        return { 'error': False, 'message': res, 'file_data': res['file_data']}
     except KeyError as err:
         print('Error load Shopper:', sys.exc_info())
         error = str(err.__str__()).split(sep=": ")
@@ -210,8 +210,8 @@ def LoadForecast(df, year, month, file_id):
         parsed = json.loads(result)
         res = sendDataForecast(parsed)
         if check_result['warning_check'] == True:
-            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
-        return { 'error': False, 'message': res }
+            return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'], 'file_data': res['file_data']}
+        return { 'error': False, 'message': res, 'file_data': res['file_data']}
     except KeyError as err:
         print('Error load :', sys.exc_info())
         error = str(err.__str__()).split(sep=": ")
