@@ -11,7 +11,7 @@ from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.data import AddRow, CargarDBMain, CerrarMesDBMain, GetData, DeleteData, CloneData, GetInfoDB_Main, GetProductosSinClasificar, UpdateDB_Main, UpdateDbData, UpdateDbMaestro, UploadExcel, GetTemplates, GetInfoMes
+from api.routes.data import AddRow, CargarDBMain, CerrarMesDBMain, DeleteFileData, GetData, DeleteData, CloneData, GetInfoDB_Main, GetProductosSinClasificar, UpdateDB_Main, UpdateDbData, UpdateDbMaestro, UploadExcel, GetTemplates, GetInfoMes
 from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
 
 app = Flask(__name__)
@@ -65,6 +65,7 @@ def needs_fresh_token_loader(jwt_header):
 
 # root
 api.add_resource(Welcome, '/api/')
+
 # data
 api.add_resource(GetData, '/api/get_excel_data')
 api.add_resource(DeleteData, '/api/del_data')
@@ -72,6 +73,7 @@ api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(UploadExcel, '/api/upload_excel')
 api.add_resource(GetTemplates, '/api/getTemplate')
 api.add_resource(GetInfoMes, '/api/get_info')
+api.add_resource(DeleteFileData, '/api/del_file_data')
 api.add_resource(UpdateDbData, '/api/update_inputs')
 api.add_resource(UpdateDbMaestro, '/api/update_maestro')
 api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')

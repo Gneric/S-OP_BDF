@@ -5,6 +5,7 @@ from os.path import join
 import pandas as pd
 import bcrypt
 from datetime import date, datetime
+import time
 
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
@@ -26,25 +27,27 @@ def checkFiles():
 
 db_table_area = {"1":"baseline" ,"2":"launch", "3":"promo", "4":"valorizacion", "5":"shopper"}
 
-def checkExcelFiles(area_id, year, month, current_user):
+def checkExcelFiles(area_id, year, month, current_user, filename):
     for f in scandir(data_path):
         xl = pd.ExcelFile(f)
+        clasificacion = db_table_area[str(area_id)]
         for sheet in xl.sheet_names:
             if sheet == 'Hoja1' or sheet == db_table_area[str(area_id)]:
                 df = pd.read_excel(f, sheet)
                 res = {}
+                file_id = int(time.time())
                 if area_id == 1:
-                    res = Loadbaseline(df, year, month)
+                    res = Loadbaseline(df, year, month, file_id)
                 elif area_id == 2:
-                    res = LoadLaunch(df, year, month)
+                    res = LoadLaunch(df, year, month, file_id)
                 elif area_id == 3:
-                    res = LoadPromo(df, year, month)
+                    res = LoadPromo(df, year, month, file_id)
                 elif area_id == 4:
-                    res = LoadValorizacion(df, year, month)
+                    res = LoadValorizacion(df, year, month, file_id)
                 elif area_id == 5:
-                    res = LoadShoppers(df, year, month)
+                    res = LoadShoppers(df, year, month, file_id)
                 elif area_id == 9:
-                    res = LoadForecast(df, year, month) 
+                    res = LoadForecast(df, year, month, file_id) 
                 else:
                     return { 'error': 'El Area ID enviado no se encuentra en el listado de IDs aprovados' }, 400
                 err_check = res.get('error', False)
@@ -57,10 +60,12 @@ def checkExcelFiles(area_id, year, month, current_user):
                     else:
                         return { 'error': msg }, 400
                 elif warning_check:
-                    audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
+                    audit = audit_inputs({"file_id": file_id, "date": datetime.now().strftime('%m/%d/%Y'), "accion": "INSERT", "clasificacion": clasificacion, "user": current_user})
+                    reg_file = register_file({'file_id': file_id, "date": datetime.now().strftime('%m/%d/%Y'), "name": filename, "user": current_user })
                     return { 'result': 'ok', 'warning': err_details, 'file_id': msg['file_id'] }
                 else:
-                    audit_inputs({"id": current_user, "date": datetime.now(), "accion": "INSERT", "clasificacion": f'{db_table_area[str(area_id)]}'})
+                    audit = audit_inputs({"file_id": file_id, "date": datetime.now().strftime('%m/%d/%Y'), "accion": "INSERT", "clasificacion": clasificacion, "user": current_user})
+                    reg_file = register_file({'file_id': file_id, "date": datetime.now().strftime('%m/%d/%Y'), "name": filename, "user": current_user })
                     return { 'result' : 'ok', 'warning': [], 'file_id': msg['file_id'] }
             else:
                 return { 'error': f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}" }, 400
@@ -162,9 +167,9 @@ def getTemplates(year, month, area_id):
         if month == "":
             month = str(datetime.today().strftime('%m'))
         if db_table_area[str(area_id)] == 'valorizacion':
-            return createTemplateValorizacion(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
+            return createTemplateValorizacion(f"{db_table_area[str(area_id)]}", year, month)
         if db_table_area[str(area_id)] != 'valorizacion':
-            return createTemplate(f"{db_table_area[str(area_id)]}.xlsx", template_path, data_path, year, month)
+            return createTemplate(f"{db_table_area[str(area_id)]}", year, month)
     except:
         print(sys.exc_info()[1])
         return ""
@@ -443,3 +448,12 @@ def request_info_cobertura():
             return { 'error': 'error al retornar informacion' }, 400
     except:
         return { 'error': 'error haciendo la peticion de informacion' }, 400
+
+def delete_file_data(area_id, file_id):
+    try:
+        if area_id:
+            return delete_data_by_file_id(int(area_id), file_id)
+        else:
+            return { 'error': 'error obteniendo tabla del area enviada' }, 400
+    except:
+        return { 'error': 'error haciendo la peticion de eliminacion de data' }, 400

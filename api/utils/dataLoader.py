@@ -1,8 +1,10 @@
+from ftplib import ftpcp
 import sys
 import json
 from openpyxl import Workbook
 import pandas as pd
 import numpy as np
+import string
 from datetime import date, datetime, timedelta
 from os.path import join
 import xlsxwriter
@@ -10,20 +12,21 @@ import xlsxwriter
 from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
 from api.utils.rowsCheker import dataCheck
 
-def Loadbaseline(df, year, month):
+def Loadbaseline(df, year, month, file_id):
     try:
-        print('LoadBaseline')
+        print('LoadBaseline w file id :', file_id)
         df = df.melt(id_vars = ["CLASIFICACION", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
         df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month 
         df["KEY"] = str(year)+str(month)
-        d1 = df[["KEY","CLASIFICACION", "NART", "DESCRIPCION","YEAR","MONTH","QUANTITY"]]
+        df["FILE_ID"] = file_id
+        d1 = df[["KEY","CLASIFICACION", "NART", "DESCRIPCION","YEAR","MONTH","QUANTITY","FILE_ID"]]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['NART'].notna()]
         d1 = d1[d1['DESCRIPCION'].notna()]
         d1 = d1[d1['QUANTITY'].notna()]
-        d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad"]
+        d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad","file_id"]
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
@@ -41,20 +44,22 @@ def Loadbaseline(df, year, month):
         print('Error load :', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga" }
     
-def LoadLaunch(df, year, month):
+def LoadLaunch(df, year, month, file_id):
     try:
+        print('LoadLaunch w file id :', file_id)
         df = df.melt(id_vars = ["CLASIFICACION", "CANAL", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
         df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
-        d1 = df[["KEY","CLASIFICACION", "CANAL", "NART", "DESCRIPCION","YEAR","MONTH","QUANTITY"]]
+        df["FILE_ID"] = file_id
+        d1 = df[["KEY","CLASIFICACION", "CANAL", "NART", "DESCRIPCION","YEAR","MONTH","QUANTITY","FILE_ID"]]
         d1 = d1[d1['QUANTITY'].notna()]
         d1 = d1[d1['CANAL'].notna()]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['NART'].notna()]
         d1 = d1[d1['DESCRIPCION'].notna()]
-        d1.columns = ["id","clasificacion","canal","nart","descripcion","year","month","cantidad"]
+        d1.columns = ["id","clasificacion","canal","nart","descripcion","year","month","cantidad","file_id"]
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
@@ -72,14 +77,16 @@ def LoadLaunch(df, year, month):
         print('Error load :', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
-def LoadPromo(df, year, month):
+def LoadPromo(df, year, month, file_id):
     try:
         df = df.melt(id_vars = ["CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
         df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
-        d1 = df[["KEY","CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION", "YEAR", "MONTH", "QUANTITY"]]
+        df["FILE_ID"] = file_id
+        df["APPLICATION_FORM"] = df["APPLICATION_FORM"].replace([0,'','0'], 'N/A')
+        d1 = df[["KEY","CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION", "YEAR", "MONTH", "QUANTITY","FILE_ID"]]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['TIPO_PROMO'].notna()]
         d1 = d1[d1['CANAL'].notna()]
@@ -87,7 +94,7 @@ def LoadPromo(df, year, month):
         d1 = d1[d1['NART'].notna()]
         d1 = d1[d1['DESCRIPCION'].notna()]
         d1 = d1[d1['QUANTITY'].notna()]
-        d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
+        d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad","file_id"]
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
@@ -105,7 +112,7 @@ def LoadPromo(df, year, month):
         print('Error load :', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
-def LoadValorizacion(df, year, month):
+def LoadValorizacion(df, year, month, file_id):
     try:
         print('LoadValorizacion')
         new_header = map(lambda x,y: str(x) if str(y)=='nan' else str(x)+'|'+ str(y).upper(), pd.Series(list(df.columns)), pd.Series(list(df.iloc[0])))
@@ -120,10 +127,12 @@ def LoadValorizacion(df, year, month):
         data["YEAR"] = data["FECHA2"].dt.year
         data["MONTH"] = data["FECHA2"].dt.month
         data["KEY"] = str(year)+str(month)
-        d1 = data[["KEY","BRAND CATEGORY", "NART", "DESCRIPCION", "YEAR", "MONTH", "VALUE", "QUANTITY"]]
+        data["FILE_ID"] = file_id
+        data["BRAND CATEGORY"] = data["BRAND CATEGORY"].replace([0,'','0'], 'N/A')
+        d1 = data[["KEY","BRAND CATEGORY", "NART", "DESCRIPCION", "YEAR", "MONTH", "VALUE", "QUANTITY","FILE_ID"]]
         d1 = d1[d1['QUANTITY'].notna()]
         d1 = d1[d1['BRAND CATEGORY'].notna()]
-        d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad"]
+        d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad","file_id"]
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
@@ -141,14 +150,16 @@ def LoadValorizacion(df, year, month):
         print('Error load :', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
-def LoadShoppers(df, year, month):
+def LoadShoppers(df, year, month, file_id):
     try:
         df = df.melt(id_vars = ["CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
         df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
-        d1 = df[["KEY","CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION", "YEAR", "MONTH", "QUANTITY"]]
+        df["FILE_ID"] = file_id
+        df["APPLICATION_FORM"] = df["APPLICATION_FORM"].replace([0,'','0'], 'N/A')
+        d1 = df[["KEY","CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION", "YEAR", "MONTH", "QUANTITY","FILE_ID"]]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['TIPO_PROMO'].notna()]
         d1 = d1[d1['CANAL'].notna()]
@@ -156,7 +167,7 @@ def LoadShoppers(df, year, month):
         d1 = d1[d1['NART'].notna()]
         d1 = d1[d1['DESCRIPCION'].notna()]
         d1 = d1[d1['QUANTITY'].notna()]
-        d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad"]
+        d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad","file_id"]
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
@@ -167,19 +178,24 @@ def LoadShoppers(df, year, month):
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
         return { 'error': False, 'message': res }
     except KeyError as err:
+        print('Error load Shopper:', sys.exc_info())
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
         return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'SHOPPER'"}  
     except:
-        print('Error load :', sys.exc_info())
+        print('Error load Shopper:', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga"}
 
 
-def LoadForecast(df, year, month):
+def LoadForecast(df, year, month, file_id):
     try:
         df["id"] = str(year)+str(month)
-        d1 = df[["id","Input","CLASIF","BPU","Brand Category","Application Form","year","month","R&O","MSO","Net Sales S/. ('000)"]]
-        d1.columns = ["id","input","clasificacion","bpu","brand_category","application_form","year","month","r_o","mso","net_sales"]
+        df["FILE_ID"] = file_id
+        d1 = df[["id","Input","CLASIF","BPU","Brand Category","Application Form","year","month","R&O","MSO","Net Sales S/. ('000)","FILE_ID"]]
+        d1["BPU"] = d1["BPU"].replace([0,'','0'], 'N/A')
+        d1["Brand Category"] = d1["Brand Category"].replace([0,'','0'], 'N/A')
+        d1["Application Form"] = d1["Application Form"].replace([0,'','0'], 'N/A')
+        d1.columns = ["id","input","clasificacion","bpu","brand_category","application_form","year","month","r_o","mso","net_sales","file_id"]
         d1['year'].fillna(0,inplace=True)
         d1['month'].fillna(0,inplace=True)
         d1['r_o'].fillna(0,inplace=True)
@@ -197,6 +213,7 @@ def LoadForecast(df, year, month):
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
         return { 'error': False, 'message': res }
     except KeyError as err:
+        print('Error load :', sys.exc_info())
         error = str(err.__str__()).split(sep=": ")
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
         return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'FORECAST'"}  
@@ -215,61 +232,85 @@ def createExcelFile(values, column_list, file_id, data_path):
     except:
         return ""
 
-def createTemplate(filename, template_path, data_path, year, month):
+
+def checkColumnByRange(mnth):
+    num2alpha = dict(zip(range(1, 27), string.ascii_uppercase))
+    ltr = ""
+    fltr = ""
+    if mnth >= 53:
+        fltr = "B"
+        ltr = num2alpha[mnth-52]
+    if mnth > 26 and mnth < 53:
+        fltr = "A"
+        ltr = num2alpha[mnth-26]
+    if mnth <= 26:
+        ltr = num2alpha[mnth]
+    return fltr+ltr
+
+def createTemplate(filename, year, month):
     try:
-        file_path = join(template_path, filename)
-        df = pd.read_excel(file_path)
-        month_list = []
-        curr_month = datetime.strptime("01/"+month+"/"+year, "%d/%m/%Y")
-        for _ in range(18): # Avanzando año y medio
-            month_list.append(curr_month.strftime("%d/%m/%Y")) 
+        filename_w_ext = f"{filename}.xlsx"
+        print(filename)
+        workbook = xlsxwriter.Workbook(f'api/data/{filename_w_ext}')
+        worksheet = workbook.add_worksheet(filename)
+        if filename == 'promo' or filename == 'shopper':
+            mnth = 7
+            worksheet.write('A1','CLASIFICACION')
+            worksheet.write('B1','TIPO_PROMO')
+            worksheet.write('C1','CANAL')
+            worksheet.write('D1','APPLICATION_FORM')
+            worksheet.write('E1','NART')
+            worksheet.write('F1','DESCRIPCION')
+        elif filename == 'launch':
+            mnth = 5
+            worksheet.write('A1','CLASIFICACION')
+            worksheet.write('B1','CANAL')
+            worksheet.write('C1','NART')
+            worksheet.write('D1','DESCRIPCION')
+        else:
+            mnth = 4
+            worksheet.write('A1','CLASIFICACION')
+            worksheet.write('B1','NART')
+            worksheet.write('C1','DESCRIPCION')
+        curr_month = datetime.strptime(year+"-"+month+"-01", '%Y-%m-%d')
+        for _ in range(mnth, mnth+18):
+            date_format = workbook.add_format({'num_format': 'mm-yyyy'})
+            worksheet.write_datetime(f'{checkColumnByRange(_)}1', curr_month, date_format)
             next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
             curr_month = next_month
-        df = df.reindex(columns=df.columns.tolist() + month_list)
-        new_file_path = join(data_path, filename)
-        writer = pd.ExcelWriter(new_file_path, engine='xlsxwriter')
-        df.to_excel(writer, filename[0:-5], index=False)
-        writer.save()
-        return filename
+        workbook.close()
+        return filename_w_ext
     except:
         print(sys.exc_info()[1])
         return ""
 
-def createTemplateValorizacion(filename, template_path, data_path, year, month):
+def createTemplateValorizacion(filename, year, month):
     try:
-        file_path = join(template_path, filename)
-        df = pd.read_excel(file_path)
-        month_list = ['BRAND CATEGORY','NART','DESCRIPCION','VALUES']
-        curr_month = datetime.strptime("01/"+month+"/"+year, "%d/%m/%Y")
-        df = pd.read_excel(file_path)
-        df.loc[1, ['BRAND CATEGORY','NART','DESCRIPCION']] = ''
+        filename_w_ext = f"{filename}.xlsx"
+        workbook = xlsxwriter.Workbook(f'api/data/{filename_w_ext}')
+        worksheet = workbook.add_worksheet(filename)
+        worksheet.write('A1','BRAND CATEGORY')
+        worksheet.write('B1','NART')
+        worksheet.write('C1','DESCRIPCION')
+        mnth = 4
+        curr_month = datetime.strptime(year+"-"+month+"-01", '%Y-%m-%d')
         for _ in range(18):
-            month_list.append(curr_month.strftime("%d/%m/%Y"))
+            date_format = workbook.add_format({'num_format': 'mm-yyyy'})
+            worksheet.write_datetime(f'{checkColumnByRange(mnth)}1', curr_month, date_format)
+            worksheet.write_datetime(f'{checkColumnByRange(mnth+1)}1', curr_month, date_format)
+            worksheet.write_datetime(f'{checkColumnByRange(mnth+2)}1', curr_month, date_format)
+            worksheet.write_datetime(f'{checkColumnByRange(mnth+3)}1', curr_month, date_format)
+            worksheet.write(f'{checkColumnByRange(mnth)}2', 'price list')
+            worksheet.write(f'{checkColumnByRange(mnth+1)}2', 'discount')
+            worksheet.write(f'{checkColumnByRange(mnth+2)}2', 'rebate')
+            worksheet.write(f'{checkColumnByRange(mnth+3)}2', 'comp / cop')
             next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
             curr_month = next_month
-        df = df.reindex(columns=month_list)
-        df.loc[0, 'VALUES'] = 'pricelist'
-        df.loc[1, 'VALUES'] = 'discount'
-        df.loc[2, 'VALUES'] = 'rebate'
-        df.loc[3, 'VALUES'] = 'com / cop'
-        new_file_path = join(data_path, filename)
-        writer = pd.ExcelWriter(new_file_path, engine='xlsxwriter')
-        df.to_excel(writer, filename[0:-5], index=False)
-        writer.save()
-        # month_list = []
-        # curr_month = datetime.strptime(year+"-"+month+"-01", "%Y-%m-%d")
-        # for _ in range(18): # Avanzando año y medio
-        #     month_list.append(curr_month.strftime("%Y-%m-%d")) 
-        #     next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
-        #     curr_month = next_month
-        # df = df.reindex(columns=df.columns.tolist() + month_list)
-        # new_file_path = join(data_path, filename)
-        # writer = pd.ExcelWriter(new_file_path, engine='xlsxwriter')
-        # df.to_excel(writer, filename[0:-5], index=False)
-        # writer.save()
-        return filename
+            mnth += 4
+        workbook.close()
+        return filename_w_ext
     except:
-        print(sys.exc_info()[1])
+        print(sys.exc_info())
         return ""
 
 def createFileProductosOtros(data):

@@ -3,7 +3,7 @@ from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
 from api.utils.dataLoader import createFileProductosOtros
-from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, update_changes_bd, update_changes_maestro_productos, update_db_main
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, delete_file_data, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, update_changes_bd, update_changes_maestro_productos, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -130,6 +130,21 @@ class GetInfoMes(Resource):
             except:
                 return { 'error', 'error creando template' }, 400
 
+class DeleteFileData(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        area_id = str(request.json['area_id'])
+        file_id = str(request.json['file_id'])
+        if area_id == "" or file_id == "":
+            return 'No se encontro parametros de area_id y file_id', 400
+        else:
+            try:
+                res = delete_file_data(area_id, file_id)
+                return res
+            except:
+                return { 'error', 'error creando template' }, 400
+
 class UpdateDbData(Resource):
     @jwt_required()
     def post(self):
@@ -180,25 +195,22 @@ class UploadExcel(Resource):
                 files = request.files.getlist('excel_file')
             else:
                 return { "error" : "No se encontraron las variables necesarias para el ingreso" }, 400
-
             if int(month) < 10 and len(str(month)) == 1:
                 month = f"0{int(month)}"
             if request.files['excel_file'].filename == '':
                 return { "error" : "No se encontro archivo excel adjunto" }, 400
             if datetime.now().strftime('%Y%m') != str(year)+str(month):
                 return { "error" : "El periodo enviado no es el actual" }, 400
-            
             cleanDataFolder()
             for f in files:
                 if allowed_extensions(f.filename) == False:
                     return { "error" : "extension del archivo adjunto no se encuentra en el listado de aprovados" }, 400
                 else:
                     f.save(join(data_path, secure_filename(f.filename)))
-            
             if checkFiles() == 0:
                 return { "error" : 'No files saved' }, 400
-            else:                   
-                res = checkExcelFiles(int(area_id), year, month, current_user)
+            else:                
+                res = checkExcelFiles(int(area_id), year, month, current_user, request.files['excel_file'].filename)
                 cleanDataFolder()
                 return res
         except:

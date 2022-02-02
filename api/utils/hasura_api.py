@@ -7,6 +7,8 @@ import requests
 import json
 import sys
 
+from sqlalchemy import except_
+
 hasura_endpoint = 'https://graph.sop.strategio.cloud/v1/graphql'
 headers = {'Content-Type': 'application/json','x-hasura-admin-secret': 'x5cHTWnDb7N2vh3eJZYzamgsUXBVkw'}
 area_by_table = {
@@ -39,16 +41,32 @@ def queryHasura(query, variables = ""):
 def audit_inputs(row):
     try:
         q = """
-        mutation MyMutation($objects: [auditorias_auditoria_input_insert_input!]) {
-            insert_auditorias_auditoria_input(objects: $objects) {
+        mutation MyMutation($objects: [auditorias_auditoria_input_insert_input!] = {}) {
+        insert_auditorias_auditoria_input(objects: $objects) {
+            affected_rows
+        }
+        }
+        """
+        res_audit = queryHasura(q, {"objects": [row]})
+        return res_audit['data']['insert_auditorias_auditoria_input']['affected_rows']
+    except:
+        print('Error audit_inputs :', sys.exc_info())
+        return ""
+
+def register_file(row):
+    try:
+        q = """
+        mutation MyMutation($objects: [file_manager_insert_input!] = {}) {
+            insert_file_manager(objects: $objects) {
                 affected_rows
             }
         }
         """
-        res_audit = queryHasura(q, {"objects": row})
+        res = queryHasura(q, {"objects": [row]})
+        return res['data']['insert_file_manager']['affected_rows']
     except:
+        print('Error registrando file :', sys.exc_info())
         return ""
-
 
 def requestIDbyPeriod(period):
     try:
@@ -72,20 +90,30 @@ def requestIDbyPeriod(period):
         }
         """
         res_insert = queryHasura(query, {"id" : period[:3]})
-        
-        result = []
-        
+        result = []    
         for file in res_insert["data"]:
             data = []
+            file_data = []
             file_id = ""
             if len(res_insert["data"][file]) > 0:
                 for mes in res_insert["data"][file]:
                     if mes["id"] == period:
+                        q = """ 
+                        query MyQuery($id: String, $area_id: Int) {
+                        search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
+                            file_id
+                            name
+                            date
+                            user
+                        }
+                        }
+                        """
+                        res = queryHasura(q, {'id': file_id, 'area_id': area_by_table[file]["area_id"]})
+                        file_data = res["data"]["search_info_inputs_by_id"]
                         file_id = period
-                for mes in res_insert["data"][file]:
                     if mes["id"] != period:
                         data.append({"file_id" : mes["id"], "mes": mes["id"][0:4]+"-"+mes["id"][4:]})
-                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : file_id, "data" : data })
+                result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : file_id, "data" : data, "file_data": file_data })
             else:
                 result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : "", "data": []})
         return result
@@ -588,7 +616,6 @@ def sendDataValorizacion(data):
     }
     """
     res_insert = queryHasura(query, {"objects" : data})
-    print(res_insert)
     result = { "file_id" : res_insert["data"]["insert_Maestro_valorizacion"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_valorizacion"]["area_name"] }
     return result
 def requestDataValorizacion(id):
@@ -635,23 +662,24 @@ def deleteDataValorizacion(id):
     except SystemError as err:
         print(err)
         return ""
-#######################
-###### SHOPPER ######
-#######################
 def sendDataShoppers(data):
-    # SendInsert
-    query = """
-    mutation MyMutation($objects: [Maestro_Shopper_insert_input!] = {}) {
-        insert_Maestro_Shopper(objects: $objects, on_conflict: {constraint: Maestro_Shoppers_pkey, update_columns: cantidad}) {
-            returning {
-            id
+    try:
+        # SendInsert
+        query = """
+        mutation MyMutation($objects: [Maestro_Shopper_insert_input!] = {}) {
+            insert_Maestro_Shopper(objects: $objects, on_conflict: {constraint: Maestro_Shoppers_pkey, update_columns: cantidad}) {
+                returning {
+                id
+                }
             }
         }
-    }
-    """
-    res_insert = queryHasura(query, {"objects" : data})
-    result = { "file_id" : res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_promo"]["area_name"] }
-    return result
+        """
+        res_insert = queryHasura(query, {"objects" : data})
+        result = { "file_id" : res_insert["data"]["insert_Maestro_Shopper"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_Shopper"]["area_name"] }
+        return result
+    except:
+        print('error sendDataShoppers :', sys.exc_info())
+        return ""
 def requestDataShoppers(id):
     # Request data
     query = """
@@ -676,7 +704,7 @@ def requestDataShoppers(id):
         return "No existen datos para los parametros igresados"
 
     size_list = [{'name':'clasificacion','size':120},{'name':'nart','size':170},{'name':'descripcion','size':500}]
-    colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_Shoppers"][0].keys()]
+    colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_Shopper"][0].keys()]
     result = {
         "columns" : colum_list,
         "rows" : res_select["data"]["Maestro_Shopper"]
@@ -1393,3 +1421,32 @@ def request_cobertura():
     except:
         print('error request_cobertura :', sys.exc_info())
         return []
+
+def delete_data_by_file_id(area_id, file_id):
+    try:
+        tbl_name = ""
+        if area_id == 1:
+            tbl_name = "baseline"
+        elif area_id == 2:
+            tbl_name = "launch"
+        elif area_id == 3:
+            tbl_name = "promo"
+        elif area_id == 4:
+            tbl_name = "valorizacion"
+        elif area_id == 5:
+            tbl_name = "Shopper"
+        if area_id not in [1,2,3,4,5]:
+            return { 'error': 'no se encuentra tabla correspondiente con el area_id enviada' }, 400
+        q = """
+        mutation MyMutation($_eq: numeric = "") {
+            delete_Maestro_"""+tbl_name+"""(where: {file_id: {_eq: $_eq}}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q, {'_eq': file_id})
+        result = res["data"][f"delete_Maestro_{tbl_name}"]
+        return { 'result': 'ok' }
+    except:
+        print('Error delete_data_by_file_id :', sys.exc_info())
+        return { 'error': 'error haciendo la peticion de eliminacion de data' }, 400
