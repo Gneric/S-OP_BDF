@@ -1443,17 +1443,24 @@ def request_cobertura():
 
 def delete_data_by_file_id(area_id, file_id):
     try:
+        print(1)
         tbl_name = ""
+        res_tbl = ""
         if area_id == 1:
             tbl_name = "baseline"
+            res_tbl = "delete_Maestro_baseline"
         elif area_id == 2:
             tbl_name = "launch"
+            res_tbl = "delete_Maestro_launch"
         elif area_id == 3:
             tbl_name = "promo"
+            res_tbl = "delete_Maestro_promo"
         elif area_id == 4:
             tbl_name = "valorizacion"
+            res_tbl = "delete_Maestro_valorizacion"
         elif area_id == 5:
             tbl_name = "Shopper"
+            res_tbl = "delete_Maestro_Shopper"
         if area_id not in [1,2,3,4,5]:
             return { 'error': 'no se encuentra tabla correspondiente con el area_id enviada' }, 400
         q = """
@@ -1467,8 +1474,8 @@ def delete_data_by_file_id(area_id, file_id):
         }
         """
         res = queryHasura(q, {'_eq': file_id})
-        result = res["data"][f"delete_Maestro_{tbl_name}"]["returning"]
-        file_id = result['id']
+        tbl_name = f"delete_Maestro_{tbl_name}"
+        result = res["data"][res_tbl]["returning"]
         q = """ 
         query MyQuery($id: String, $area_id: Int) {
             search_info_inputs_by_id(args: {id: $id, area: $area_id}) {

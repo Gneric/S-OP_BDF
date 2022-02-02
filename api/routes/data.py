@@ -137,13 +137,13 @@ class DeleteFileData(Resource):
         area_id = str(request.json['area_id'])
         file_id = str(request.json['file_id'])
         if area_id == "" or file_id == "":
-            return 'No se encontro parametros de area_id y file_id', 400
+            return { 'error', 'error en la lectura de variables' }
         else:
             try:
                 res = delete_file_data(area_id, file_id)
                 return res
             except:
-                return { 'error', 'error creando template' }, 400
+                return { 'error', 'error en la eliminacion de data' }, 400
 
 class UpdateDbData(Resource):
     @jwt_required()
