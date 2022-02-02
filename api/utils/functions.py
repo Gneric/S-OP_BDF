@@ -54,7 +54,6 @@ def checkExcelFiles(area_id, year, month, current_user, filename):
                 err_details = res.get('details',[])
                 warning_check = res.get('warning', False)
                 msg = res.get('message', '')
-                file_data = res.get('file_data', [])
                 if err_check:
                     if err_details:
                         return { 'error': msg, 'details': err_details }, 400
@@ -63,10 +62,12 @@ def checkExcelFiles(area_id, year, month, current_user, filename):
                 elif warning_check:
                     audit = audit_inputs({"file_id": file_id, "date": datetime.now().strftime('%m/%d/%Y'), "accion": "INSERT", "clasificacion": clasificacion, "user": current_user})
                     reg_file = register_file({'file_id': file_id, "date": datetime.now().strftime('%m/%d/%Y'), "name": filename, "user": current_user })
+                    file_data = request_file_data(area_id, msg['file_id'])
                     return { 'result': 'ok', 'warning': err_details, 'file_id': msg['file_id'], 'file_data': file_data}
                 else:
                     audit = audit_inputs({"file_id": file_id, "date": datetime.now().strftime('%m/%d/%Y'), "accion": "INSERT", "clasificacion": clasificacion, "user": current_user})
                     reg_file = register_file({'file_id': file_id, "date": datetime.now().strftime('%m/%d/%Y'), "name": filename, "user": current_user })
+                    file_data = request_file_data(area_id, msg['file_id'])
                     return { 'result' : 'ok', 'warning': [], 'file_id': msg['file_id'], 'file_data': file_data}
             else:
                 return { 'error': f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}" }, 400
