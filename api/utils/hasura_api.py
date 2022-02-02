@@ -419,7 +419,23 @@ def sendDataBaseline(data):
         }
         """
         res_insert = queryHasura(query, {"objects" : data})
-        result = { "file_id" : res_insert["data"]["insert_Maestro_baseline"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_baseline"]["area_name"] }
+        file_id = res_insert["data"]["insert_Maestro_baseline"]["returning"][0]["id"]
+        if file_id:
+            q = """ 
+            query MyQuery($id: String, $area_id: Int) {
+            search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
+                file_id
+                name
+                date
+                user
+            }
+            }
+            """
+            res_info = queryHasura(q, {'id': file_id, 'area_id': 1})
+            if res_info["data"]["search_info_inputs_by_id"]:
+                result = { "file_id" : res_insert["data"]["insert_Maestro_baseline"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_baseline"]["area_name"], "res_info": res_info["data"]["search_info_inputs_by_id"]}
+            else:
+                result = { "file_id" : res_insert["data"]["insert_Maestro_baseline"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_baseline"]["area_name"], "res_info": []}
         return result
     except:
         return ""
@@ -485,7 +501,23 @@ def sendDataLaunch(data):
     }
     """
     res_insert = queryHasura(query, {"objects" : data})
-    result = { "file_id" : res_insert["data"]["insert_Maestro_launch"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_launch"]["area_name"] }
+    file_id = res_insert["data"]["insert_Maestro_launch"]["returning"][0]["id"]
+    if file_id:
+        q = """ 
+        query MyQuery($id: String, $area_id: Int) {
+        search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
+            file_id
+            name
+            date
+            user
+        }
+        }
+        """
+        res_info = queryHasura(q, {'id': file_id, 'area_id': 2})
+        if res_info["data"]["search_info_inputs_by_id"]:
+            result = { "file_id" : res_insert["data"]["insert_Maestro_launch"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_launch"]["area_name"], "file_data": res_info["data"]["search_info_inputs_by_id"]}
+        else:
+            result = { "file_id" : res_insert["data"]["insert_Maestro_launch"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_launch"]["area_name"], "file_data": []}
     return result
 def requestDataLaunch(id):
     try:
@@ -551,7 +583,23 @@ def sendDataPromo(data):
 
     """
     res_insert = queryHasura(query, {"objects" : data})
-    result = { "file_id" : res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_promo"]["area_name"] }
+    file_id = res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"]
+    if file_id:
+        q = """ 
+        query MyQuery($id: String, $area_id: Int) {
+        search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
+            file_id
+            name
+            date
+            user
+        }
+        }
+        """
+        res_info = queryHasura(q, {'id': file_id, 'area_id': 3})
+        if res_info["data"]["search_info_inputs_by_id"]:
+            result = { "file_id" : res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_promo"]["area_name"], "file_data": res_info["data"]["search_info_inputs_by_id"] }
+        else:
+            result = { "file_id" : res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_promo"]["area_name"], "file_data": [] }
     return result
 def requestDataPromo(id):
     # Request data
@@ -616,7 +664,23 @@ def sendDataValorizacion(data):
     }
     """
     res_insert = queryHasura(query, {"objects" : data})
-    result = { "file_id" : res_insert["data"]["insert_Maestro_valorizacion"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_valorizacion"]["area_name"] }
+    file_id = res_insert["data"]["insert_Maestro_valorizacion"]["returning"][0]["id"]
+    if file_id:
+        q = """ 
+            query MyQuery($id: String, $area_id: Int) {
+            search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
+                file_id
+                name
+                date
+                user
+            }
+            }
+            """
+        res_info = queryHasura(q, {'id': file_id, 'area_id': 4})
+        if res_info["data"]["search_info_inputs_by_id"]:
+            result = { "file_id" : res_insert["data"]["insert_Maestro_valorizacion"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_valorizacion"]["area_name"], "file_data": res_info["data"]["search_info_inputs_by_id"] }
+        else:
+            result = { "file_id" : res_insert["data"]["insert_Maestro_valorizacion"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_valorizacion"]["area_name"], "file_data": []}
     return result
 def requestDataValorizacion(id):
     # Request data
@@ -675,7 +739,23 @@ def sendDataShoppers(data):
         }
         """
         res_insert = queryHasura(query, {"objects" : data})
-        result = { "file_id" : res_insert["data"]["insert_Maestro_Shopper"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_Shopper"]["area_name"] }
+        file_id = res_insert["data"]["insert_Maestro_Shopper"]["returning"][0]["id"]
+        if file_id:
+            q = """ 
+            query MyQuery($id: String, $area_id: Int) {
+            search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
+                file_id
+                name
+                date
+                user
+            }
+            }
+            """
+            res_info = queryHasura(q, {'id': file_id, 'area_id': 5})
+            if res_info["data"]["search_info_inputs_by_id"]:
+                result = { "file_id" : res_insert["data"]["insert_Maestro_Shopper"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_Shopper"]["area_name"], "file_data": res_info["data"]["search_info_inputs_by_id"] }
+            else:
+                result = { "file_id" : res_insert["data"]["insert_Maestro_Shopper"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_Shopper"]["area_name"], "file_data": []}
         return result
     except:
         print('error sendDataShoppers :', sys.exc_info())
@@ -1440,13 +1520,32 @@ def delete_data_by_file_id(area_id, file_id):
         q = """
         mutation MyMutation($_eq: numeric = "") {
             delete_Maestro_"""+tbl_name+"""(where: {file_id: {_eq: $_eq}}) {
-                affected_rows
+                returning {
+                    id
+                    file_id
+                }
             }
         }
         """
         res = queryHasura(q, {'_eq': file_id})
-        result = res["data"][f"delete_Maestro_{tbl_name}"]
-        return { 'result': 'ok' }
+        result = res["data"][f"delete_Maestro_{tbl_name}"]["returning"]
+        file_id = result['id']
+        q = """ 
+        query MyQuery($id: String, $area_id: Int) {
+            search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
+                file_id
+                name
+                date
+                user
+            }
+        }
+        """
+        res_info = queryHasura(q, {'id': file_id, 'area_id': area_id})
+        file_data = res_info["data"]["search_info_inputs_by_id"]
+        if file_id == "" or file_data == []:
+            return { 'file_id': "", "file_data": [] }
+        else:
+            return { 'file_id': file_id, "file_data": file_data}
     except:
         print('Error delete_data_by_file_id :', sys.exc_info())
         return { 'error': 'error haciendo la peticion de eliminacion de data' }, 400
