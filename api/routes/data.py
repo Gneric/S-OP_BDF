@@ -101,7 +101,7 @@ class GetProductosSinClasificar(Resource):
         current_user = get_jwt_identity()
         cleanDataFolder()
         data = request_productos_otros()
-        if data:
+        try:
             res = createFileProductosOtros(data)
             if res:
                 data_path = join(getcwd(),'api','data')
@@ -112,7 +112,7 @@ class GetProductosSinClasificar(Resource):
                 return result
             else:
                 return { 'error': 'error en la generacion del archivo ProductosSinClasificar' }, 400
-        else:
+        except:
             return { 'error': 'error al obtener datos de productos otros' }, 400
 
 class GetInfoMes(Resource):
