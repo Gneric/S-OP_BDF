@@ -1388,7 +1388,7 @@ def request_productos_otros():
     try:
         q = """
         query MyQuery {
-            Productos_otros {
+            Nart_sin_clasificar {
                 BG
                 Material
                 SPGR
@@ -1403,7 +1403,7 @@ def request_productos_otros():
             }
         """
         res = queryHasura(q)
-        return res['data']['Productos_otros']
+        return res['data']['Nart_sin_clasificar']
     except:
         print('error request_productos_otros :', sys.exc_info())
         return []
