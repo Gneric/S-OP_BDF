@@ -105,7 +105,7 @@ def requestIDbyPeriod(period):
                         if res.get('data',''):
                             file_data = res["data"]["search_info_inputs_by_id"]
                             file_id = period
-                    if mes["id"] < period:
+                    if mes["id"] <= period:
                         data.append({"file_id" : mes["id"], "mes": mes["id"][0:4]+"-"+mes["id"][4:]})
                 result.append({ "area_id" : area_by_table[file]["area_id"], "area_name" : area_by_table[file]["area_name"], "file_id" : file_id, "data" : data, "file_data": file_data })
             else:
