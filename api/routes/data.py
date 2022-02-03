@@ -3,7 +3,7 @@ from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
 from api.utils.dataLoader import createFileProductosOtros
-from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkFiles, checkInfoMonth, cloneData, delete_file_data, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, update_changes_bd, update_changes_maestro_productos, update_db_main
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkExcelProduct, checkFiles, checkInfoMonth, cloneData, delete_file_data, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, request_update_product, update_changes_bd, update_changes_maestro_productos, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -254,3 +254,31 @@ class CerrarMesDBMain(Resource):
     def post(self):
         current_user = get_jwt_identity()
         return request_cerrar_mes()
+
+class UpdateProduct(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.json.get('data','')
+        if data:
+            return request_update_product(data)
+        else:
+            return { 'error': 'error de lectura de variable data' }, 400
+
+class UploadProduct(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        files = request.files.getlist('excel_file')
+        cleanDataFolder()
+        for f in files:
+            if allowed_extensions(f.filename) == False:
+                return { "error" : "extension del archivo adjunto no se encuentra en el listado de aprovados" }, 400
+            else:
+                f.save(join(data_path, secure_filename(f.filename)))
+        if checkFiles() == 0:
+            return { "error" : 'No files saved' }, 400
+        else:                
+            res = checkExcelProduct()
+            cleanDataFolder()
+            return res

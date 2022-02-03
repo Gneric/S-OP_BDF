@@ -1,15 +1,10 @@
-from ftplib import ftpcp
 import sys
 import json
-from openpyxl import Workbook
 import pandas as pd
-import numpy as np
 import string
-from datetime import date, datetime, timedelta
-from os.path import join
+from datetime import datetime, timedelta
 import xlsxwriter
-
-from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion
+from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion, upload_data_maestro
 from api.utils.rowsCheker import dataCheck
 
 def Loadbaseline(df, year, month, file_id):
@@ -220,6 +215,33 @@ def LoadForecast(df, year, month, file_id):
     except:
         print('Error load :', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga" }
+
+def LoadProducts(df):
+    try:
+        df = df[["BG","Material","SPGR","TIPO","Descripcion","Portafolio","BPU","BrandCategory","ApplicationForm","EAN"]]
+        df["BG"] = df["BG"].replace([0,'','0'], 'N/A')
+        df["Material"] = df["Material"].replace([0,'','0'], 'N/A')
+        df["SPGR"] = df["SPGR"].replace([0,'','0'], 'N/A')
+        df["TIPO"] = df["TIPO"].replace([0,'','0'], 'N/A')
+        df["Descripcion"] = df["Descripcion"].replace([0,'','0'], 'N/A')
+        df["Portafolio"] = df["Portafolio"].replace([0,'','0'], 'N/A')
+        df["BPU"] = df["BPU"].replace([0,'','0'], 'N/A')
+        df["BrandCategory"] = df["BrandCategory"].replace([0,'','0'], 'N/A')
+        df["ApplicationForm"] = df["ApplicationForm"].replace([0,'','0'], 'N/A')
+        df["EAN"] = df["EAN"].replace([0,'','0'], 'N/A')
+        result = df.to_json(orient="records")
+        parsed = json.loads(result)
+        res = upload_data_maestro(parsed)
+        return res
+    except KeyError as err:
+        print('Error load :', sys.exc_info())
+        error = str(err.__str__()).split(sep=": ")
+        column_error = error[1].replace("[","").replace("]","").replace("\"","")
+        return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'PRODUCTS'"}  
+    except:
+        print('Error load :', sys.exc_info())
+        return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga" }
+    
 
 
 def createExcelFile(values, column_list, file_id, data_path):

@@ -1,10 +1,10 @@
 from api.utils.hasura_api import *
-from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate, createTemplateValorizacion
+from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadProducts, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate, createTemplateValorizacion
 from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
 import bcrypt
-from datetime import date, datetime
+from datetime import datetime
 import time
 
 data_path = join(getcwd(),'api','data')
@@ -71,6 +71,18 @@ def checkExcelFiles(area_id, year, month, current_user, filename):
                     return { 'result' : 'ok', 'warning': [], 'file_id': msg['file_id'], 'file_data': file_data}
             else:
                 return { 'error': f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}" }, 400
+
+def checkExcelProduct():
+    try:
+        for file in scandir(data_path):
+            xl = pd.ExcelFile(file)
+            for sheet in xl.sheet_names:
+                df = pd.read_excel(file, sheet)
+                res = LoadProducts(df)
+                return res
+    except:
+        print('error checkExcelProduct :', sys.exc_info())
+        return { 'error': 'error en la lectura de archivo' }, 400
 
 def getData(id, area_id):
     if area_id == 1:
@@ -459,3 +471,23 @@ def delete_file_data(area_id, file_id):
             return { 'error': 'error obteniendo tabla del area enviada' }, 400
     except:
         return { 'error': 'error haciendo la peticion de eliminacion de data' }, 400
+
+def request_update_product(data):
+    try:
+        res = update_producto_maestro(data)
+        if res:
+            return res
+        else:
+            return { 'error': 'error al retornar peticion de actualizacion' }, 400
+    except:
+        return { 'error': 'error haciendo la peticion de actualizacion' }, 400
+
+def request_upload_product(data):
+    try:
+        res = upload_data_maestro(data)
+        if res:
+            return res
+        else:
+            return { 'error': 'error al retornar peticion de actualizacion' }, 400
+    except:
+        return { 'error': 'error haciendo la peticion de actualizacion' }, 400
