@@ -106,7 +106,7 @@ class GetProductosSinClasificar(Resource):
             if res:
                 data_path = join(getcwd(),'api','data')
                 result = send_from_directory(
-                    data_path, res, as_attachment=True, environ=request.environ
+                    data_path, res, environ=request.environ
                 )
                 result.headers['filename'] = res
                 return result

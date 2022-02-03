@@ -27,6 +27,7 @@ def Loadbaseline(df, year, month, file_id):
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        parsed = [dict(t) for t in {tuple(d.items()) for d in parsed}]
         res = sendDataBaseline(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
@@ -60,6 +61,7 @@ def LoadLaunch(df, year, month, file_id):
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        parsed = [dict(t) for t in {tuple(d.items()) for d in parsed}]
         res = sendDataLaunch(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
@@ -95,6 +97,7 @@ def LoadPromo(df, year, month, file_id):
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        parsed = [dict(t) for t in {tuple(d.items()) for d in parsed}]
         res = sendDataPromo(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
@@ -133,6 +136,7 @@ def LoadValorizacion(df, year, month, file_id):
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        parsed = [dict(t) for t in {tuple(d.items()) for d in parsed}]
         res = sendDataValorizacion(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
@@ -168,6 +172,7 @@ def LoadShoppers(df, year, month, file_id):
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        parsed = [dict(t) for t in {tuple(d.items()) for d in parsed}]
         res = sendDataShoppers(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
@@ -203,6 +208,7 @@ def LoadForecast(df, year, month, file_id):
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        parsed = [dict(t) for t in {tuple(d.items()) for d in parsed}]
         res = sendDataForecast(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
