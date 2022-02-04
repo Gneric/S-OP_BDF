@@ -92,18 +92,18 @@ def requestIDbyPeriod(period):
                 for mes in res_insert["data"][file]:
                     if mes["id"] == period:
                         q = """ 
-                        query MyQuery($id: String, $area_id: Int) {
-                            search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
-                                file_id
-                                name
-                                date
-                                user
-                            }
+                        query MyQuery($id: String = "", $area_id: Int) {
+                        view_info_inputs_by_id(where: {id: {_eq: $id}, area_id: {_eq: $area_id}}) {
+                            file_id
+                            name
+                            user
+                            date
+                        }
                         }
                         """
                         res = queryHasura(q, {'id': file_id, 'area_id': area_by_table[file]["area_id"]})
-                        if res.get('data',''):
-                            file_data = res["data"]["search_info_inputs_by_id"]
+                        if res.get('data', []):
+                            file_data = res["data"]["view_info_inputs_by_id"]
                             file_id = period
                     if mes["id"] <= period:
                         data.append({"file_id" : mes["id"], "mes": mes["id"][0:4]+"-"+mes["id"][4:]})
