@@ -128,6 +128,7 @@ def LoadValorizacion(df, year, month, file_id):
         d1 = d1[d1['QUANTITY'].notna()]
         d1 = d1[d1['BRAND CATEGORY'].notna()]
         d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad","file_id"]
+        d1.drop_duplicates(subset=["id","brand_category","nart","year","month","value","cantidad","file_id"])
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
@@ -198,6 +199,7 @@ def LoadForecast(df, year, month, file_id):
         d1['net_sales'].fillna(0,inplace=True)
         d1.fillna('N/A', inplace=True)
         d1.is_copy = False
+        d1.groupby(["nart"]).sum()
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:

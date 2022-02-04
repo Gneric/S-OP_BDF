@@ -101,7 +101,7 @@ def requestIDbyPeriod(period):
                         }
                         }
                         """
-                        res = queryHasura(q, {'id': file_id, 'area_id': area_by_table[file]["area_id"]})
+                        res = queryHasura(q, {'id': period, 'area_id': area_by_table[file]["area_id"]})
                         if res.get('data', []):
                             file_data = res["data"]["view_info_inputs_by_id"]
                             file_id = period
