@@ -119,17 +119,17 @@ def requestIDbyPeriod(period):
 def request_file_data(area_id, file_id):
     try:
         q = """ 
-        query MyQuery($id: String, $area_id: Int) {
-        search_info_inputs_by_id(args: {id: $id, area: $area_id}) {
-            file_id
-            name
-            date
-            user
-        }
+        query MyQuery($id: String = "", $area_id: Int) {
+            view_info_inputs_by_id(where: {id: {_eq: $id}, area_id: {_eq: $area_id}}) {
+                file_id
+                name
+                user
+                date
+            }
         }
         """
         res = queryHasura(q, {'id': str(file_id), 'area_id': int(area_id)})
-        return res["data"]["search_info_inputs_by_id"]
+        return res["data"]["view_info_inputs_by_id"]
     except:
         print('Error request_file_data :', sys.exc_info())
         return []
@@ -637,7 +637,7 @@ def requestDataValorizacion(id):
     query MyQuery($id: String) {
         Maestro_valorizacion(where: {id: {_eq: $id}}) {
             id
-            clasificacion
+            brand_category
             nart
             descripcion
             year
@@ -651,7 +651,7 @@ def requestDataValorizacion(id):
     if len(res_select["data"]["Maestro_valorizacion"]) < 1:
         return "No existen datos para los parametros igresados"
 
-    size_list = [{'name':'clasificacion','size':120} , {'name':'descripcion','size':500},{'name':'nart','size':200}]
+    size_list = [{'name':'brand_category','size':120} , {'name':'descripcion','size':500},{'name':'nart','size':200}]
     colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_valorizacion"][0].keys()]
     result = {
         "columns" : colum_list,
