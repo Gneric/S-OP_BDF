@@ -1,6 +1,8 @@
 from logging import warning
 import sys
 import json
+
+from pandas import concat
 from api.utils.hasura_api import request_Maestro_productos
 
 def dataCheck(data):
@@ -10,9 +12,9 @@ def dataCheck(data):
     warn_check = False
     warnings = []
     err = []
+    rows_checked = []
     try:
         for row in json_data:
-            index = json_data.index(row)
             if row.get('nart', 'N/A') == False:
                 err_check = True
                 err.append({ 'columna': 'nart', 'error': 'Nart vacio' })

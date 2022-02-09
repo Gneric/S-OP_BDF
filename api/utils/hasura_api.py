@@ -621,7 +621,7 @@ def sendDataValorizacion(data):
     # SendInsert
     query = """
     mutation MyMutation($objects: [Maestro_valorizacion_insert_input!] = {}) {
-        insert_Maestro_valorizacion(objects: $objects, on_conflict: {constraint: Maestro_valorizacion_pkey, update_columns: cantidad}) {
+        insert_Maestro_valorizacion(objects: $objects, on_conflict: {constraint: Maestro_valorizacion_pkey, update_columns: [cantidad, file_id]}) {
             returning {
                 id
             }
@@ -1229,20 +1229,20 @@ def request_data_last_id():
     try:
         query = """
         query MyQuery {
-        view_db_main_last_id {
-            id
-            clasificacion
-            bpu
-            brand_category
-            application_form
-            promo_spgr
-            year
-            month
-            units
-            netsales
-            ajuste_netsales
-            comentario
-        }
+            view_db_main_last_id {
+                id
+                clasificacion
+                bpu
+                brand_category
+                application_form
+                promo_spgr
+                year
+                month
+                units
+                netsales
+                ajuste_netsales
+                comentario
+            }
         }
         """
         res = queryHasura(query)

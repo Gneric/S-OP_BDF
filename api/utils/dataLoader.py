@@ -131,8 +131,10 @@ def LoadValorizacion(df, year, month, file_id):
         d1 = data[["KEY","BRAND CATEGORY", "NART", "DESCRIPCION", "YEAR", "MONTH", "VALUE", "QUANTITY","FILE_ID"]]
         d1 = d1[d1['QUANTITY'].notna()]
         d1 = d1[d1['BRAND CATEGORY'].notna()]
+        d1['DESCRIPCION'] = 'NULL'
+        d1 = d1[d1.QUANTITY != 0]
         d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad","file_id"]
-        d1.drop_duplicates(subset=["id","brand_category","nart","year","month","value","cantidad","file_id"])
+        d1 = d1.drop_duplicates(subset=["id","brand_category","nart","descripcion","year","month","value","file_id"])
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:

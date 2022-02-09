@@ -1,3 +1,4 @@
+from importlib.resources import path
 import sys
 from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -60,7 +61,7 @@ class CloneData(Resource):
                 data_path = join(getcwd(),'api','data')
                 try:
                     result = send_from_directory(
-                        directory=data_path, filename=res, as_attachment=True, environ=request.environ 
+                        data_path, res, as_attachment=True, environ=request.environ
                     )
                     result.headers['filename'] = res
                     return result
