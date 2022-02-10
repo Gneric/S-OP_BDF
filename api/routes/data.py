@@ -55,6 +55,7 @@ class CloneData(Resource):
             area_id = int(request.json['area_id'])
             cleanDataFolder()
             res = cloneData(file_id, area_id, current_user)
+            print('res :', res)
             if res == "":
                 return "Error clonando data del mes", 400
             else:

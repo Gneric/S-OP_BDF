@@ -40,7 +40,7 @@ def audit_inputs(row):
         }
         }
         """
-        res_audit = queryHasura(q, {"objects": [row]})
+        res_audit = queryHasura(q, {"objects": row})
         return res_audit['data']['insert_auditorias_auditoria_input']['affected_rows']
     except:
         print('Error audit_inputs :', sys.exc_info())
@@ -462,8 +462,8 @@ def requestDataBaseline(id):
             "rows" : res_select["data"]["Maestro_baseline"]
         }
         return result
-    except SystemError as err:
-        print(err)
+    except:
+        print('error requestDataBaseline :', sys.exc_info())
         return ""
 def deleteDataBaseline(id):
     try:

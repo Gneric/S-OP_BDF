@@ -113,27 +113,27 @@ def checkDeleteTable(area_id, year, month, current_user):
     if area_id == 1:
         res = deleteDataBaseline(year+month)
         if res != "":
-            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "BASELINE"})
+            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "BASELINE", "user": current_user})
         return res
     if area_id == 2:
         res = deleteDataLaunch(year+month)
         if res != "":
-            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "LAUNCH"})
+            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "LAUNCH", "user": current_user})
         return res
     if area_id == 3:
         res = deleteDataPromo(year+month)
         if res != "":
-            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "PROMO"})
+            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "PROMO", "user": current_user})
         return res
     if area_id == 4:
         res = deleteDataValorizacion(year+month)
         if res != "":
-            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "VALORIZACION"})
+            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "VALORIZACION", "user": current_user})
         return res
     if area_id == 5:
         res = deleteDataShoppers(year+month)
         if res != "":
-            audit_inputs({"id": current_user, "date": datetime.now(), "accion": "DELETE", "clasificacion": "SHOPPER"})
+            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "SHOPPER", "user": current_user})
         return res
     else:
         return ""
@@ -144,33 +144,33 @@ def cloneData(file_id, area_id, current_user):
         if area_id == 1:
             data = requestDataBaseline(file_id)
             if data != "":
-                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "BASELINE"})
+                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "BASELINE", "user": current_user})
         if area_id == 2:
             data = requestDataLaunch(file_id)
             if data != "":
-                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "LAUNCH"})
+                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "LAUNCH", "user": current_user})
         if area_id == 3:
             data = requestDataPromo(file_id)
             if data != "":
-                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "PROMO"})
+                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "PROMO", "user": current_user})
         if area_id == 4:
             data = requestDataValorizacion(file_id)
             if data != "":
-                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "VALORIZACION"})
+                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "VALORIZACION", "user": current_user})
         if area_id == 5:
             data = requestDataShoppers(file_id)
             if data != "":
-                audit_inputs({"id": current_user, "date": datetime.now(), "accion": f"CLONE {file_id}", "clasificacion": "SHOPPER"})
+                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "SHOPPER", "user": current_user})
         if data == []:
             return "area_id not found"
-        column_list = list(data["rows"][0].keys())
-        values = [ list(i.values()) for i in data["rows"] ]
-        xslx_name = f"{db_table_area[str(area_id)]}.xlsx"
+        formatted_data = data['rows']
+        xslx_name = f"{db_table_area[str(area_id)]}"
+        xlsx_name_w_ext = f'{xslx_name}.xlsx'
         xslx_path = join(data_path, xslx_name)
-        excel_path = createExcelFile(values,column_list,file_id,xslx_path)
+        excel_path = createExcelFile(file_id, area_id, formatted_data, xslx_name, xslx_path)
         if excel_path == "":
             return ""
-        return xslx_name
+        return xlsx_name_w_ext
     except:
         return sys.exc_info()[1]
     

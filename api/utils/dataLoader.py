@@ -1,5 +1,6 @@
 import sys
 import json
+import re
 import pandas as pd
 import string
 from datetime import datetime, timedelta
@@ -245,14 +246,140 @@ def LoadProducts(df):
     
 
 
-def createExcelFile(values, column_list, file_id, data_path):
+def createExcelFile(file_id, area_id, data, xslx_name, xslx_path):
     try:
-        writer = pd.ExcelWriter(data_path, engine='xlsxwriter')
-        df = pd.DataFrame(values, columns=column_list)
-        df.to_excel(writer, file_id, index=False)
-        writer.save()
-        return data_path
+        year = file_id[:4]
+        month = file_id[4:]
+        # De data por lineas a df
+        if area_id == 4:
+            df = pd.read_json(json.dumps(data), orient='records')
+            indexes = [ str(x) for x in df.columns if str(x) not in ["year", "month", "value", "cantidad"]]
+            df["value"] = df["value"].map({ 'price list': 1, 'discount': 2, 'rebates':3, 'com / cop': 4 })
+            df["periodo"] = (df["year"].astype(int)+df["month"].astype(int)).astype(str)+"-"+df["value"].astype(str)
+            df = pd.pivot_table(df, index=indexes,columns=["periodo"],values="cantidad", fill_value=0).reset_index()
+            json_data = df.to_json(orient="records")
+            json_list = json.loads(json_data)
+
+            filename_w_ext = f"{xslx_name}.xlsx"
+            filename_path = f'api/data/{filename_w_ext}'
+            workbook = xlsxwriter.Workbook(f'api/data/{filename_w_ext}')
+            worksheet = workbook.add_worksheet(xslx_name)
+            worksheet.write('A1','BRAND CATEGORY')
+            worksheet.write('B1','NART')
+            worksheet.write('C1','DESCRIPCION')
+            mnth = 4
+            curr_month = datetime.strptime(year+"-"+month+"-01", '%Y-%m-%d')
+            for _ in range(18):
+                date_format = workbook.add_format({'num_format': 'mm-yyyy'})
+                worksheet.write_datetime(f'{checkColumnByRange(mnth)}1', curr_month, date_format)
+                worksheet.write_datetime(f'{checkColumnByRange(mnth+1)}1', curr_month, date_format)
+                worksheet.write_datetime(f'{checkColumnByRange(mnth+2)}1', curr_month, date_format)
+                worksheet.write_datetime(f'{checkColumnByRange(mnth+3)}1', curr_month, date_format)
+                worksheet.write(f'{checkColumnByRange(mnth)}2', 'price list')
+                worksheet.write(f'{checkColumnByRange(mnth+1)}2', 'discount')
+                worksheet.write(f'{checkColumnByRange(mnth+2)}2', 'rebate')
+                worksheet.write(f'{checkColumnByRange(mnth+3)}2', 'comp / cop')
+                next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
+                curr_month = next_month
+                mnth += 4
+            row_num = 2
+            for row in json_list:
+                col_num = 1
+                dic_row = dict(row)
+                dic_row.pop("id")
+                for key in dic_row:
+                    if re.match('[0-9]{4}-[0-9]{1}', key):
+                        if int(key[5:]) in [ 2, 3 ]:
+                            percent_fmt = workbook.add_format({'num_format': '0.00%'})
+                            worksheet.write(f'{checkColumnByRange(col_num)}{row_num + 1}', dic_row[key], percent_fmt)
+                        else:
+                            worksheet.write(f'{checkColumnByRange(col_num)}{row_num + 1}', dic_row[key])
+                    else:
+                        worksheet.write(f'{checkColumnByRange(col_num)}{row_num + 1}', dic_row[key])
+                    col_num = col_num + 1
+                row_num = row_num + 1
+            workbook.close()
+            return filename_path
+        else:
+            df = pd.read_json(json.dumps(data), orient='records')
+            indexes = [ str(x) for x in df.columns if str(x) not in ["year", "month", "value", "cantidad"]]
+            df["periodo"] = df["year"]+df["month"]
+            df = pd.pivot_table(df, index=indexes,columns=["periodo"],values="cantidad", fill_value=0).reset_index()
+            json_data = df.to_json(orient="records")
+            json_list = json.loads(json_data)
+
+            filename_w_ext = f"{xslx_name}.xlsx"
+            filename_path = f'api/data/{filename_w_ext}'
+            workbook = xlsxwriter.Workbook(filename_path)
+            worksheet = workbook.add_worksheet(xslx_name)
+            if xslx_name == 'promo' or xslx_name == 'shopper':
+                mnth = 7
+                worksheet.write('A1','CLASIFICACION')
+                worksheet.write('B1','TIPO_PROMO')
+                worksheet.write('C1','CANAL')
+                worksheet.write('D1','APPLICATION_FORM')
+                worksheet.write('E1','NART')
+                worksheet.write('F1','DESCRIPCION')
+                curr_month = datetime.strptime(year+"-"+month+"-01", '%Y-%m-%d')
+                for _ in range(mnth, mnth+18):
+                    date_format = workbook.add_format({'num_format': 'mm-yyyy'})
+                    worksheet.write_datetime(f'{checkColumnByRange(_)}1', curr_month, date_format)
+                    next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
+                    curr_month = next_month
+                row_num = 1
+                for row in json_list:
+                    col_num = 1
+                    dic_row = dict(row)
+                    dic_row.pop("id")
+                    for key in dic_row:
+                        worksheet.write(f'{checkColumnByRange(col_num)}{row_num + 1}', dic_row[key])
+                        col_num = col_num + 1
+                    row_num = row_num + 1
+            elif xslx_name == 'launch':
+                mnth = 5
+                worksheet.write('A1','CLASIFICACION')
+                worksheet.write('B1','CANAL')
+                worksheet.write('C1','NART')
+                worksheet.write('D1','DESCRIPCION')
+                curr_month = datetime.strptime(year+"-"+month+"-01", '%Y-%m-%d')
+                for _ in range(mnth, mnth+18):
+                    date_format = workbook.add_format({'num_format': 'mm-yyyy'})
+                    worksheet.write_datetime(f'{checkColumnByRange(_)}1', curr_month, date_format)
+                    next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
+                    curr_month = next_month
+                row_num = 1
+                for row in json_list:
+                    col_num = 1
+                    dic_row = dict(row)
+                    dic_row.pop("id")
+                    for key in dic_row:
+                        worksheet.write(f'{checkColumnByRange(col_num)}{row_num + 1}', dic_row[key])
+                        col_num = col_num + 1
+                    row_num = row_num + 1
+            else:
+                mnth = 4
+                worksheet.write('A1','CLASIFICACION')
+                worksheet.write('B1','NART')
+                worksheet.write('C1','DESCRIPCION')
+                curr_month = datetime.strptime(year+"-"+month+"-01", '%Y-%m-%d')
+                for _ in range(mnth, mnth+18):
+                    date_format = workbook.add_format({'num_format': 'mm-yyyy'})
+                    worksheet.write_datetime(f'{checkColumnByRange(_)}1', curr_month, date_format)
+                    next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
+                    curr_month = next_month
+                row_num = 1
+                for row in json_list:
+                    col_num = 1
+                    dic_row = dict(row)
+                    dic_row.pop("id")
+                    for key in dic_row:
+                        worksheet.write(f'{checkColumnByRange(col_num)}{row_num + 1}', dic_row[key])
+                        col_num = col_num + 1
+                    row_num = row_num + 1
+            workbook.close()
+            return filename_path
     except:
+        print('error createExcelFile :', sys.exc_info())
         return ""
 
 
