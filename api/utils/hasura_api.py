@@ -1279,7 +1279,7 @@ def backup_db_main(data):
         }
         """
         res = queryHasura(query, {'data':data})
-        return res["data"]["delete_DB_Main"]["affected_rows"]
+        return res["data"]["insert_Cierre_mes_sop"]["affected_rows"]
     except:
         print(sys.exc_info())
         return 0
