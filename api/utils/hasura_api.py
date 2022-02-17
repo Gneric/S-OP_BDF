@@ -1229,7 +1229,7 @@ def request_data_last_id():
     try:
         query = """
         query MyQuery {
-            view_bd_main_canal {
+            view_db_main_last_id {
                 id
                 clasificacion
                 canal
@@ -1247,7 +1247,7 @@ def request_data_last_id():
         }
         """
         res = queryHasura(query)
-        return res["data"]["view_bd_main_canal"]
+        return res["data"]["view_db_main_last_id"]
     except:
         print(sys.exc_info())
         return []
