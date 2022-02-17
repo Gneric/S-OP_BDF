@@ -1278,7 +1278,8 @@ def backup_db_main(data):
         }
         }
         """
-        res = queryHasura(query, {'data':data})
+        res = queryHasura(query, {'data': data })
+        print(res)
         return res["data"]["insert_Cierre_mes_sop"]["affected_rows"]
     except:
         print(sys.exc_info())
@@ -1288,9 +1289,9 @@ def delete_db_main_id(data):
     try:
         query = """
         mutation MyMutation($eq: String) {
-        delete_DB_Main(where: {id: {_eq: $eq}}) {
-            affected_rows
-        }
+            delete_DB_Main(where: {id: {_eq: $eq}}) {
+                affected_rows
+            }
         }
         """
         res = queryHasura(query, {'eq': data})

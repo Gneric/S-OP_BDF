@@ -430,7 +430,7 @@ def request_cerrar_mes():
             del_res = backup_db_main(data)
             return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
         else:
-            return { 'error': 'no se encontraron datos del mes en curso' }, 400
+           return { 'error': 'no se encontraron datos del mes en curso' }, 400
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
 
