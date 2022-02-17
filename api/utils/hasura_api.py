@@ -781,6 +781,7 @@ def requestPrepareSummary(id):
         rows: BD_Prepare_Summary(where: {id:{_eq:$id}}) {
             input
             nart
+            canal
             descripcion
             year
             mes
