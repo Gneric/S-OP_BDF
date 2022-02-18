@@ -774,24 +774,43 @@ def requestVisualBD():
         print(err)
         return ""
 
-def requestPrepareSummary(id):
+def requestPrepareSummary(id, canal):
     try:
-        query = """
-        query BD_Prepare_Summary($id:String) {
-        rows: BD_Prepare_Summary(where: {id:{_eq:$id}}) {
-            input
-            nart
-            descripcion
-            year
-            mes
-            units
-            netsales 
-        }
-        }
-        """
-        res = queryHasura(query, { 'id' : id })
-        result = {"rows" : res["data"]["rows"]}
-        return result
+        if canal == "":
+            query = """
+            query BD_Prepare_Summary($id:String) {
+                rows: BD_Prepare_Summary(where: {id: {_eq: $id}}) {
+                    input
+                    nart
+                    descripcion
+                    year
+                    mes
+                    units
+                    netsales 
+                }
+            }
+            """
+            res = queryHasura(query, {'id': id})
+            print(res)
+            result = {"rows" : res["data"]["rows"]}
+            return result
+        else:
+            query = """
+            query BD_Prepare_Summary($id:String, $canal:String) {
+                rows: BD_Prepare_Summary(where: {id: {_eq: $id}, canal: {_eq: $canal}}) {
+                    input
+                    nart
+                    descripcion
+                    year
+                    mes
+                    units
+                    netsales 
+                }
+            }
+            """
+            res = queryHasura(query, { 'id': id, 'canal': canal })
+            result = {"rows" : res["data"]["rows"]}
+            return result
     except SystemError as err:
         print(err)
         return ""

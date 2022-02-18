@@ -277,8 +277,8 @@ def getVisualBD():
 def get_db_historico():
     return requestVisualBD()
 
-def getPrepareSummary(id):
-    return requestPrepareSummary(id)
+def getPrepareSummary(id, canal):
+    return requestPrepareSummary(id, canal)
 
 def getSimulationUnits():
     return demand_simulation_units()

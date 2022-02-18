@@ -34,8 +34,9 @@ class PrepareSummary(Resource):
     def post(self):
         current_user = get_jwt_identity()
         id = request.json.get('id', '')
+        canal = request.json.get('canal', '')
         try:
-            res = getPrepareSummary(id)
+            res = getPrepareSummary(id, canal)
             if res == "":
                 return { 'error': "Error intentando obtener datos" } , 400
             return { "result" : res }, 200
