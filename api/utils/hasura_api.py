@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import requests
 import sys
 
-hasura_endpoint = 'https://graph.sop.strategio.cloud/v1/graphql'
+hasura_endpoint = 'https://graph.demosop.strategio.cloud/v1/graphql'
 headers = {'Content-Type': 'application/json','x-hasura-admin-secret': 'x5cHTWnDb7N2vh3eJZYzamgsUXBVkw'}
 area_by_table = {
     "Maestro_baseline" : { "area_id" : 1, "area_name" : "Supply"},
