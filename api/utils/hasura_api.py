@@ -1307,7 +1307,7 @@ def backup_db_main(data):
 def delete_db_main_id(data):
     try:
         query = """
-        mutation MyMutation($) {
+        mutation MyMutation() {
             delete_DB_Main(where: {}) {
                 affected_rows
             }
