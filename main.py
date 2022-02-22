@@ -1,4 +1,3 @@
-#!/home/overlord/apps/demosop/S-OP_BDF/env/bin/python
 from flask_jwt_extended.utils import create_refresh_token, decode_token
 from flask import Flask, request
 from flask_cors import CORS

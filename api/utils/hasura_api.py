@@ -1307,13 +1307,13 @@ def backup_db_main(data):
 def delete_db_main_id(data):
     try:
         query = """
-        mutation MyMutation($eq: String) {
-            delete_DB_Main(where: {id: {_eq: $eq}}) {
-                affected_rows
-            }
+        mutation MyMutation {
+        delete_DB_Main(where: {}) {
+            affected_rows
+        }
         }
         """
-        res = queryHasura(query, {'eq': data})
+        res = queryHasura(query)
         return res["data"]["delete_DB_Main"]["affected_rows"]
     except:
         print(sys.exc_info())
