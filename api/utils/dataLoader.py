@@ -17,13 +17,12 @@ def Loadbaseline(df, year, month, file_id):
         df['MONTH'] = df['FECHA'].dt.month 
         df["KEY"] = str(year)+str(month)
         df["FILE_ID"] = file_id
+        df["DESCRIPCION"] = ""
         d1 = df[["KEY","CLASIFICACION", "NART", "DESCRIPCION","YEAR","MONTH","QUANTITY","FILE_ID"]]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['NART'].notna()]
-        d1 = d1[d1['DESCRIPCION'].notna()]
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad","file_id"]
-        d1["descripcion"] = ""
         d1 = d1.groupby(["id","clasificacion","nart","descripcion","year","month","file_id"]).sum().reset_index()
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
@@ -51,12 +50,12 @@ def LoadLaunch(df, year, month, file_id):
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
         df["FILE_ID"] = file_id
+        df["DESCRIPCION"] = ""
         d1 = df[["KEY","CLASIFICACION", "CANAL", "NART", "DESCRIPCION","YEAR","MONTH","QUANTITY","FILE_ID"]]
         d1 = d1[d1['QUANTITY'].notna()]
         d1 = d1[d1['CANAL'].notna()]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['NART'].notna()]
-        d1 = d1[d1['DESCRIPCION'].notna()]
         d1.columns = ["id","clasificacion","canal","nart","descripcion","year","month","cantidad","file_id"]
         d1 = d1.groupby(["id","clasificacion","canal","nart","descripcion","year","month","file_id"]).sum().reset_index()
         result = d1.to_json(orient="records")
@@ -84,14 +83,13 @@ def LoadPromo(df, year, month, file_id):
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
         df["FILE_ID"] = file_id
-        df["APPLICATION_FORM"] = df["APPLICATION_FORM"].replace([0,'','0'], 'N/A')
+        df["APPLICATION_FORM"] = ""
+        df["DESCRIPCION"] = ""
         d1 = df[["KEY","CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION", "YEAR", "MONTH", "QUANTITY","FILE_ID"]]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['TIPO_PROMO'].notna()]
         d1 = d1[d1['CANAL'].notna()]
-        d1 = d1[d1['APPLICATION_FORM'].notna()]
         d1 = d1[d1['NART'].notna()]
-        d1 = d1[d1['DESCRIPCION'].notna()]
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad","file_id"]
         d1 = d1.groupby(["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","file_id"]).sum().reset_index()
@@ -128,11 +126,10 @@ def LoadValorizacion(df, year, month, file_id):
         data["MONTH"] = data["FECHA2"].dt.month
         data["KEY"] = str(year)+str(month)
         data["FILE_ID"] = file_id
-        data["BRAND CATEGORY"] = data["BRAND CATEGORY"].replace([0,'','0'], 'N/A')
+        data["BRAND CATEGORY"] = ""
         d1 = data[["KEY","BRAND CATEGORY", "NART", "DESCRIPCION", "YEAR", "MONTH", "VALUE", "QUANTITY","FILE_ID"]]
         d1 = d1[d1['QUANTITY'].notna()]
-        d1 = d1[d1['BRAND CATEGORY'].notna()]
-        d1['DESCRIPCION'] = 'NULL'
+        d1['DESCRIPCION'] = ""
         d1 = d1[d1.QUANTITY != 0]
         d1.columns = ["id","brand_category","nart","descripcion","year","month","value","cantidad","file_id"]
         d1 = d1.drop_duplicates(subset=["id","brand_category","nart","descripcion","year","month","value","file_id"])
@@ -161,15 +158,14 @@ def LoadShoppers(df, year, month, file_id):
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
         df["FILE_ID"] = file_id
-        df["APPLICATION_FORM"] = df["APPLICATION_FORM"].replace([0,'','0'], 'N/A')
+        df["APPLICATION_FORM"] = ""
         d1 = df[["KEY","CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION", "YEAR", "MONTH", "QUANTITY","FILE_ID"]]
         d1 = d1[d1['CLASIFICACION'].notna()]
         d1 = d1[d1['TIPO_PROMO'].notna()]
         d1 = d1[d1['CANAL'].notna()]
-        d1 = d1[d1['APPLICATION_FORM'].notna()]
         d1 = d1[d1['NART'].notna()]
-        d1 = d1[d1['DESCRIPCION'].notna()]
         d1 = d1[d1['QUANTITY'].notna()]
+        d1["DESCRIPCION"] = ""
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad","file_id"]
         d1 = d1.groupby(["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","file_id"]).sum().reset_index()
         result = d1.to_json(orient="records")
@@ -198,7 +194,7 @@ def LoadForecast(df, year, month, file_id):
         d1 = df[["id","Input","CLASIF","BPU","Brand Category","Application Form","year","month","R&O","MSO","Net Sales S/. ('000)","FILE_ID"]]
         d1["BPU"] = d1["BPU"].replace([0,'','0'], 'N/A')
         d1["Brand Category"] = d1["Brand Category"].replace([0,'','0'], 'N/A')
-        d1["Application Form"] = d1["Application Form"].replace([0,'','0'], 'N/A')
+        d1["Application Form"] = ""
         d1.columns = ["id","input","clasificacion","bpu","brand_category","application_form","year","month","r_o","mso","net_sales","file_id"]
         d1['year'].fillna(0,inplace=True)
         d1['month'].fillna(0,inplace=True)

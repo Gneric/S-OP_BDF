@@ -1221,7 +1221,6 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
             }
         }"""
         res_insert = queryHasura(query, {"variables": variables})
-        print(res_insert)
         result = { 'result': res_insert["data"]["DB_Main"]}
         return result
     except:
