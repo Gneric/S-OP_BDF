@@ -1218,6 +1218,7 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
                 netsales
                 ajuste_netsales
                 comentario
+                canal
             }
         }"""
         res_insert = queryHasura(query, {"variables": variables})
@@ -1237,10 +1238,11 @@ def update_db_main_table(data):
         }
         """
         res = queryHasura(query, {'objects': data})
-        #print('(update_db_main_table) : ', res)
+        print('(update_db_main_table) : ', res)
         return res
     except:
-        print(sys.exc_info())
+        print('error update_db_main_table :', sys.exc_info())
+        print('result :', res)
         return 0
 
 def request_data_last_id():
