@@ -23,7 +23,6 @@ def Loadbaseline(df, year, month, file_id):
         d1 = d1[d1['NART'].notna()]
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad","file_id"]
-        d1["descripcion"] = ""
         d1 = d1.groupby(["id","clasificacion","nart","descripcion","year","month","file_id"]).sum().reset_index()
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
@@ -450,8 +449,8 @@ def createTemplateValorizacion(filename, year, month):
             worksheet.write_datetime(f'{checkColumnByRange(mnth+3)}1', curr_month, date_format)
             worksheet.write(f'{checkColumnByRange(mnth)}2', 'price list')
             worksheet.write(f'{checkColumnByRange(mnth+1)}2', 'discount')
-            worksheet.write(f'{checkColumnByRange(mnth+2)}2', 'rebate')
-            worksheet.write(f'{checkColumnByRange(mnth+3)}2', 'comp / cop')
+            worksheet.write(f'{checkColumnByRange(mnth+2)}2', 'rebates')
+            worksheet.write(f'{checkColumnByRange(mnth+3)}2', 'com / cop')
             next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
             curr_month = next_month
             mnth += 4
