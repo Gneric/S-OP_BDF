@@ -228,6 +228,10 @@ def LoadProducts(df):
         df = df[["BG","Material","SPGR","TIPO","Descripcion","Portafolio","BPU","BrandCategory","ApplicationForm","EAN"]]
         df["EAN"] = df["EAN"].replace([0,'','0'], 'N/A')
         df = df.fillna('')
+        df["BG"] = df["BG"].apply(str)
+        df["Material"] = df["Material"].apply(str)
+        df["SPGR"] = df["SPGR"].apply(str)
+        df["EAN"] = df["EAN"].apply(str)
         result = df.to_json(orient="records")
         parsed = json.loads(result)
         res = upload_data_maestro(parsed)

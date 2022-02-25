@@ -1545,4 +1545,5 @@ def upload_data_maestro(data):
             return { 'error': 'error en la respuesta de actualizacion' }, 400
     except:
         print('error update_producto_maestro:', sys.exc_info())
+        print('result :', res)
         return { 'error': 'error en la respuesta de actualizacion' }, 400
