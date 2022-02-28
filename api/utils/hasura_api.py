@@ -1412,16 +1412,16 @@ def request_productos_otros():
         q = """
         query MyQuery {
             Nart_sin_clasificar {
+                ApplicationForm
                 BG
-                Material
-                SPGR
-                TIPO
-                Descripcion
-                Portafolio
                 BPU
                 BrandCategory
-                ApplicationForm
+                Descripcion
                 EAN
+                Material
+                Portafolio
+                SPGR
+                TIPO
             }
             }
         """
