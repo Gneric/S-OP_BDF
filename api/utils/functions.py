@@ -1,5 +1,5 @@
 from api.utils.hasura_api import *
-from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadProducts, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createExcelFile, createTemplate, createTemplateValorizacion
+from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadProducts, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createCloneMaestro, createExcelFile, createTemplate, createTemplateValorizacion
 from os import getcwd, scandir, remove, listdir
 from os.path import join
 import pandas as pd
@@ -492,3 +492,11 @@ def request_upload_product(data):
             return { 'error': 'error al retornar peticion de actualizacion' }, 400
     except:
         return { 'error': 'error haciendo la peticion de actualizacion' }, 400
+
+def cloneMaestro():
+    try:
+        data =  request_data_maestro()
+        res = createCloneMaestro(data)
+        return res
+    except:
+        return { 'error':'error obteniendo datos' }, 400

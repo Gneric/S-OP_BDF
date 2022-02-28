@@ -1549,3 +1549,28 @@ def upload_data_maestro(data):
         print('error update_producto_maestro:', sys.exc_info())
         print('result :', res)
         return { 'error': 'error en la respuesta de actualizacion' }, 400
+
+def request_data_maestro():
+    try:
+        q = """
+        query MyQuery {
+        Maestro_productos {
+            ApplicationForm
+            BG
+            BPU
+            BrandCategory
+            Descripcion
+            EAN
+            Material
+            Portafolio
+            SPGR
+            TIPO
+        }
+        }
+        """
+        res = queryHasura(q)
+        return res["data"]["Maestro_productos"]
+    except:
+        print('error request_data_maestro:', sys.exc_info())
+        print('result :', res)
+        return { 'error': 'error en la obtencion de datos maestro' }, 400

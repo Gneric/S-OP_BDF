@@ -11,7 +11,7 @@ from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.data import AddRow, CargarDBMain, CerrarMesDBMain, DeleteFileData, GetData, DeleteData, CloneData, GetInfoDB_Main, GetProductosSinClasificar, UpdateDB_Main, UpdateDbData, UpdateDbMaestro, UpdateProduct, UploadExcel, GetTemplates, GetInfoMes, UploadProduct
+from api.routes.data import AddRow, CargarDBMain, CerrarMesDBMain, DeleteFileData, GetData, DeleteData, CloneData, GetInfoDB_Main, GetProductosSinClasificar, UpdateDB_Main, UpdateDbData, UpdateDbMaestro, UpdateProduct, UploadExcel, GetTemplates, GetInfoMes, UploadProduct, CloneProduct
 from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
 
 app = Flask(__name__)
@@ -79,6 +79,7 @@ api.add_resource(UpdateDbMaestro, '/api/update_maestro')
 api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
 api.add_resource(UpdateProduct, '/api/update_product')
 api.add_resource(UploadProduct, '/api/upload_excel_product')
+api.add_resource(CloneProduct, '/api/clone_product')
 api.add_resource(AddRow, '/api/new_row')
 # data - DB_Main
 api.add_resource(CerrarMesDBMain, '/api/cerrar_db_main')
@@ -113,4 +114,4 @@ api.add_resource(ActionTest, '/api/test_action_hasura')
 if __name__ == '__main__':
   from waitress import serve
   serve(app, host="0.0.0.0", port=3100, threads=8)
-  #app.run(host='0.0.0.0', port=3500, debug=True)
+  #app.run(host='0.0.0.0', port=3100, debug=True)

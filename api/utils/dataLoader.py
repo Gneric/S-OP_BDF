@@ -487,28 +487,80 @@ def createFileProductosOtros(data):
             worksheet.write('J1',keys[9])
             rowIndex = 2
             for row in data:
-                worksheet.write(f'A{rowIndex}', row['BG'])
-                worksheet.write(f'B{rowIndex}', row['Material'])
-                worksheet.write(f'C{rowIndex}', row['SPGR'])
-                worksheet.write(f'D{rowIndex}', row['TIPO'])
+                worksheet.write(f'A{rowIndex}', row['ApplicationForm'])
+                worksheet.write(f'B{rowIndex}', row['BG'])
+                worksheet.write(f'C{rowIndex}', row['BPU'])
+                worksheet.write(f'D{rowIndex}', row['BrandCategory'])
                 worksheet.write(f'E{rowIndex}', row['Descripcion'])
-                worksheet.write(f'F{rowIndex}', row['Portafolio'])
-                worksheet.write(f'G{rowIndex}', row['BPU'])
-                worksheet.write(f'H{rowIndex}', row['BrandCategory'])
-                worksheet.write(f'I{rowIndex}', row['ApplicationForm'])
-                worksheet.write(f'J{rowIndex}', row['EAN'])
+                worksheet.write(f'F{rowIndex}', row['EAN'])
+                worksheet.write(f'G{rowIndex}', row['Material'])
+                worksheet.write(f'H{rowIndex}', row['Portafolio'])
+                worksheet.write(f'I{rowIndex}', row['SPGR'])
+                worksheet.write(f'J{rowIndex}', row['TIPO'])
                 rowIndex+=1
         else:
-            worksheet.write('A1','BG')
-            worksheet.write('B1','Material')
-            worksheet.write('C1','SPGR')
-            worksheet.write('D1','TIPO')
+            worksheet.write('A1','ApplicationForm')
+            worksheet.write('B1','BG')
+            worksheet.write('C1','BPU')
+            worksheet.write('D1','BrandCategory')
             worksheet.write('E1','Descripcion')
-            worksheet.write('F1','Portafolio')
-            worksheet.write('G1','BPU')
-            worksheet.write('H1','BrandCategory')
-            worksheet.write('I1','ApplicationForm')
-            worksheet.write('J1','EAN')
+            worksheet.write('F1','EAN')
+            worksheet.write('G1','Material')
+            worksheet.write('H1','Portafolio')
+            worksheet.write('I1','SPGR')
+            worksheet.write('J1','TIPO')
+        workbook.close()
+        return filename
+    except:
+        print('error createFileProductosOtros :', sys.exc_info())
+        return ""
+
+def createCloneMaestro(data):
+    try:
+        filename = "Maestro_productos.xlsx"
+        workbook = xlsxwriter.Workbook(f"api/data/{filename}")
+        cell_format = workbook.add_format()
+        cell_format.set_text_wrap()
+        cell_format.set_align('top')
+        cell_format.set_align('left=')
+        worksheet = workbook.add_worksheet("Productos")
+        if data:
+            keys = list(data[0].keys())
+            worksheet.write('A1',keys[0])
+            worksheet.write('B1',keys[1])
+            worksheet.write('C1',keys[2])
+            worksheet.write('D1',keys[3])
+            worksheet.write('E1',keys[4])
+            worksheet.write('F1',keys[5])
+            worksheet.write('G1',keys[6])
+            worksheet.write('H1',keys[7])
+            worksheet.write('I1',keys[8])
+            worksheet.write('J1',keys[9])
+            rowIndex = 2
+            for row in data:
+                ean_format = workbook.add_format({'num_format': '0'})
+                worksheet.write(f'A{rowIndex}', row['ApplicationForm'])
+                worksheet.write(f'B{rowIndex}', row['BG'])
+                worksheet.write(f'C{rowIndex}', row['BPU'])
+                worksheet.write(f'D{rowIndex}', row['BrandCategory'])
+                worksheet.write(f'E{rowIndex}', row['Descripcion'])
+                worksheet.write(f'F{rowIndex}', row['EAN'].replace('.0',''))
+                worksheet.write(f'G{rowIndex}', row['Material'])
+                worksheet.write(f'H{rowIndex}', row['Portafolio'])
+                worksheet.write(f'I{rowIndex}', row['SPGR'])
+                worksheet.write(f'J{rowIndex}', row['TIPO'])
+                rowIndex+=1
+        else:
+            worksheet.write('A1','ApplicationForm')
+            worksheet.write('B1','BG')
+            worksheet.write('C1','BPU')
+            worksheet.write('D1','BrandCategory')
+            worksheet.write('E1','Descripcion')
+            worksheet.write('F1','EAN')
+            worksheet.write('G1','Material')
+            worksheet.write('H1','Portafolio')
+            worksheet.write('I1','SPGR')
+            worksheet.write('J1','TIPO')
         workbook.close()
         return filename
     except:
