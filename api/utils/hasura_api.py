@@ -1406,16 +1406,16 @@ def request_productos_otros():
         q = """
         query MyQuery {
             Nart_sin_clasificar {
-                ApplicationForm
                 BG
-                BPU
-                BrandCategory
-                Descripcion
-                EAN
                 Material
-                Portafolio
                 SPGR
                 TIPO
+                Descripcion
+                Portafolio
+                BPU
+                BrandCategory
+                ApplicationForm
+                EAN
             }
             }
         """
@@ -1549,16 +1549,16 @@ def request_data_maestro():
         q = """
         query MyQuery {
         Maestro_productos {
-            ApplicationForm
             BG
-            BPU
-            BrandCategory
-            Descripcion
-            EAN
             Material
-            Portafolio
             SPGR
             TIPO
+            Descripcion
+            Portafolio
+            BPU
+            BrandCategory
+            ApplicationForm
+            EAN
         }
         }
         """
