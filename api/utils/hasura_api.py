@@ -791,7 +791,7 @@ def requestPrepareSummary(id, canal):
             }
         }
         """
-        customWhere = { "id": [ id ], "canal": [ canal ] }
+        customWhere = { "id": id, "canal": canal }
         res = queryHasura(query, { 'customWhere': customWhere })
         result = {"rows" : res["data"]["rows"]}
         return result
