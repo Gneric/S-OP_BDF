@@ -6,7 +6,7 @@ import string
 from datetime import datetime, timedelta
 import xlsxwriter
 from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion, upload_data_maestro
-from api.utils.rowsCheker import dataCheck
+from api.utils.rowsCheker import dataCheck, dataMaestroCheck
 
 def Loadbaseline(df, year, month, file_id):
     try:
@@ -233,7 +233,8 @@ def LoadProducts(df):
         df["SPGR"] = df["SPGR"].apply(str)
         df["EAN"] = df["EAN"].apply(str)
         result = df.to_json(orient="records")
-        parsed = json.loads(result)
+        check_result = dataMaestroCheck(result)
+        parsed = json.loads(check_result)
         res = upload_data_maestro(parsed)
         return res
     except KeyError as err:

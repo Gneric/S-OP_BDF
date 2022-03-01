@@ -776,41 +776,25 @@ def requestVisualBD():
 
 def requestPrepareSummary(id, canal):
     try:
-        if canal == "":
-            query = """
-            query BD_Prepare_Summary($id:String) {
-                rows: BD_Prepare_Summary(where: {id: {_eq: $id}}) {
-                    input
-                    nart
-                    descripcion
-                    year
-                    mes
-                    units
-                    netsales 
-                }
+        query = """
+        query BD_Prepare_Summary($customWhere: json = "") {
+            function_get_prepare_summary(args: {customWhere: $customWhere}) {
+                id
+                input
+                BPU
+                nart
+                descripcion
+                year
+                mes
+                units
+                netsales
             }
-            """
-            res = queryHasura(query, {'id': id})
-            print(res)
-            result = {"rows" : res["data"]["rows"]}
-            return result
-        else:
-            query = """
-            query BD_Prepare_Summary($id:String, $canal:String) {
-                rows: BD_Prepare_Summary(where: {id: {_eq: $id}, canal: {_eq: $canal}}) {
-                    input
-                    nart
-                    descripcion
-                    year
-                    mes
-                    units
-                    netsales 
-                }
-            }
-            """
-            res = queryHasura(query, { 'id': id, 'canal': canal })
-            result = {"rows" : res["data"]["rows"]}
-            return result
+        }
+        """
+        customWhere = { "id": [ id ], "canal": [ canal ] }
+        res = queryHasura(query, { 'customWhere': customWhere })
+        result = {"rows" : res["data"]["rows"]}
+        return result
     except SystemError as err:
         print(err)
         return ""
@@ -1387,6 +1371,16 @@ def request_Maestro_productos():
         q = "query MyQuery {Maestro_productos(distinct_on: Material) { Material } } "
         res = queryHasura(q)
         p = [  x['Material'] for x in res['data']["Maestro_productos"] ]
+        return p
+    except:
+        print('err request_Maestro_productos :', sys.exc_info())
+        return []
+
+def request_clasificaciones_Maestro_productos():
+    try:
+        q = "query MyQuery { Maestro_productos(distinct_on: Material) { BPU BrandCategory ApplicationForm SPGR }}"
+        res = queryHasura(q)
+        p = res['data']["Maestro_productos"]
         return p
     except:
         print('err request_Maestro_productos :', sys.exc_info())
