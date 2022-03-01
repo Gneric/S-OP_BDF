@@ -783,7 +783,6 @@ def requestPrepareSummary(id, canal):
                 input
                 BPU
                 nart
-                descripcion
                 year
                 mes
                 units
