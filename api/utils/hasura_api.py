@@ -793,7 +793,7 @@ def requestPrepareSummary(id, canal):
         """
         customWhere = { "id": id, "canal": canal }
         res = queryHasura(query, { 'customWhere': customWhere })
-        result = {"rows" : res["data"]["rows"]}
+        result = {"rows" : res["data"]["function_get_prepare_summary"]}
         return result
     except SystemError as err:
         print(err)
