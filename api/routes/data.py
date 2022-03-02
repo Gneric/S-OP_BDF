@@ -4,7 +4,7 @@ from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
 from api.utils.dataLoader import createFileProductosOtros
-from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkExcelProduct, checkFiles, checkInfoMonth, cloneData, cloneMaestro, delete_file_data, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, request_update_product, update_changes_bd, update_changes_maestro_productos, update_db_main
+from api.utils.functions import add_new_row, allowed_extensions, checkExcelFiles, checkExcelProduct, checkFiles, checkInfoMonth, cloneData, cloneMaestro, delete_file_data, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getUpsertCategory, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, request_update_product, update_changes_bd, update_changes_maestro_productos, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -303,4 +303,17 @@ class CloneProduct(Resource):
         except:
             print(sys.exc_info())
             return { 'error' : 'error en la creacion de archivo Maestro' }, 400
+
+class UpsertCategory(Resource):
+    @jwt_required()
+    def post(self):
+        try:
+            current_user = get_jwt_identity()
+            data = request.json.get('data','')
+            res = getUpsertCategory(data)
+            return res
+        except:
+            print(sys.exc_info())
+            return { 'error' : 'error en la insercion/actualizacion de maestro de categorias' }, 400
+            
         

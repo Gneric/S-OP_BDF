@@ -30,10 +30,10 @@ def dataCheck(data):
 def dataMaestroCheck(data):
     json_data = json.loads(data)
     clasificaciones = request_clasificaciones_Maestro_productos()
-    maestro_bpu = clasificaciones[0]
-    maestro_randCategory = clasificaciones[1]
-    maestro_applicationForm = clasificaciones[2]
-    maestro_spgr = clasificaciones[3]
+    maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_spgr = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
     material_err = []
     err_message = []
     try:
@@ -43,21 +43,56 @@ def dataMaestroCheck(data):
             brandCategory = row.get('BrandCategory','')
             applicationForm = row.get('ApplicationForm','')
             spgr = row.get('SPGR','')
-            if row.get('BPU', '') == False:
-                material_err.append(row.get('Material'))
-                err_message.append(f'BPU de {material} vacio')
-            if row.get('BrandCategory', '') == False:
-                material_err.append(row.get('Material'))
-                err_message.append(f'BrandCategory de {material} vacio')
-            if row.get('ApplicationForm', '') == False:
-                material_err.append(row.get('Material'))
-                err_message.append(f'ApplicationForm de {material} vacio')
-            if row.get('SPGR', '') == False:
-                material_err.append(row.get('Material'))
-                err_message.append(f'SPGR de {material} vacio')
+            # Revision de datos
             if bpu not in maestro_bpu:
                 material_err.append(row.get('Material'))
-                err_message.append(f'BPU de {material} no existente')
+                err_message.append(f'BPU {bpu} de {material} no existente')
+            if brandCategory not in maestro_randCategory:
+                material_err.append(row.get('Material'))
+                err_message.append(f'brandCategory {brandCategory} de {material} no existente')
+            if applicationForm not in maestro_applicationForm:
+                material_err.append(row.get('Material'))
+                err_message.append(f'applicationForm {applicationForm} de {material} no existente')
+            if spgr not in maestro_spgr:
+                material_err.append(row.get('Material'))
+                err_message.append(f'SPGR {spgr} de {material} no existente')
+            new_err = [ dict(t) for t in {tuple(d.items()) for d in material_err} ]
+            new_data = [ x for x in data if x['Material'] not in new_err ]
+            print('Pre Check :', len(data))
+            print('Post Check :', len(new_data))
+            return data
     except:
         print(sys.exc_info())
         return []
+
+def rowMaestroCheck(row):
+    clasificaciones = request_clasificaciones_Maestro_productos()
+    maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_spgr = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+    err_message = []
+    try:
+        material = row.get('Material','')
+        bpu = row.get('BPU', '')
+        brandCategory = row.get('BrandCategory','')
+        applicationForm = row.get('ApplicationForm','')
+        spgr = row.get('SPGR','')
+        # Revision de datos
+        if bpu not in maestro_bpu:
+            err_message.append(f'BPU {bpu} de {material} no existente')
+            return False, err_message
+        if brandCategory not in maestro_randCategory:
+            err_message.append(f'brandCategory {brandCategory} de {material} no existente')
+            return False, err_message
+        if applicationForm not in maestro_applicationForm:
+            err_message.append(f'applicationForm {applicationForm} de {material} no existente')
+            return False, err_message
+        if spgr not in maestro_spgr:
+            err_message.append(f'SPGR {spgr} de {material} no existente')
+            return False, err_message
+        else:
+            return True, []
+    except:
+        print(sys.exc_info())
+        return False, err_message

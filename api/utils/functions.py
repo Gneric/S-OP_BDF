@@ -7,6 +7,8 @@ import bcrypt
 from datetime import datetime
 import time
 
+from api.utils.rowsCheker import rowMaestroCheck
+
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
 def cleanDataFolder():
@@ -402,6 +404,7 @@ def update_db_main(data):
                     data.remove(i)
                 else:
                     i['id'] = id
+                    i['netsales'] = i['netsales'] * 1000
         update = update_db_main_table(data)
         #audit = audit_db_main(data)
         return update
@@ -475,11 +478,15 @@ def delete_file_data(area_id, file_id):
 
 def request_update_product(data):
     try:
-        res = update_producto_maestro(data)
-        if res:
-            return res
+        check, msg = rowMaestroCheck(data)
+        if check == False:
+            return { 'error': msg }, 400
         else:
-            return { 'error': 'error al retornar peticion de actualizacion' }, 400
+            res = update_producto_maestro(data)
+            if res:
+                return res
+            else:
+                return { 'error': 'error al retornar peticion de actualizacion' }, 400
     except:
         return { 'error': 'error haciendo la peticion de actualizacion' }, 400
 
@@ -500,3 +507,13 @@ def cloneMaestro():
         return res
     except:
         return { 'error':'error obteniendo datos' }, 400
+
+def getUpsertCategory(data):
+    try:
+        res = request_upsert_maestro_categorias(data)
+        if res == "":
+            return { 'error': 'error en la actualizacion de la base de datos' }, 400
+        else:
+            return { 'result' : 'ok' }
+    except:
+        return { 'error': 'error insertando/actualizando datos' }, 400

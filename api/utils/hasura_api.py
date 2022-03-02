@@ -1205,7 +1205,11 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
             }
         }"""
         res_insert = queryHasura(query, {"variables": variables})
-        result = { 'result': res_insert["data"]["DB_Main"]}
+        data = res_insert["data"]["DB_Main"]
+        for row in data:
+            row['netsales'] = '{:.2f}'.format(row['netsales'] / 1000)
+            row['ajuste_netsales'] = '{:.2f}'.format(row['ajuste_netsales'] / 1000)
+        result = { 'result': data }
         return result
     except:
         print(sys.exc_info())
@@ -1547,18 +1551,18 @@ def request_data_maestro():
     try:
         q = """
         query MyQuery {
-        Maestro_productos {
-            BG
-            Material
-            SPGR
-            TIPO
-            Descripcion
-            Portafolio
-            BPU
-            BrandCategory
-            ApplicationForm
-            EAN
-        }
+            Maestro_productos {
+                BG
+                Material
+                SPGR
+                TIPO
+                Descripcion
+                Portafolio
+                BPU
+                BrandCategory
+                ApplicationForm
+                EAN
+            }
         }
         """
         res = queryHasura(q)
@@ -1567,3 +1571,36 @@ def request_data_maestro():
         print('error request_data_maestro:', sys.exc_info())
         print('result :', res)
         return { 'error': 'error en la obtencion de datos maestro' }, 400
+
+def request_maestro_categorias():
+    try:
+        q = """
+        query MyQuery {
+            Maestro_categorias {
+                name
+                category
+            }
+        }
+        """
+        res = queryHasura(q)
+        return res["data"]["Maestro_categorias"]
+    except:
+        print('error request_upsert_maestro_categorias:', sys.exc_info())
+        print('result :', res)
+        return ""
+
+def request_upsert_maestro_categorias(data):
+    try:
+        q = """
+        mutation MyMutation($objects: [Maestro_categorias_insert_input!] = {}) {
+            insert_Maestro_categorias(objects: $objects) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q, { 'objects': data })
+        return res["data"]["insert_Maestro_categorias"]["affected_rows"]
+    except:
+        print('error request_upsert_maestro_categorias:', sys.exc_info())
+        print('result :', res)
+        return ""
