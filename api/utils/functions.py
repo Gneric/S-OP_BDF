@@ -404,7 +404,6 @@ def update_db_main(data):
                     data.remove(i)
                 else:
                     i['id'] = id
-                    i['netsales'] = i['netsales'] * 1000
         update = update_db_main_table(data)
         #audit = audit_db_main(data)
         return update

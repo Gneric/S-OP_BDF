@@ -1206,9 +1206,6 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
         }"""
         res_insert = queryHasura(query, {"variables": variables})
         data = res_insert["data"]["DB_Main"]
-        for row in data:
-            row['netsales'] = '{:.2f}'.format(row['netsales'] / 1000)
-            row['ajuste_netsales'] = '{:.2f}'.format(row['ajuste_netsales'] / 1000)
         result = { 'result': data }
         return result
     except:
