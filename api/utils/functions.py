@@ -279,8 +279,8 @@ def getVisualBD():
 def get_db_historico():
     return requestVisualBD()
 
-def getPrepareSummary(id, canal):
-    return requestPrepareSummary(id, canal)
+def getPrepareSummary(filters):
+    return requestPrepareSummary(filters)
 
 def getSimulationUnits():
     return demand_simulation_units()
@@ -477,6 +477,8 @@ def delete_file_data(area_id, file_id):
 
 def request_update_product(data):
     try:
+        for key, value in data.items():
+            data[key] = value.upper().strip()
         check, msg = rowMaestroCheck(data)
         if check == False:
             return { 'error': msg }, 400
@@ -487,10 +489,14 @@ def request_update_product(data):
             else:
                 return { 'error': 'error al retornar peticion de actualizacion' }, 400
     except:
+        print(sys.exc_info())
         return { 'error': 'error haciendo la peticion de actualizacion' }, 400
 
 def request_upload_product(data):
     try:
+        for row in data:
+            for key, value in data.items():
+                data[key] = value.upper().strip()
         res = upload_data_maestro(data)
         if res:
             return res

@@ -33,7 +33,7 @@ def dataMaestroCheck(data):
     maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
     maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
     maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_spgr = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
     material_err = []
     err_message = []
     try:
@@ -42,20 +42,20 @@ def dataMaestroCheck(data):
             bpu = row.get('BPU', '')
             brandCategory = row.get('BrandCategory','')
             applicationForm = row.get('ApplicationForm','')
-            spgr = row.get('SPGR','')
+            tipo = row.get('TIPO','')
             # Revision de datos
             if bpu not in maestro_bpu:
                 material_err.append(row.get('Material'))
-                err_message.append(f'BPU {bpu} de {material} no existente')
+                err_message.append(f'BPU - {bpu} de Material {material} erroneo')
             if brandCategory not in maestro_randCategory:
                 material_err.append(row.get('Material'))
-                err_message.append(f'brandCategory {brandCategory} de {material} no existente')
+                err_message.append(f'brandCategory - {brandCategory} de Material {material} erroneo')
             if applicationForm not in maestro_applicationForm:
                 material_err.append(row.get('Material'))
-                err_message.append(f'applicationForm {applicationForm} de {material} no existente')
-            if spgr not in maestro_spgr:
+                err_message.append(f'applicationForm - {applicationForm} de Material {material} erroneo')
+            if tipo not in maestro_tipo:
                 material_err.append(row.get('Material'))
-                err_message.append(f'SPGR {spgr} de {material} no existente')
+                err_message.append(f'TIPO - {tipo} de Material {material} erroneo')
             new_err = [ dict(t) for t in {tuple(d.items()) for d in material_err} ]
             new_data = [ x for x in data if x['Material'] not in new_err ]
             print('Pre Check :', len(data))
@@ -70,26 +70,26 @@ def rowMaestroCheck(row):
     maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
     maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
     maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_spgr = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
     err_message = []
     try:
         material = row.get('Material','')
         bpu = row.get('BPU', '')
         brandCategory = row.get('BrandCategory','')
         applicationForm = row.get('ApplicationForm','')
-        spgr = row.get('SPGR','')
+        tipo = row.get('TIPO','')
         # Revision de datos
         if bpu not in maestro_bpu:
-            err_message.append(f'BPU {bpu} de {material} no existente')
+            err_message.append(f'BPU - {bpu} de Material {material} erroneo')
             return False, err_message
         if brandCategory not in maestro_randCategory:
-            err_message.append(f'brandCategory {brandCategory} de {material} no existente')
+            err_message.append(f'brandCategory - {brandCategory} de Material {material} erroneo')
             return False, err_message
         if applicationForm not in maestro_applicationForm:
-            err_message.append(f'applicationForm {applicationForm} de {material} no existente')
+            err_message.append(f'applicationForm - {applicationForm} de Material {material} erroneo')
             return False, err_message
-        if spgr not in maestro_spgr:
-            err_message.append(f'SPGR {spgr} de {material} no existente')
+        if tipo not in maestro_tipo:
+            err_message.append(f'TIPO - {tipo} de Material {material} erroneo')
             return False, err_message
         else:
             return True, []

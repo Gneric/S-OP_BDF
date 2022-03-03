@@ -24,6 +24,8 @@ def Loadbaseline(df, year, month, file_id):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","nart","descripcion","year","month","cantidad","file_id"]
         d1 = d1.groupby(["id","clasificacion","nart","descripcion","year","month","file_id"]).sum().reset_index()
+        df_obj = d1.select_dtypes(['object'])
+        d1[df_obj.columns] = df_obj.apply(lambda x: x.str.strip())
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:

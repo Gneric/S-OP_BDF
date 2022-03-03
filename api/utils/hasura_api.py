@@ -774,7 +774,7 @@ def requestVisualBD():
         print(err)
         return ""
 
-def requestPrepareSummary(id, canal):
+def requestPrepareSummary(filters):
     try:
         query = """
         query BD_Prepare_Summary($customWhere: json = "") {
@@ -790,8 +790,7 @@ def requestPrepareSummary(id, canal):
             }
         }
         """
-        customWhere = { "id": id, "canal": canal }
-        res = queryHasura(query, { 'customWhere': customWhere })
+        res = queryHasura(query, { 'customWhere': filters })
         result = {"rows" : res["data"]["function_get_prepare_summary"]}
         return result
     except SystemError as err:
@@ -1378,9 +1377,9 @@ def request_Maestro_productos():
 
 def request_clasificaciones_Maestro_productos():
     try:
-        q = "query MyQuery { Maestro_productos(distinct_on: Material) { BPU BrandCategory ApplicationForm SPGR }}"
+        q = "query MyQuery { Maestro_categorias { category name } }"
         res = queryHasura(q)
-        p = res['data']["Maestro_productos"]
+        p = res['data']["Maestro_categorias"]
         return p
     except:
         print('err request_Maestro_productos :', sys.exc_info())
