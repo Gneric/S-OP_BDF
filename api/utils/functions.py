@@ -355,7 +355,7 @@ def add_multiple_rows(data):
     try:
         rows = []
         table_name = data['clasificacion']
-        id = f'{datetime.now().strftime("%Y%m")}'
+        id = request_id_db_main()
         bpu = data.get('bpu','')
         brand_category = data.get('brand_category','')
         application_form = data.get('application_form','')

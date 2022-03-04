@@ -1227,6 +1227,23 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
         print(sys.exc_info())
         return 0
 
+def request_id_db_main():
+    try:
+        query = """
+        query MyQuery {
+        DB_Main(distinct_on: id) {
+            id
+        }
+        }
+
+        """
+        res_insert = queryHasura(query)
+        data = res_insert["data"]["DB_Main"][0]["id"]
+        return data
+    except:
+        print(sys.exc_info())
+        return 0
+
 def update_db_main_table(data):
     try:
         query = """
