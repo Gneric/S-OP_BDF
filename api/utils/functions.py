@@ -351,6 +351,45 @@ def add_new_row(data):
         print(f' Error add_new_row {err}')
         return 0
 
+def add_multiple_rows(data):
+    try:
+        rows = []
+        table_name = data['clasificacion']
+        id = f'{datetime.now().strftime("%Y%m")}'
+        bpu = data.get('bpu','')
+        brand_category = data.get('brand_category','')
+        application_form = data.get('application_form','')
+        promo_spgr = data.get('promo_spgr','')
+        units = data.get('units', 0)
+        netsales = data.get('netsales', 0)
+        ajuste_netsales = data.get('ajuste_netsales', 0)
+        comentario = data.get('comentario','')
+        canal = data.get('canal','')
+        for year in data['year']:
+            for month in data['month']:
+                rows.append({
+                    'id':id,
+                    'clasificacion':table_name,
+                    'bpu':bpu,
+                    'brand_category':brand_category,
+                    'application_form':application_form,
+                    'promo_spgr':promo_spgr,
+                    'year':year,
+                    'month':month,
+                    'units': units,
+                    'netsales': netsales,
+                    'ajuste_netsales': ajuste_netsales,
+                    'comentario': comentario,
+                    'canal': canal
+                })
+        res = insert_multiple_rows(rows)
+        if res == "":
+            return { 'error': 'error insertando data' }, 400
+        else:
+            return { 'result' : 'ok' }
+    except KeyError as err:
+        print('error add_multiple_rows :', err)
+
 
 def update_changes_bd(data):
     try:

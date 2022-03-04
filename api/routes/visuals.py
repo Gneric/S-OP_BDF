@@ -40,6 +40,7 @@ class PrepareSummary(Resource):
                 return { 'error': "Error intentando obtener datos" } , 400
             return { "result" : res }, 200
         except:
+            print(sys.exc_info())
             return { 'error': "Error intentando obtener datos" } , 400
 
 class UnitsxBPU(Resource):

@@ -793,8 +793,8 @@ def requestPrepareSummary(filters):
         res = queryHasura(query, { 'customWhere': filters })
         result = {"rows" : res["data"]["function_get_prepare_summary"]}
         return result
-    except SystemError as err:
-        print(err)
+    except:
+        print('Error requestPrepareSummary :',res)
         return ""
 
 
@@ -1011,6 +1011,22 @@ def addRow(row):
     except SyntaxError as err:
         print(f' Error addRow {err}')
         return 0
+
+def insert_multiple_rows(rows):
+    try:
+        q = """
+        mutation MyMutation($objects: [DB_Main_insert_input!] = {}) {
+        insert_DB_Main(objects: $objects, on_conflict: {constraint: DB_Main_pkey, update_columns: [units, netsales, ajuste_netsales, comentario]}) {
+            affected_rows
+        }
+        }
+        """
+        res = queryHasura(q, {'objects' : rows})
+        return res["data"]["insert_DB_Main"]["affected_rows"]
+    except:
+        print('error insert_multiple_rows :', sys.exc_info())
+        print('result :', res)
+        return ""
 
 
 def updateInputTable(table_name, rows):
