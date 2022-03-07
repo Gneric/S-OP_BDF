@@ -1633,3 +1633,74 @@ def request_upsert_maestro_categorias(data):
         print('error request_upsert_maestro_categorias:', sys.exc_info())
         print('result :', res)
         return ""
+
+def request_used_categories():
+    try:
+        q = """
+        query MyQuery {
+        Maestro_categorias {
+            id
+            name
+            category
+        }
+        }
+        """
+        res = queryHasura(q)
+        return res["data"]["Maestro_categorias"]
+    except:
+        print('error request_upsert_maestro_categorias:', sys.exc_info())
+        print('result :', res)
+        return ""
+
+def request_used_categories():
+    try:
+        q = """
+        query MyQuery {
+        Maestro_categorias(distinct_on: name)) {
+            name
+        }
+        }
+        """
+        res = queryHasura(q)
+        category_names = [ row['name'] for row in res["data"]["Maestro_categorias"] ] 
+        return category_names
+    except:
+        print('error request_used_categories:', sys.exc_info())
+        print('result :', res)
+        return ""
+
+
+def request_categories():
+    try:
+        q = """
+        query MyQuery {
+        Maestro_categorias {
+            id
+            category
+            name
+        }
+        }
+        """
+        res = queryHasura(q)
+        return res["data"]["Maestro_categorias"]
+    except:
+        print('error request_categories:', sys.exc_info())
+        print('result :', res)
+        return ""
+
+
+def request_delete_category_items(data):
+    try:
+        q = """
+        mutation MyMutation($_in: [Int!]) {
+        delete_Maestro_categorias(where: {id: {_in: $_in}}) {
+            affected_rows
+        }
+        }
+        """
+        res = queryHasura(q, {'_in': data})
+        return res["data"]["delete_Maestro_categorias"]["affected_rows"]
+    except:
+        print('error request_delete_category_items:', sys.exc_info())
+        print('result :', res)
+        return ""

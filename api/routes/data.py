@@ -4,7 +4,7 @@ from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
 from api.utils.dataLoader import createFileProductosOtros
-from api.utils.functions import add_multiple_rows, add_new_row, allowed_extensions, checkExcelFiles, checkExcelProduct, checkFiles, checkInfoMonth, cloneData, cloneMaestro, delete_file_data, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getUpsertCategory, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, request_update_product, update_changes_bd, update_changes_maestro_productos, update_db_main
+from api.utils.functions import add_multiple_rows, add_new_row, allowed_extensions, checkExcelFiles, checkExcelProduct, checkFiles, checkInfoMonth, cloneData, cloneMaestro, delete_category_items, delete_file_data, get_category_items, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getUpsertCategory, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, request_update_product, update_changes_bd, update_changes_maestro_productos, update_db_main
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -157,16 +157,6 @@ class UpdateDbData(Resource):
         res = update_changes_bd(data)
         return res
 
-class UpdateDbMaestro(Resource):
-    @jwt_required()
-    def post(self):
-        current_user = get_jwt_identity()
-        data = request.json.get('data', '')
-        if data == '':
-            return { 'error': 'error en la lectura de data' }, 400
-        res = update_changes_maestro_productos(data)
-        return res
-
 class AddRow(Resource):
     @jwt_required()
     def post(self):
@@ -311,9 +301,9 @@ class CloneProduct(Resource):
                     abort(404)
         except:
             print(sys.exc_info())
-            return { 'error' : 'error en la creacion de archivo Maestro' }, 400
+            return { 'error' : 'error en la creacion de archivo Maestro' }, 400            
 
-class UpsertCategory(Resource):
+class UpsertCategoryItem(Resource):
     @jwt_required()
     def post(self):
         try:
@@ -324,5 +314,17 @@ class UpsertCategory(Resource):
         except:
             print(sys.exc_info())
             return { 'error' : 'error en la insercion/actualizacion de maestro de categorias' }, 400
-            
+
+
+class DeleteCategoryItem(Resource):
+    @jwt_required()
+    def post(self):
+        try:
+            current_user = get_jwt_identity()
+            data = request.json.get('data','')
+            res = delete_category_items(data)
+            return res
+        except:
+            print(sys.exc_info())
+            return { 'error' : 'error en la insercion/actualizacion de maestro de categorias' }, 400
         

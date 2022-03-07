@@ -7,7 +7,7 @@ import bcrypt
 from datetime import datetime
 import time
 
-from api.utils.rowsCheker import rowMaestroCheck
+from api.utils.rowsCheker import checkExistingCategories, rowMaestroCheck
 
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
@@ -408,17 +408,6 @@ def update_changes_bd(data):
         print(sys.exc_info())
         return { 'error': 'error actualizando data' }, 400
 
-def update_changes_maestro_productos(data):
-    try:
-        res = update_maestro_productos(data)
-        if res:
-            return { 'result': 'ok' }
-        else:
-            return { 'error' : 'error en la actualizacion de datos de Maestro Productos' }, 400
-    except:
-        print(sys.exc_info())
-        return { 'error': 'error actualizando data' }, 400
-
 def request_productos_otros():
     try:
         data = request_productos_otros()
@@ -552,9 +541,32 @@ def cloneMaestro():
     except:
         return { 'error':'error obteniendo datos' }, 400
 
+def get_category_items(data):
+    try:
+        res = request_categories(data)
+        if res == "":
+            return { 'error': 'error en la actualizacion de la base de datos' }, 400
+        else:
+            return { 'result' : 'ok' }
+    except:
+        return { 'error': 'error insertando/actualizando datos' }, 400
+
 def getUpsertCategory(data):
     try:
+        check_res = checkExistingCategories(data)
+        if check_res:
+            return { 'error': 'errores en la verificacion de datos', 'error_details': check_res }, 400
         res = request_upsert_maestro_categorias(data)
+        if res == "":
+            return { 'error': 'error en la actualizacion de la base de datos' }, 400
+        else:
+            return { 'result' : 'ok' }
+    except:
+        return { 'error': 'error insertando/actualizando datos' }, 400
+
+def delete_category_items(data):
+    try:
+        res = request_delete_category_items(data)
         if res == "":
             return { 'error': 'error en la actualizacion de la base de datos' }, 400
         else:

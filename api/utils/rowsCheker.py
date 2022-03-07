@@ -3,7 +3,7 @@ import sys
 import json
 
 from pandas import concat
-from api.utils.hasura_api import request_Maestro_productos, request_clasificaciones_Maestro_productos
+from api.utils.hasura_api import request_Maestro_productos, request_clasificaciones_Maestro_productos, request_used_categories
 
 def dataCheck(data):
     json_data = json.loads(data)
@@ -30,10 +30,10 @@ def dataCheck(data):
 def dataMaestroCheck(data):
     json_data = json.loads(data)
     clasificaciones = request_clasificaciones_Maestro_productos()
-    maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
-    maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
-    maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_bpu = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_tipo = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
     material_err = []
     err_message = []
     try:
@@ -44,16 +44,16 @@ def dataMaestroCheck(data):
             applicationForm = row.get('ApplicationForm','')
             tipo = row.get('TIPO','')
             # Revision de datos
-            if bpu not in maestro_bpu:
+            if bpu.upper() not in maestro_bpu:
                 material_err.append(row.get('Material'))
                 err_message.append(f'BPU - {bpu} de Material {material} erroneo')
-            if brandCategory not in maestro_randCategory:
+            if brandCategory.upper() not in maestro_randCategory:
                 material_err.append(row.get('Material'))
                 err_message.append(f'brandCategory - {brandCategory} de Material {material} erroneo')
-            if applicationForm not in maestro_applicationForm:
+            if applicationForm.upper() not in maestro_applicationForm:
                 material_err.append(row.get('Material'))
                 err_message.append(f'applicationForm - {applicationForm} de Material {material} erroneo')
-            if tipo not in maestro_tipo:
+            if tipo.upper() not in maestro_tipo:
                 material_err.append(row.get('Material'))
                 err_message.append(f'TIPO - {tipo} de Material {material} erroneo')
             new_err = [ dict(t) for t in {tuple(d.items()) for d in material_err} ]
@@ -67,10 +67,10 @@ def dataMaestroCheck(data):
 
 def rowMaestroCheck(row):
     clasificaciones = request_clasificaciones_Maestro_productos()
-    maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
-    maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
-    maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_bpu = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_tipo = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
     err_message = []
     try:
         material = row.get('Material','')
@@ -79,16 +79,16 @@ def rowMaestroCheck(row):
         applicationForm = row.get('ApplicationForm','')
         tipo = row.get('TIPO','')
         # Revision de datos
-        if bpu not in maestro_bpu:
+        if bpu.upper() not in maestro_bpu:
             err_message.append(f'BPU - {bpu} de Material {material} erroneo')
             return False, err_message
-        if brandCategory not in maestro_randCategory:
+        if brandCategory.upper() not in maestro_randCategory:
             err_message.append(f'brandCategory - {brandCategory} de Material {material} erroneo')
             return False, err_message
-        if applicationForm not in maestro_applicationForm:
+        if applicationForm.upper() not in maestro_applicationForm:
             err_message.append(f'applicationForm - {applicationForm} de Material {material} erroneo')
             return False, err_message
-        if tipo not in maestro_tipo:
+        if tipo.upper() not in maestro_tipo:
             err_message.append(f'TIPO - {tipo} de Material {material} erroneo')
             return False, err_message
         else:
@@ -96,3 +96,15 @@ def rowMaestroCheck(row):
     except:
         print(sys.exc_info())
         return False, err_message
+
+def checkExistingCategories(data):
+    categories = request_used_categories()
+    err_message = []
+    for row in data:
+        try:
+            name = row.get('name','')
+            if name == False or name.upper() in categories:
+                err_message.append(f'el nombre {name} se encuentra en uso')
+        except:
+            err_message.append(f'error en la fila {name}')
+    return err_message

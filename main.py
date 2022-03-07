@@ -11,7 +11,7 @@ from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.data import AddMultipleRows, AddRow, CargarDBMain, CerrarMesDBMain, DeleteFileData, GetData, DeleteData, CloneData, GetInfoDB_Main, GetProductosSinClasificar, UpdateDB_Main, UpdateDbData, UpdateDbMaestro, UpdateProduct, UploadExcel, GetTemplates, GetInfoMes, UploadProduct, CloneProduct, UpsertCategory
+from api.routes.data import AddMultipleRows, AddRow, CargarDBMain, CerrarMesDBMain, DeleteCategoryItem, DeleteFileData, GetCategoryItems, GetData, DeleteData, CloneData, GetInfoDB_Main, GetProductosSinClasificar, UpdateDB_Main, UpdateDbData, UpdateProduct, UploadExcel, GetTemplates, GetInfoMes, UploadProduct, CloneProduct, UpsertCategoryItem
 from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
 
 app = Flask(__name__)
@@ -67,28 +67,28 @@ def needs_fresh_token_loader(jwt_header):
 api.add_resource(Welcome, '/api/')
 
 # data
+api.add_resource(UploadExcel, '/api/upload_excel')
 api.add_resource(GetData, '/api/get_excel_data')
 api.add_resource(DeleteData, '/api/del_data')
 api.add_resource(CloneData, '/api/clone_data')
-api.add_resource(UploadExcel, '/api/upload_excel')
 api.add_resource(GetTemplates, '/api/getTemplate')
 api.add_resource(GetInfoMes, '/api/get_info')
 api.add_resource(DeleteFileData, '/api/del_file_data')
 api.add_resource(UpdateDbData, '/api/update_inputs')
-api.add_resource(UpdateDbMaestro, '/api/update_maestro')
 api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
 api.add_resource(AddRow, '/api/new_row')
-api.add_resource(AddMultipleRows, '/api/new_multiple_rows')
 # data - Maestro Productos
 api.add_resource(UpdateProduct, '/api/update_product')
 api.add_resource(UploadProduct, '/api/upload_excel_product')
 api.add_resource(CloneProduct, '/api/clone_product')
-api.add_resource(UpsertCategory, '/api/upsert_category')
+api.add_resource(UpsertCategoryItem, '/api/upsert_category')
+api.add_resource(DeleteCategoryItem, '/api/delete_category')
 # data - DB_Main
 api.add_resource(CerrarMesDBMain, '/api/cerrar_db_main')
 api.add_resource(CargarDBMain, '/api/cargar_db_main')
 api.add_resource(GetInfoDB_Main, '/api/info_db_main')
 api.add_resource(UpdateDB_Main, '/api/update_db_main')
+api.add_resource(AddMultipleRows, '/api/new_multiple_rows')
 # user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')
