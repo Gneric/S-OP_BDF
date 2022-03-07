@@ -1622,9 +1622,9 @@ def request_upsert_maestro_categorias(data):
     try:
         q = """
         mutation MyMutation($objects: [Maestro_categorias_insert_input!] = {}) {
-            insert_Maestro_categorias(objects: $objects) {
-                affected_rows
-            }
+        insert_Maestro_categorias(objects: $objects, on_conflict: {constraint: Maestro_categorias_pkey, update_columns: category}) {
+            affected_rows
+        }
         }
         """
         res = queryHasura(q, { 'objects': data })
