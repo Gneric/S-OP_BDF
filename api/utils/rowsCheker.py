@@ -102,9 +102,12 @@ def checkExistingCategories(data):
     err_message = []
     for row in data:
         try:
+            id = row.get('id','')
             name = row.get('name','')
             category = row.get('category','')
             key = name.upper()+category.upper()
+            if id:
+                continue
             if name == False or key in categories:
                 err_message.append(f'el nombre {name} se encuentra en uso o se encuentra vacio')
         except:

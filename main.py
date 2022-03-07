@@ -11,8 +11,11 @@ from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
 from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.data import AddMultipleRows, AddRow, CargarDBMain, CerrarMesDBMain, DeleteCategoryItem, DeleteFileData, GetData, DeleteData, CloneData, GetInfoDB_Main, GetProductosSinClasificar, UpdateDB_Main, UpdateDbData, UpdateProduct, UploadExcel, GetTemplates, GetInfoMes, UploadProduct, CloneProduct, UpsertCategoryItem
 from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
+from api.routes.data_endpoints.data_db_main import *
+from api.routes.data_endpoints.data_inputs import *
+from api.routes.data_endpoints.data_product_master import *
+from api.routes.data_endpoints.data_otros import *
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
@@ -67,15 +70,14 @@ def needs_fresh_token_loader(jwt_header):
 api.add_resource(Welcome, '/api/')
 
 # data
-api.add_resource(UploadExcel, '/api/upload_excel')
 api.add_resource(GetData, '/api/get_excel_data')
 api.add_resource(DeleteData, '/api/del_data')
 api.add_resource(CloneData, '/api/clone_data')
 api.add_resource(GetTemplates, '/api/getTemplate')
+api.add_resource(UploadExcel, '/api/upload_excel')
 api.add_resource(GetInfoMes, '/api/get_info')
 api.add_resource(DeleteFileData, '/api/del_file_data')
 api.add_resource(UpdateDbData, '/api/update_inputs')
-api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
 api.add_resource(AddRow, '/api/new_row')
 # data - Maestro Productos
 api.add_resource(UpdateProduct, '/api/update_product')
@@ -89,6 +91,8 @@ api.add_resource(CargarDBMain, '/api/cargar_db_main')
 api.add_resource(GetInfoDB_Main, '/api/info_db_main')
 api.add_resource(UpdateDB_Main, '/api/update_db_main')
 api.add_resource(AddMultipleRows, '/api/new_multiple_rows')
+# data - Otros
+api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
 # user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')

@@ -5,7 +5,7 @@ import pandas as pd
 import string
 from datetime import datetime, timedelta
 import xlsxwriter
-from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion, upload_data_maestro
+from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion, upload_data_maestro, get_productos_otros
 from api.utils.rowsCheker import dataCheck, dataMaestroCheck
 
 def Loadbaseline(df, year, month, file_id):
@@ -467,7 +467,8 @@ def createTemplateValorizacion(filename, year, month):
         print(sys.exc_info())
         return ""
 
-def createFileProductosOtros(data):
+def createFileProductosOtros():
+    data = request_productos_otros()
     try:
         filename = "Productos_sin_clasificar.xlsx"
         workbook = xlsxwriter.Workbook(f"api/data/{filename}")

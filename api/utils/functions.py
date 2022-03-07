@@ -410,7 +410,7 @@ def update_changes_bd(data):
 
 def request_productos_otros():
     try:
-        data = request_productos_otros()
+        data = get_productos_otros()
         return data
     except:
         print(sys.exc_info())

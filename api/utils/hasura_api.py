@@ -1433,7 +1433,7 @@ def update_maestro_productos(data):
         print('error update_maestro_productos : ', sys.exc_info())
         return 0
 
-def request_productos_otros():
+def get_productos_otros():
     try:
         q = """
         query MyQuery {
@@ -1454,7 +1454,7 @@ def request_productos_otros():
         res = queryHasura(q)
         return res['data']['Nart_sin_clasificar']
     except:
-        print('error request_productos_otros :', sys.exc_info())
+        print('error get_productos_otros :', sys.exc_info())
         return []
 
 def request_cobertura():
@@ -1622,7 +1622,7 @@ def request_upsert_maestro_categorias(data):
     try:
         q = """
         mutation MyMutation($objects: [Maestro_categorias_insert_input!] = {}) {
-        insert_Maestro_categorias(objects: $objects, on_conflict: {constraint: Maestro_categorias_pkey, update_columns: category}) {
+        insert_Maestro_categorias(objects: $objects, on_conflict: {constraint: Maestro_categorias_pkey, update_columns: name}) {
             affected_rows
         }
         }
