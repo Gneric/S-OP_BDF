@@ -103,8 +103,10 @@ def checkExistingCategories(data):
     for row in data:
         try:
             name = row.get('name','')
-            if name == False or name.upper() in categories:
-                err_message.append(f'el nombre {name} se encuentra en uso')
+            category = row.get('category','')
+            key = name.upper()+category.upper()
+            if name == False or key in categories:
+                err_message.append(f'el nombre {name} se encuentra en uso o se encuentra vacio')
         except:
             err_message.append(f'error en la fila {name}')
     return err_message

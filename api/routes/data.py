@@ -4,7 +4,7 @@ from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
 from api.utils.dataLoader import createFileProductosOtros
-from api.utils.functions import add_multiple_rows, add_new_row, allowed_extensions, checkExcelFiles, checkExcelProduct, checkFiles, checkInfoMonth, cloneData, cloneMaestro, delete_category_items, delete_file_data, get_category_items, getData, checkDeleteTable, cleanDataFolder, data_path, getTemplates, getUpsertCategory, getinfo_db_main, join, request_cargar_db_main, request_cerrar_mes, request_update_product, update_changes_bd, update_changes_maestro_productos, update_db_main
+from api.utils.functions import *
 from flask_restful import Resource, abort
 from datetime import datetime
 from flask import request
@@ -327,4 +327,3 @@ class DeleteCategoryItem(Resource):
         except:
             print(sys.exc_info())
             return { 'error' : 'error en la insercion/actualizacion de maestro de categorias' }, 400
-        

@@ -1656,13 +1656,14 @@ def request_used_categories():
     try:
         q = """
         query MyQuery {
-        Maestro_categorias(distinct_on: name)) {
+        Maestro_categorias {
             name
+            category
         }
         }
         """
         res = queryHasura(q)
-        category_names = [ row['name'] for row in res["data"]["Maestro_categorias"] ] 
+        category_names = [ row['name'].upper()+row['category'].upper() for row in res["data"]["Maestro_categorias"] ] 
         return category_names
     except:
         print('error request_used_categories:', sys.exc_info())

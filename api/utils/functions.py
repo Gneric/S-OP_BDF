@@ -556,6 +556,8 @@ def getUpsertCategory(data):
         check_res = checkExistingCategories(data)
         if check_res:
             return { 'error': 'errores en la verificacion de datos', 'error_details': check_res }, 400
+        for row in data:
+            row['name'] = row['name'].title()
         res = request_upsert_maestro_categorias(data)
         if res == "":
             return { 'error': 'error en la actualizacion de la base de datos' }, 400
