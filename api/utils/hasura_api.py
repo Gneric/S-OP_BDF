@@ -1478,16 +1478,15 @@ def request_cobertura(data):
                 TRANSITO
                 id
             }
-            function_get_cobertura_totales(args: {customWhere: $customWhere}) {
-                TOTALES_FC
-                TOTALES_IMPACTO
-                TOTALES_NETSALES_IMPACT
-            }
         }
 
         """
         res = queryHasura(q, { 'customWhere': data })
-        return { 'data' : res['data']['function_get_cobertura'], 'totales' : res['data']['function_get_cobertura_totales'] }
+        totales_fc = sum( row['FC'] for row in res['data']['function_get_cobertura'] )
+        totales_impacto = sum( row['IMPACTO'] for row in res['data']['function_get_cobertura'] )
+        totales_netsales_impact = sum( row['NETSALES_IMPACT'] for row in res['data']['function_get_cobertura'] )
+        totales = { 'TOTALES_FC' : totales_fc, 'TOTALES_IMPACTO': totales_impacto, 'TOTALES_NETSALES_IMPACT': totales_netsales_impact  }
+        return { 'data' : res['data']['function_get_cobertura'], 'totales' : totales }
     except:
         print('error request_cobertura :', sys.exc_info())
         print('result :', res)
