@@ -1461,7 +1461,7 @@ def request_cobertura(data):
     try:
         q = """
         query MyQuery($customWhere: json = "") {
-            function_get_cobertura(args: {customWhere: $customWhere}) {
+            function_get_cobertura(args: {customWhere: $customWhere}, order_by: {BPU: asc}) {
                 ApplicationForm
                 BPU
                 BrandCategory

@@ -1,8 +1,6 @@
-from logging import warning
 import sys
 import json
 
-from pandas import concat
 from api.utils.hasura_api import request_Maestro_productos, request_clasificaciones_Maestro_productos, request_used_categories
 
 def dataCheck(data):
