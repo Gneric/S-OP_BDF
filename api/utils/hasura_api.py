@@ -1457,31 +1457,41 @@ def get_productos_otros():
         print('error get_productos_otros :', sys.exc_info())
         return []
 
-def request_cobertura():
+def request_cobertura(data):
     try:
         q = """
-        query MyQuery {
-            rows: Cobertura {
-                codigo_item
+        query MyQuery($customWhere: json = "") {
+            function_get_cobertura(args: {customWhere: $customWhere}) {
+                ApplicationForm
+                BPU
                 BrandCategory
-                SPGR
-                Descripcion
+                COBERTURA_FINAL
+                COBERTURA_INICIAL
+                DESCRIPCION
                 FC
-                STOCK
-                COBERTURAINICIAL
-                TOTALINGRESO
-                COBFINAL
                 IMPACTO
-                netsales
-                NETSALESIMPACTO
+                NART
+                NETSALES_IMPACT
+                NSP
+                SPGR
+                STOCK
+                TRANSITO
+                id
+            }
+            function_get_cobertura_totales(args: {customWhere: $customWhere}) {
+                TOTALES_FC
+                TOTALES_IMPACTO
+                TOTALES_NETSALES_IMPACT
             }
         }
+
         """
-        res = queryHasura(q)
-        return res['data']['rows']
+        res = queryHasura(q, { 'customWhere': data })
+        return { 'data' : res['data']['function_get_cobertura'], 'totales' : res['data']['function_get_cobertura_totales'] }
     except:
         print('error request_cobertura :', sys.exc_info())
-        return []
+        print('result :', res)
+        return ""
 
 def delete_data_by_file_id(area_id, file_id):
     try:

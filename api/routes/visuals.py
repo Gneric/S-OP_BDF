@@ -107,8 +107,11 @@ class GetCobertura(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
+        data = request.json.get('data','')
+        if data == "":
+            return { 'error': 'no se encontraron los parametros de busqueda' }, 400
         try:
-            res = request_info_cobertura()
+            res = request_info_cobertura(data)
             return res
         except:
             return { 'error': 'error haciendo la peticion de informacion' }, 400

@@ -484,9 +484,9 @@ def setInfoTimeline(data):
     except:
         return { 'error': 'error en la busqueda de informacion' }, 400
 
-def request_info_cobertura():
+def request_info_cobertura(data):
     try:
-        res = request_cobertura()
+        res = request_cobertura(data)
         if res:
             return { 'result': res }
         else:
