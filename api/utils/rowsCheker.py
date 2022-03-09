@@ -28,10 +28,14 @@ def dataCheck(data):
 def dataMaestroCheck(data):
     json_data = json.loads(data)
     clasificaciones = request_clasificaciones_Maestro_productos()
-    maestro_bpu = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
-    maestro_randCategory = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
-    maestro_applicationForm = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_tipo = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_bpu_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_randCategory_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_applicationForm_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_tipo_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
     material_err = []
     err_message = []
     try:
@@ -42,18 +46,26 @@ def dataMaestroCheck(data):
             applicationForm = row.get('ApplicationForm','')
             tipo = row.get('TIPO','')
             # Revision de datos
-            if bpu.upper() not in maestro_bpu:
+            if bpu.upper() not in maestro_bpu_upper:
                 material_err.append(row.get('Material'))
                 err_message.append(f'BPU - {bpu} de Material {material} erroneo')
-            if brandCategory.upper() not in maestro_randCategory:
+            else:
+                row['BPU'] = maestro_bpu[maestro_bpu_upper.index(row['BPU'].upper())]
+            if brandCategory.upper() not in maestro_randCategory_upper:
                 material_err.append(row.get('Material'))
                 err_message.append(f'brandCategory - {brandCategory} de Material {material} erroneo')
-            if applicationForm.upper() not in maestro_applicationForm:
+            else:
+                row['BrandCategory'] = maestro_randCategory[maestro_randCategory_upper.index(row['BrandCategory'].upper())]
+            if applicationForm.upper() not in maestro_applicationForm_upper:
                 material_err.append(row.get('Material'))
                 err_message.append(f'applicationForm - {applicationForm} de Material {material} erroneo')
-            if tipo.upper() not in maestro_tipo:
+            else:
+                row['ApplicationForm'] = maestro_applicationForm[maestro_applicationForm_upper.index(row['ApplicationForm'].upper())]
+            if tipo.upper() not in maestro_tipo_upper:
                 material_err.append(row.get('Material'))
                 err_message.append(f'TIPO - {tipo} de Material {material} erroneo')
+            else:
+                row['TIPO'] = maestro_tipo[maestro_tipo_upper.index(row['TIPO'].upper())]
             new_err = [ dict(t) for t in {tuple(d.items()) for d in material_err} ]
             new_data = [ x for x in data if x['Material'] not in new_err ]
             print('Pre Check :', len(data))
@@ -65,10 +77,14 @@ def dataMaestroCheck(data):
 
 def rowMaestroCheck(row):
     clasificaciones = request_clasificaciones_Maestro_productos()
-    maestro_bpu = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
-    maestro_randCategory = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
-    maestro_applicationForm = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_tipo = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_bpu_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_randCategory_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_applicationForm_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
+    maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+    maestro_tipo_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
     err_message = []
     try:
         material = row.get('Material','')
@@ -77,19 +93,23 @@ def rowMaestroCheck(row):
         applicationForm = row.get('ApplicationForm','')
         tipo = row.get('TIPO','')
         # Revision de datos
-        if bpu.upper() not in maestro_bpu:
+        if bpu.upper() not in maestro_bpu_upper:
             err_message.append(f'BPU - {bpu} de Material {material} erroneo')
             return False, err_message
-        if brandCategory.upper() not in maestro_randCategory:
+        if brandCategory.upper() not in maestro_randCategory_upper:
             err_message.append(f'brandCategory - {brandCategory} de Material {material} erroneo')
             return False, err_message
-        if applicationForm.upper() not in maestro_applicationForm:
+        if applicationForm.upper() not in maestro_applicationForm_upper:
             err_message.append(f'applicationForm - {applicationForm} de Material {material} erroneo')
             return False, err_message
-        if tipo.upper() not in maestro_tipo:
+        if tipo.upper() not in maestro_tipo_upper:
             err_message.append(f'TIPO - {tipo} de Material {material} erroneo')
             return False, err_message
         else:
+            row['BPU'] = maestro_bpu[maestro_bpu_upper.index(row['BPU'].upper())]
+            row['BrandCategory'] = maestro_randCategory[maestro_randCategory_upper.index(row['BrandCategory'].upper())]
+            row['ApplicationForm'] = maestro_applicationForm[maestro_applicationForm_upper.index(row['ApplicationForm'].upper())]
+            row['TIPO'] = maestro_tipo[maestro_tipo_upper.index(row['TIPO'].upper())]
             return True, []
     except:
         print(sys.exc_info())
