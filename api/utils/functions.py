@@ -505,8 +505,6 @@ def delete_file_data(area_id, file_id):
 
 def request_update_product(data):
     try:
-        for key, value in data.items():
-            data[key] = value.upper().strip()
         check, msg = rowMaestroCheck(data)
         if check == False:
             return { 'error': msg }, 400

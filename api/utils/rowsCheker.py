@@ -28,23 +28,35 @@ def dataCheck(data):
 def dataMaestroCheck(data):
     json_data = json.loads(data)
     clasificaciones = request_clasificaciones_Maestro_productos()
+
     maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
-    maestro_bpu_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
     maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
-    maestro_randCategory_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
     maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_applicationForm_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
     maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+
+    maestro_bpu_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
     maestro_tipo_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
+
     material_err = []
     err_message = []
     try:
         for row in json_data:
+            row['Material'] = row['Material'].strip()
+            row['SPGR'] = row['SPGR'].strip()
+            row['TIPO'] = row['TIPO'].strip()
+            row['Descripcion'] = row['Descripcion'].strip()
+            row['BPU'] = row['BPU'].strip()
+            row['BrandCategory'] = row['BrandCategory'].strip()
+            row['ApplicationForm'] = row['ApplicationForm'].strip()
+
             material = row.get('Material','')
             bpu = row.get('BPU', '')
             brandCategory = row.get('BrandCategory','')
             applicationForm = row.get('ApplicationForm','')
             tipo = row.get('TIPO','')
+
             # Revision de datos
             if bpu.upper() not in maestro_bpu_upper:
                 material_err.append(row.get('Material'))
@@ -77,21 +89,33 @@ def dataMaestroCheck(data):
 
 def rowMaestroCheck(row):
     clasificaciones = request_clasificaciones_Maestro_productos()
+
     maestro_bpu = [ x['name'] for x in clasificaciones if x['category'] == 'BPU' ]
-    maestro_bpu_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
     maestro_randCategory = [ x['name'] for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
-    maestro_randCategory_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
     maestro_applicationForm = [ x['name'] for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
-    maestro_applicationForm_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
     maestro_tipo = [ x['name'] for x in clasificaciones if x['category'] == 'TIPO' ]
+
+    maestro_bpu_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BPU' ]
+    maestro_randCategory_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'BRANDCATEGORY' ]
+    maestro_applicationForm_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'APPLICATIONFORM' ]
     maestro_tipo_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
+
+    row['Material'] = row['Material'].strip()
+    row['SPGR'] = row['SPGR'].strip()
+    row['TIPO'] = row['TIPO'].strip()
+    row['Descripcion'] = row['Descripcion'].strip()
+    row['BPU'] = row['BPU'].strip()
+    row['BrandCategory'] = row['BrandCategory'].strip()
+    row['ApplicationForm'] = row['ApplicationForm'].strip()
     err_message = []
+    
     try:
         material = row.get('Material','')
         bpu = row.get('BPU', '')
         brandCategory = row.get('BrandCategory','')
         applicationForm = row.get('ApplicationForm','')
         tipo = row.get('TIPO','')
+
         # Revision de datos
         if bpu.upper() not in maestro_bpu_upper:
             err_message.append(f'BPU - {bpu} de Material {material} erroneo')
