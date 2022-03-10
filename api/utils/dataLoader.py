@@ -5,6 +5,7 @@ import pandas as pd
 import string
 from datetime import datetime, timedelta
 import xlsxwriter
+from api.utils.functions import request_productos_otros
 from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion, upload_data_maestro, get_productos_otros
 from api.utils.rowsCheker import dataCheck, dataMaestroCheck
 
