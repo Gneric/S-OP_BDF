@@ -13,6 +13,7 @@ class UpdateProduct(Resource):
     def post(self):
         current_user = get_jwt_identity()
         data = request.json.get('data','')
+        print(data)
         if data:
             return request_update_product(data)
         else:

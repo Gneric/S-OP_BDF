@@ -7,7 +7,7 @@ import bcrypt
 from datetime import datetime
 import time
 
-from api.utils.rowsCheker import checkExistingCategories, rowMaestroCheck
+from api.utils.rowsCheker import checkExistingCategories, dataMaestroCheck
 
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
@@ -505,11 +505,11 @@ def delete_file_data(area_id, file_id):
 
 def request_update_product(data):
     try:
-        check, msg = rowMaestroCheck(data)
-        if check == False:
-            return { 'error': msg }, 400
+        err_check, err_message, new_data = dataMaestroCheck(data)
+        if err_check:
+            return { 'error': err_message }, 400
         else:
-            res = update_producto_maestro(data)
+            res = update_producto_maestro(new_data)
             if res:
                 return res
             else:

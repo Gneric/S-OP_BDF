@@ -235,8 +235,11 @@ def LoadProducts(df):
         df["SPGR"] = df["SPGR"].apply(str)
         df["EAN"] = df["EAN"].apply(str)
         result = df.to_json(orient="records")
-        check_result = dataMaestroCheck(result)
-        parsed = json.loads(check_result)
+        json_data = json.loads(result)
+        err_check, err_message, new_data = dataMaestroCheck(json_data)
+        if err_check:
+            return { 'error': err_message }, 400
+        parsed = json.loads(new_data)
         res = upload_data_maestro(parsed)
         return res
     except KeyError as err:
