@@ -37,8 +37,9 @@ class UpdateDB_Main(Resource):
 class CargarDBMain(Resource):
     @jwt_required()
     def post(self):
+        bypass = request.json.get('bypass', '')
         current_user = get_jwt_identity()
-        return request_cargar_db_main()
+        return request_cargar_db_main(bypass)
         
 class CerrarMesDBMain(Resource):
     @jwt_required()

@@ -439,16 +439,19 @@ def update_db_main(data):
         print(sys.exc_info())
         return { 'error': 'error actualizando data' }, 400
 
-def request_cargar_db_main():
+def request_cargar_db_main(bypass):
     try:
         data = request_data_last_id()
         curr_month = f'{datetime.now().strftime("%Y%m")}'
-        if data == [] or data[0]["id"] < curr_month :
-            return { 'error': 'no se encontro data en el mes actual' }, 400
+        if bypass:
+            if data == []:
+                return { 'error': 'no se encontro data en el ultimo mes' }, 400
         else:
-            del_res = delete_db_main_id(data[0]["id"])
-            res = insert_data_db_main(data)
-            return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
+            if data == [] or data[0]["id"] < curr_month :
+                return { 'error': 'no se encontro data en el mes actual' }, 400
+        del_res = delete_db_main_id(data[0]["id"])
+        res = insert_data_db_main(data)
+        return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
 
