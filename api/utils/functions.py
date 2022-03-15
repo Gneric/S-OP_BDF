@@ -452,7 +452,10 @@ def request_cargar_db_main(id):
 
         del_res = delete_db_main_id()
         res = insert_data_db_main(data)
-        return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra'}, 200
+        if id:
+            return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra - Custom ID: {id}'}, 200
+        else:
+            return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra - Regular ID: {curr_month}'}, 200
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
 
