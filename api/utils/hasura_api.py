@@ -1261,11 +1261,13 @@ def update_db_main_table(data):
         print('result :', res)
         return 0
 
-def request_data_last_id():
+def request_data_last_id(id):
     try:
-        query = """
-        query MyQuery {
-            view_db_main_last_id {
+        if id:
+            table_query = "query MyQuery($_eq: String = "") {view_db_main_custom_id(where: {id: {_eq: $_eq}}) {"
+        else:
+            table_query = "query MyQuery { view_db_main_last_id {"
+        query = table_query+"""
                 id
                 clasificacion
                 canal
@@ -1283,7 +1285,10 @@ def request_data_last_id():
         }
         """
         res = queryHasura(query)
-        return res["data"]["view_db_main_last_id"]
+        if id:
+            return res["data"]["view_db_main_custom_id"]
+        else:
+            return res["data"]["view_db_main_last_id"]
     except:
         print(sys.exc_info())
         return []
@@ -1321,7 +1326,7 @@ def backup_db_main(data):
         print(sys.exc_info())
         return 0
 
-def delete_db_main_id(data):
+def delete_db_main_id():
     try:
         query = """
         mutation MyMutation {
