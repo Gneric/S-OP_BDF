@@ -512,7 +512,7 @@ def request_update_product(data):
         if err_check:
             return { 'error': err_message }, 400
         else:
-            res = update_producto_maestro(new_data)
+            res = upload_data_maestro(new_data)
             if res:
                 return res
             else:

@@ -1547,24 +1547,6 @@ def delete_data_by_file_id(area_id, file_id):
         print('Error delete_data_by_file_id :', sys.exc_info())
         return { 'error': 'error haciendo la peticion de eliminacion de data' }, 400
 
-def update_producto_maestro(data):
-    try:
-        q = """
-        mutation MyMutation($objects: [Maestro_productos_insert_input!] = {}) {
-            insert_Maestro_productos(objects: $objects, on_conflict: {constraint: Maestro_productos_pkey, update_columns: [ApplicationForm, BG, BPU, BrandCategory, Descripcion, EAN, Material, Portafolio, SPGR, TIPO]}) {
-                affected_rows
-            }
-        }
-        """
-        res = queryHasura(q, {'objects': data})
-        if res["data"]["insert_Maestro_productos"]["affected_rows"]:
-            return { 'result': 'ok' }
-        else:
-            return { 'error': 'error en la respuesta de actualizacion' }, 400
-    except:
-        print('error update_producto_maestro:', sys.exc_info())
-        return ""
-
 def upload_data_maestro(data):
     try:
         q = """
