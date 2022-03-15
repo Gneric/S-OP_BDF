@@ -238,7 +238,7 @@ def LoadProducts(df):
         json_data = json.loads(result)
         err_check, err_message, new_data = dataMaestroCheck(json_data)
         if err_check:
-            return { 'error': err_message }, 400
+            return { 'error': 'error en los datos ingresados', 'errors': err_message }, 400
         parsed = json.loads(new_data)
         res = upload_data_maestro(parsed)
         return res

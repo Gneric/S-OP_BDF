@@ -39,9 +39,9 @@ def dataMaestroCheck(data):
     maestro_tipo_upper = [ x['name'].upper() for x in clasificaciones if x['category'] == 'TIPO' ]
 
     material_err = []
-    err_message = []
     err_check = False
     for row in data:
+        err_message = []
         row['Material'] = row['Material'].strip()
         row['SPGR'] = row['SPGR'].strip()
         row['TIPO'] = row['TIPO'].strip()
@@ -56,33 +56,38 @@ def dataMaestroCheck(data):
         applicationForm = row.get('ApplicationForm','')
         tipo = row.get('TIPO','')
 
+
+        err_row = False
         # Revision de datos
         if bpu.upper() not in maestro_bpu_upper:
-            material_err.append(row.get('Material'))
-            err_message.append(f'BPU - {bpu} de Material {material} erroneo')
+            err_row = True
+            err_message.append('La descripción del BPU no concuerda con las categorías definidas')    
         else:
             row['BPU'] = maestro_bpu[maestro_bpu_upper.index(row['BPU'].upper())]
         if brandCategory.upper() not in maestro_randCategory_upper:
-            material_err.append(row.get('Material'))
-            err_message.append(f'brandCategory - {brandCategory} de Material {material} erroneo')
+            err_row = True
+            err_message.append('La descripción del BrandCategory no concuerda con las categorías definidas')
         else:
             row['BrandCategory'] = maestro_randCategory[maestro_randCategory_upper.index(row['BrandCategory'].upper())]
         if applicationForm.upper() not in maestro_applicationForm_upper:
-            material_err.append(row.get('Material'))
-            err_message.append(f'applicationForm - {applicationForm} de Material {material} erroneo')
+            err_row = True
+            err_message.append('La descripción del ApplicationForm no concuerda con las categorías definidas')
         else:
             row['ApplicationForm'] = maestro_applicationForm[maestro_applicationForm_upper.index(row['ApplicationForm'].upper())]
         if tipo.upper() not in maestro_tipo_upper:
-            material_err.append(row.get('Material'))
-            err_message.append(f'TIPO - {tipo} de Material {material} erroneo')
+            err_row = True
+            err_message.append('La descripción del TIPO no concuerda con las categorías definidas')
         else:
             row['TIPO'] = maestro_tipo[maestro_tipo_upper.index(row['TIPO'].upper())]
+        
+        if err_row:
+            material_err.append({ 'material': material, 'errores': err_message })
             
-    new_err = list(dict.fromkeys(material_err))
-    new_data = [ x for x in data if x['Material'] not in new_err ]
-    if err_message:
+    #new_err = list(dict.fromkeys(material_err))
+    #new_data = [ x for x in data if x['Material'] not in new_err ]
+    if material_err:
         err_check = True
-    return err_check, err_message, new_data
+    return err_check, material_err, data
 
 def checkExistingCategories(data):
     categories = request_used_categories()
