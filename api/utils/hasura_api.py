@@ -1264,50 +1264,68 @@ def update_db_main_table(data):
 def request_data_last_id(id):
     try:
         if id:
-            table_query = "query MyQuery($_eq: String = "") {view_db_main_custom_id(where: {id: {_eq: $_eq}}) {"
-        else:
-            table_query = "query MyQuery { view_db_main_last_id {"
-        query = table_query+"""
-                id
-                clasificacion
-                canal
-                bpu
-                brand_category
-                application_form
-                promo_spgr
-                year
-                month
-                units
-                netsales
-                ajuste_netsales
-                comentario
+            query = """
+            query MyQuery($customWhere: json = "") {
+                function_get_view_bd_main_canal_custom_id(args: {customWhere: $customWhere}) {
+                    id
+                    clasificacion
+                    canal
+                    bpu
+                    brand_category
+                    application_form
+                    promo_spgr
+                    year
+                    month
+                    units
+                    netsales
+                    ajuste_netsales
+                    comentario
+                }
             }
-        }
-        """
-        res = queryHasura(query)
-        if id:
-            return res["data"]["view_db_main_custom_id"]
+            """
+            res = queryHasura(query, { 'customWhere': {"id":{"_eq": id }} })
+            return res["data"]["function_get_view_bd_main_canal_custom_id"]
         else:
+            query = """
+            query MyQuery {
+                view_db_main_last_id{
+                    id
+                    clasificacion
+                    canal
+                    bpu
+                    brand_category
+                    application_form
+                    promo_spgr
+                    year
+                    month
+                    units
+                    netsales
+                    ajuste_netsales
+                    comentario
+                }
+            }
+            """
+            res = queryHasura(query)
             return res["data"]["view_db_main_last_id"]
     except:
         print(sys.exc_info())
+        print('request_data_last_id', res)
         return []
 
 def insert_data_db_main(data):
     try:
         query = """
         mutation MyMutation($data: [DB_Main_insert_input!]!) {
-        insert_DB_Main(
-            objects: $data, 
-            on_conflict: {constraint: DB_Main_pkey, update_columns: [units, netsales, ajuste_netsales, comentario]}) {
-                affected_rows
+            insert_DB_Main(objects: $data, on_conflict: {constraint: DB_Main_pkey, update_columns: [units, netsales, ajuste_netsales, comentario]}) {
+                    affected_rows
             }
         }
         """
-        res = queryHasura(query, {'data':data})
+        res = queryHasura(query, {'data': data })
         return res["data"]["insert_DB_Main"]["affected_rows"]
     except:
         print(sys.exc_info())
+        print('error insert_data_db_main', res)
         return 0
 
 def backup_db_main(data):
@@ -1339,7 +1357,7 @@ def delete_db_main_id():
         return res["data"]["delete_DB_Main"]["affected_rows"]
     except:
         print(sys.exc_info())
-        return 0
+        return []
 
 def requestinfo_timeline(permissionID, timelineID):
     try:

@@ -445,10 +445,10 @@ def request_cargar_db_main(id):
         curr_month = f'{datetime.now().strftime("%Y%m")}'
         if id:
             if data == []:
-                return { 'error': 'no se encontro data en el ultimo mes' }, 400
+                return { 'error': f'no se encontro data en el mes enviado - {id}' }, 400
         else:
             if data == [] or data[0]["id"] < curr_month :
-                return { 'error': 'no se encontro data en el mes actual' }, 400
+                return { 'error': f'no se encontro data en el mes actual - {curr_month}' }, 400
 
         del_res = delete_db_main_id()
         res = insert_data_db_main(data)
