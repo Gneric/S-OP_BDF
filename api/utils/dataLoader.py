@@ -239,7 +239,7 @@ def LoadProducts(df):
         err_check, err_message, new_data = dataMaestroCheck(json_data)
         if err_check:
             return { 'error': 'error en los datos ingresados', 'errors': err_message }, 400
-        parsed = json.loads(new_data)
+        parsed = json.loads(json.dumps(new_data))
         res = upload_data_maestro(parsed)
         return res
     except KeyError as err:
@@ -248,7 +248,7 @@ def LoadProducts(df):
         column_error = error[1].replace("[","").replace("]","").replace("\"","")
         return { 'error': True, 'message' : f"No se encontraron las columna(s): {column_error} en el archivo 'PRODUCTS'"}  
     except:
-        print('Error load :', sys.exc_info())
+        print('Error LoadProducts :', sys.exc_info())
         return { 'error': True, 'message' : "Error en el archivo, por favor revisar el modelo de carga" }
     
 
