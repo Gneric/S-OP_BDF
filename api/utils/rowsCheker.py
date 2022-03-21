@@ -61,22 +61,22 @@ def dataMaestroCheck(data):
         # Revision de datos
         if bpu.upper() not in maestro_bpu_upper:
             err_row = True
-            err_message.append('La descripción del BPU no concuerda con las categorías definidas')    
+            err_message.append(f'La descripción {bpu} de BPU no concuerda con las categorías definidas')    
         else:
             row['BPU'] = maestro_bpu[maestro_bpu_upper.index(row['BPU'].upper())]
         if brandCategory.upper() not in maestro_randCategory_upper:
             err_row = True
-            err_message.append('La descripción del BrandCategory no concuerda con las categorías definidas')
+            err_message.append(f'La descripción {brandCategory} de BrandCategory no concuerda con las categorías definidas')
         else:
             row['BrandCategory'] = maestro_randCategory[maestro_randCategory_upper.index(row['BrandCategory'].upper())]
         if applicationForm.upper() not in maestro_applicationForm_upper:
             err_row = True
-            err_message.append('La descripción del ApplicationForm no concuerda con las categorías definidas')
+            err_message.append(f'La descripción {applicationForm} de ApplicationForm no concuerda con las categorías definidas')
         else:
             row['ApplicationForm'] = maestro_applicationForm[maestro_applicationForm_upper.index(row['ApplicationForm'].upper())]
         if tipo.upper() not in maestro_tipo_upper:
             err_row = True
-            err_message.append('La descripción del TIPO no concuerda con las categorías definidas')
+            err_message.append(f'La descripción {tipo} de TIPO no concuerda con las categorías definidas')
         else:
             row['TIPO'] = maestro_tipo[maestro_tipo_upper.index(row['TIPO'].upper())]
         

@@ -391,8 +391,9 @@ def add_multiple_rows(data):
         print('error add_multiple_rows :', err)
 
 
-def update_changes_bd(data):
+def update_changes_bd(data_old):
     try:
+        data = list({ each['nart'] : each for each in data_old }.values())
         result = {}
         upd_table = []
         upd_table.append({ 'name': 'BASELINE', 'rows': [{'id':x['id'],'clasificacion':x['clasificacion'],'nart':x['nart'],'year':x['year'],'month':x['month'],'cantidad':x['units']} for x in data if x['clasificacion']=='BASELINE']})
@@ -423,9 +424,10 @@ def getinfo_db_main(data):
         print(sys.exc_info())
         return { 'error': 'error actualizando data' }, 400
 
-def update_db_main(data):
+def update_db_main(data_old):
     try:
-        id = data[0]['id'] 
+        id = data_old[0]['id']
+        data = list( { each['id']+each['clasificacion']+each['bpu']+each['brand_category']+each['application_form']+each['promo_spgr']+each['year']+each['month'] : each for each in data_old }.values() )
         for i in data:
             if i['id'] == 0: #Si es comodin
                 if i['promo_spgr'] == "" or i['ajuste_netsales'] == 0:
@@ -512,7 +514,8 @@ def delete_file_data(area_id, file_id):
 
 def request_update_product(data):
     try:
-        err_check, err_message, new_data = dataMaestroCheck(data)
+        unique = list( { each['Material'] : each for each in data }.values() )
+        err_check, err_message, new_data = dataMaestroCheck(unique)
         if err_check:
             return { 'error': err_message }, 400
         else:
@@ -558,10 +561,11 @@ def get_category_items(data):
 
 def getUpsertCategory(data):
     try:
-        check_res = checkExistingCategories(data)
+        unique = list( { each['id'] : each for each in data }.values() )
+        check_res = checkExistingCategories(unique)
         if check_res:
             return { 'error': 'errores en la verificacion de datos', 'error_details': check_res }, 400
-        res = request_upsert_maestro_categorias(data)
+        res = request_upsert_maestro_categorias(unique)
         if res == "":
             return { 'error': 'error en la actualizacion de la base de datos' }, 400
         else:
