@@ -1471,7 +1471,7 @@ def get_productos_otros():
                 BrandCategory
                 ApplicationForm
                 EAN
-                spgr_historico
+                SPGR_historico
             }
             }
         """
@@ -1575,7 +1575,7 @@ def upload_data_maestro(data):
     try:
         q = """
         mutation MyMutation($objects: [Maestro_productos_insert_input!] = {}) {
-            insert_Maestro_productos(objects: $objects, on_conflict: {constraint: Maestro_productos_pkey, update_columns: [ApplicationForm, BG, BPU, BrandCategory, Descripcion, EAN, Material, Portafolio, SPGR, TIPO, spgr_historico]}) {
+            insert_Maestro_productos(objects: $objects, on_conflict: {constraint: Maestro_productos_pkey, update_columns: [ApplicationForm, BG, BPU, BrandCategory, Descripcion, EAN, Material, Portafolio, SPGR, TIPO, SPGR_historico]}) {
                 affected_rows
             }
         }
@@ -1606,7 +1606,7 @@ def request_data_maestro():
                 BrandCategory
                 ApplicationForm
                 EAN
-                spgr_historico
+                SPGR_historico
             }
         }
         """

@@ -227,7 +227,7 @@ def LoadForecast(df, year, month, file_id):
 
 def LoadProducts(df):
     try:
-        df = df[["BG","Material","SPGR","TIPO","Descripcion","Portafolio","BPU","BrandCategory","ApplicationForm","EAN","spgr_historico"]]
+        df = df[["BG","Material","SPGR","TIPO","Descripcion","Portafolio","BPU","BrandCategory","ApplicationForm","EAN","SPGR_historico"]]
         df["EAN"] = df["EAN"].replace([0,'','0'], 'N/A')
         df = df.fillna('')
         df["BG"] = df["BG"].apply(str)
@@ -235,7 +235,7 @@ def LoadProducts(df):
         df["SPGR"] = df["SPGR"].apply(str)
         df["EAN"] = df["EAN"].apply(str)
         df["EAN"] = df["EAN"].replace('.0','')
-        df["spgr_historico"] = df["spgr_historico"].apply(str)
+        df["SPGR_historico"] = df["SPGR_historico"].apply(str)
         result = df.to_json(orient="records")
         json_data = json.loads(result)
         err_check, err_message, new_data = dataMaestroCheck(json_data)
@@ -562,7 +562,7 @@ def createCloneMaestro(data):
                 worksheet.write(f'H{rowIndex}', row['BrandCategory'])
                 worksheet.write(f'I{rowIndex}', row['ApplicationForm'])
                 worksheet.write(f'J{rowIndex}', row['EAN'].replace('.0',''))
-                worksheet.write(f'K{rowIndex}', row['spgr_historico'])
+                worksheet.write(f'K{rowIndex}', row['SPGR_historico'])
                 rowIndex+=1
         else:
             worksheet.write('A1','BG')
@@ -575,7 +575,7 @@ def createCloneMaestro(data):
             worksheet.write('H1','BrandCategory')
             worksheet.write('I1','ApplicationForm')
             worksheet.write('J1','EAN')
-            worksheet.write('K1','spgr_historico')
+            worksheet.write('K1','SPGR_historico')
         workbook.close()
         return filename
     except:
