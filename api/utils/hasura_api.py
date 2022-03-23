@@ -1471,6 +1471,7 @@ def get_productos_otros():
                 BrandCategory
                 ApplicationForm
                 EAN
+                spgr_historico
             }
             }
         """
@@ -1605,6 +1606,7 @@ def request_data_maestro():
                 BrandCategory
                 ApplicationForm
                 EAN
+                spgr_historico
             }
         }
         """

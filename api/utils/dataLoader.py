@@ -227,13 +227,15 @@ def LoadForecast(df, year, month, file_id):
 
 def LoadProducts(df):
     try:
-        df = df[["BG","Material","SPGR","TIPO","Descripcion","Portafolio","BPU","BrandCategory","ApplicationForm","EAN"]]
+        df = df[["BG","Material","SPGR","TIPO","Descripcion","Portafolio","BPU","BrandCategory","ApplicationForm","EAN","spgr_historico"]]
         df["EAN"] = df["EAN"].replace([0,'','0'], 'N/A')
         df = df.fillna('')
         df["BG"] = df["BG"].apply(str)
         df["Material"] = df["Material"].apply(str)
         df["SPGR"] = df["SPGR"].apply(str)
         df["EAN"] = df["EAN"].apply(str)
+        df["EAN"] = df["EAN"].replace('.0','')
+        df["spgr_historico"] = df["spgr_historico"].apply(str)
         result = df.to_json(orient="records")
         json_data = json.loads(result)
         err_check, err_message, new_data = dataMaestroCheck(json_data)
@@ -492,6 +494,7 @@ def createFileProductosOtros():
             worksheet.write('H1',keys[7])
             worksheet.write('I1',keys[8])
             worksheet.write('J1',keys[9])
+            worksheet.write('K1',keys[10])
             rowIndex = 2
             for row in data:
                 worksheet.write(f'A{rowIndex}', row['BG'])
@@ -504,6 +507,7 @@ def createFileProductosOtros():
                 worksheet.write(f'H{rowIndex}', row['BrandCategory'])
                 worksheet.write(f'I{rowIndex}', row['ApplicationForm'])
                 worksheet.write(f'J{rowIndex}', row['EAN'])
+                worksheet.write(f'K{rowIndex}', row['spgr_historico'])
                 rowIndex+=1
         else:
             worksheet.write('A1','BG')
@@ -516,6 +520,7 @@ def createFileProductosOtros():
             worksheet.write('H1','BrandCategory')
             worksheet.write('I1','ApplicationForm')
             worksheet.write('J1','EAN')
+            worksheet.write('K1','spgr_historico')
         workbook.close()
         return filename
     except:
@@ -543,6 +548,7 @@ def createCloneMaestro(data):
             worksheet.write('H1',keys[7])
             worksheet.write('I1',keys[8])
             worksheet.write('J1',keys[9])
+            worksheet.write('K1',keys[10])
             rowIndex = 2
             for row in data:
                 ean_format = workbook.add_format({'num_format': '0'})
@@ -556,6 +562,7 @@ def createCloneMaestro(data):
                 worksheet.write(f'H{rowIndex}', row['BrandCategory'])
                 worksheet.write(f'I{rowIndex}', row['ApplicationForm'])
                 worksheet.write(f'J{rowIndex}', row['EAN'].replace('.0',''))
+                worksheet.write(f'K{rowIndex}', row['spgr_historico'])
                 rowIndex+=1
         else:
             worksheet.write('A1','BG')
@@ -568,6 +575,7 @@ def createCloneMaestro(data):
             worksheet.write('H1','BrandCategory')
             worksheet.write('I1','ApplicationForm')
             worksheet.write('J1','EAN')
+            worksheet.write('K1','spgr_historico')
         workbook.close()
         return filename
     except:
