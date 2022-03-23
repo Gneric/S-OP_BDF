@@ -49,6 +49,7 @@ def dataMaestroCheck(data):
         row['BPU'] = row['BPU'].strip()
         row['BrandCategory'] = row['BrandCategory'].strip()
         row['ApplicationForm'] = row['ApplicationForm'].strip()
+        row['spgr_historico'] = row['spgr_historico'].strip()
 
         material = row.get('Material','')
         bpu = row.get('BPU', '')
