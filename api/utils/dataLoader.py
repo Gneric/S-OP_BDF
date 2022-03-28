@@ -536,7 +536,7 @@ def createFileProductosOtros():
                 worksheet.write(f'H{rowIndex}', row['BrandCategory'])
                 worksheet.write(f'I{rowIndex}', row['ApplicationForm'])
                 worksheet.write(f'J{rowIndex}', row['EAN'])
-                worksheet.write(f'K{rowIndex}', row['spgr_historico'])
+                worksheet.write(f'K{rowIndex}', row['SPGR_historico'])
                 rowIndex+=1
         else:
             worksheet.write('A1','BG')
@@ -549,7 +549,7 @@ def createFileProductosOtros():
             worksheet.write('H1','BrandCategory')
             worksheet.write('I1','ApplicationForm')
             worksheet.write('J1','EAN')
-            worksheet.write('K1','spgr_historico')
+            worksheet.write('K1','SPGR_historico')
         workbook.close()
         return filename
     except:
