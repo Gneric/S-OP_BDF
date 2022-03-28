@@ -1445,7 +1445,7 @@ def update_maestro_productos(data):
     try:
         q = """
         mutation MyMutation($objects: [Maestro_productos_insert_input!] = {}) {
-            insert_Maestro_productos(objects: $objects, on_conflict: {constraint: Maestro_productos_pkey, update_columns: [ApplicationForm, BG, SPGR, TIPO, Descripcion, BrandCategory, Portafolio, BPU, EAN]}) {
+            insert_Maestro_productos(objects: $objects, on_conflict: {constraint: Maestro_productos_pkey, update_columns: [ApplicationForm, BG, SPGR, TIPO, Descripcion, BrandCategory, Portafolio, BPU, EAN, SPGR_historico]}) {
                 affected_rows
             }
         }

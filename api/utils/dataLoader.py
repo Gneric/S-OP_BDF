@@ -1,11 +1,12 @@
 import sys
 import json
 import re
+from xml.dom import WrongDocumentErr
 import pandas as pd
 import string
 from datetime import datetime, timedelta
 import xlsxwriter
-from api.utils.hasura_api import sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion, upload_data_maestro, get_productos_otros
+from api.utils.hasura_api import request_maestro_categorias, sendDataBaseline, sendDataForecast, sendDataLaunch, sendDataPromo, sendDataShoppers, sendDataValorizacion, upload_data_maestro, get_productos_otros
 from api.utils.rowsCheker import dataCheck, dataMaestroCheck
 
 def Loadbaseline(df, year, month, file_id):
@@ -408,31 +409,59 @@ def checkColumnByRange(mnth):
 
 def createTemplate(filename, year, month):
     try:
+        categorias = request_maestro_categorias()
+        app_form_list = [ x['name'] for x in categorias if x['category'] == 'APPLICATIONFORM' ]
+        bpu_list = [ x['name'] for x in categorias if x['category'] == 'BPU' ]
+        tipo_list = [ x['name'] for x in categorias if x['category'] == 'TIPO' ]
+        category_lists = [ app_form_list, bpu_list, tipo_list ]  
         filename_w_ext = f"{filename}.xlsx"
-        print(filename)
         workbook = xlsxwriter.Workbook(f'api/data/{filename_w_ext}')
         worksheet = workbook.add_worksheet(filename)
-        if filename == 'promo' or filename == 'shopper':
-            mnth = 7
+        details = workbook.add_worksheet('details')
+        for list in category_lists:
+            col_num = 0
+            for row, category in enumerate(list):
+                details.write(row, col_num, category)
+            col_num = col_num + 1
+        details.hide()
+        if filename == 'promo':
+            cell_num = 7
             worksheet.write('A1','CLASIFICACION')
             worksheet.write('B1','TIPO_PROMO')
             worksheet.write('C1','CANAL')
+            worksheet.data_validation( 'C2:C500', { 'validate': 'list', 'source': ['Tradicional','AASS','Farmacias','Otros'], 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('D1','APPLICATION_FORM')
+            worksheet.data_validation( 'D2:D500', { 'validate': 'list', 'source': '=Details!$A$1:$A$500', 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('E1','NART')
             worksheet.write('F1','DESCRIPCION')
+            worksheet.write('A2','PROMO')
+        elif filename == 'shopper':
+            cell_num = 7
+            worksheet.write('A1','CLASIFICACION')
+            worksheet.write('B1','TIPO_PROMO')
+            worksheet.write('C1','CANAL')
+            worksheet.data_validation( 'C2:C500', { 'validate': 'list', 'source': ['Tradicional','AASS','Farmacias','Otros'], 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+            worksheet.write('D1','APPLICATION_FORM')
+            worksheet.data_validation( 'D2:D500', { 'validate': 'list', 'source': '=Details!$A$1:$A$500', 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+            worksheet.write('E1','NART')
+            worksheet.write('F1','DESCRIPCION')
+            worksheet.write('A2','SHOPPER')
         elif filename == 'launch':
-            mnth = 5
+            cell_num = 5
             worksheet.write('A1','CLASIFICACION')
             worksheet.write('B1','CANAL')
+            worksheet.data_validation( 'C2:C500', { 'validate': 'list', 'source': ['Tradicional','AASS','Farmacias','Otros'], 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('C1','NART')
             worksheet.write('D1','DESCRIPCION')
+            worksheet.write('A2','LAUNCH')
         else:
-            mnth = 4
+            cell_num = 4
             worksheet.write('A1','CLASIFICACION')
             worksheet.write('B1','NART')
             worksheet.write('C1','DESCRIPCION')
+            worksheet.write('A2','BASELINE')
         curr_month = datetime.strptime(year+"-"+month+"-01", '%Y-%m-%d')
-        for _ in range(mnth, mnth+18):
+        for _ in range(cell_num, cell_num+18):
             date_format = workbook.add_format({'num_format': 'mm-yyyy'})
             worksheet.write_datetime(f'{checkColumnByRange(_)}1', curr_month, date_format)
             next_month = (curr_month.replace(day=1) + timedelta(days=32)).replace(day=1)
