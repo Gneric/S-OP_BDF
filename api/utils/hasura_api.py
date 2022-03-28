@@ -1502,14 +1502,22 @@ def request_cobertura(data):
                 TRANSITO
                 id
             }
+            function_get_cobertura_totales(args: {customWhere: $customWhere}) {
+                NS_IMPACT
+                SL_PROYECCION
+                TOTALES_FC
+                TOTALES_IMPACTO
+                TOTALES_NETSALES_IMPACT
+            }
         }
-
         """
         res = queryHasura(q, { 'customWhere': data })
-        totales_fc = sum( row['FC'] for row in res['data']['function_get_cobertura'] )
-        totales_impacto = sum( row['IMPACTO'] for row in res['data']['function_get_cobertura'] )
-        totales_netsales_impact = sum( row['NETSALES_IMPACT'] for row in res['data']['function_get_cobertura'] )
-        totales = { 'TOTALES_FC' : totales_fc, 'TOTALES_IMPACTO': totales_impacto, 'TOTALES_NETSALES_IMPACT': totales_netsales_impact  }
+        totales_fc = sum( row['TOTALES_FC'] for row in res['data']['function_get_cobertura_totales'] )
+        totales_impacto = sum( row['TOTALES_IMPACTO'] for row in res['data']['function_get_cobertura_totales'] )
+        totales_netsales_impact = sum( row['TOTALES_NETSALES_IMPACT'] for row in res['data']['function_get_cobertura_totales'] )
+        ns_impact = sum( row['NS_IMPACT'] for row in res['data']['function_get_cobertura_totales'] )
+        sl_proyeccion = sum( row['SL_PROYECCION'] for row in res['data']['function_get_cobertura_totales'] )
+        totales = { 'TOTALES_FC' : totales_fc, 'TOTALES_IMPACTO': totales_impacto, 'TOTALES_NETSALES_IMPACT': totales_netsales_impact, 'NS_IMPACT': ns_impact, 'SL_PROYECCION': sl_proyeccion }
         return { 'data' : res['data']['function_get_cobertura'], 'totales' : totales }
     except:
         print('error request_cobertura :', sys.exc_info())
