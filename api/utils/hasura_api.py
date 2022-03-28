@@ -1471,7 +1471,7 @@ def get_productos_otros():
                 BrandCategory
                 ApplicationForm
                 EAN
-                SPGR_historico
+                spgr_historico
             }
             }
         """
