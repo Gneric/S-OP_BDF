@@ -28,6 +28,8 @@ def Loadbaseline(df, year, month, file_id):
         df_obj = d1.select_dtypes(['object'])
         d1[df_obj.columns] = df_obj.apply(lambda x: x.str.strip())
         result = d1.to_json(orient="records")
+        #unique = list( { each['Material']+each['clasificacion']+each['nart']+each['descripcion']+each['year']+each['month']+each['file_id'] : each for each in result }.values() )
+        #result = unique.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
@@ -418,10 +420,10 @@ def createTemplate(filename, year, month):
         workbook = xlsxwriter.Workbook(f'api/data/{filename_w_ext}')
         worksheet = workbook.add_worksheet(filename)
         details = workbook.add_worksheet('details')
-        for list in category_lists:
-            col_num = 0
-            for row, category in enumerate(list):
-                details.write(row, col_num, category)
+        col_num = 0
+        for l in category_lists:
+            for r, category in enumerate(l):
+                details.write(r, col_num, category)
             col_num = col_num + 1
         details.hide()
         if filename == 'promo':
@@ -431,7 +433,7 @@ def createTemplate(filename, year, month):
             worksheet.write('C1','CANAL')
             worksheet.data_validation( 'C2:C500', { 'validate': 'list', 'source': ['Tradicional','AASS','Farmacias','Otros'], 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('D1','APPLICATION_FORM')
-            worksheet.data_validation( 'D2:D500', { 'validate': 'list', 'source': '=Details!$A$1:$A$500', 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+            worksheet.data_validation( 'D2:D500', { 'validate': 'list', 'source': '=Details!$A$1:$A$'+str(len(app_form_list)+1), 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('E1','NART')
             worksheet.write('F1','DESCRIPCION')
             worksheet.write('A2','PROMO')
@@ -442,7 +444,7 @@ def createTemplate(filename, year, month):
             worksheet.write('C1','CANAL')
             worksheet.data_validation( 'C2:C500', { 'validate': 'list', 'source': ['Tradicional','AASS','Farmacias','Otros'], 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('D1','APPLICATION_FORM')
-            worksheet.data_validation( 'D2:D500', { 'validate': 'list', 'source': '=Details!$A$1:$A$500', 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+            worksheet.data_validation( 'D2:D500', { 'validate': 'list', 'source': '=Details!$A$1:$A$'+str(len(app_form_list)+1), 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('E1','NART')
             worksheet.write('F1','DESCRIPCION')
             worksheet.write('A2','SHOPPER')
@@ -502,15 +504,24 @@ def createTemplateValorizacion(filename, year, month):
         return ""
 
 def createFileProductosOtros():
-    data = get_productos_otros()
     try:
+        data = get_productos_otros()
+        categorias = request_maestro_categorias()
+        app_form_list = [ x['name'] for x in categorias if x['category'] == 'APPLICATIONFORM' ]
+        bpu_list = [ x['name'] for x in categorias if x['category'] == 'BPU' ]
+        brandcategory_list = [ x['name'] for x in categorias if x['category'] == 'BRANDCATEGORY' ]
+        tipo_list = [ x['name'] for x in categorias if x['category'] == 'TIPO' ]
+        category_lists = [ app_form_list, bpu_list, tipo_list, brandcategory_list ]
         filename = "Productos_sin_clasificar.xlsx"
         workbook = xlsxwriter.Workbook(f"api/data/{filename}")
-        cell_format = workbook.add_format()
-        cell_format.set_text_wrap()
-        cell_format.set_align('top')
-        cell_format.set_align('left=')
         worksheet = workbook.add_worksheet("NoClasificados")
+        details = workbook.add_worksheet('details')
+        col_num = 0
+        for l in category_lists:
+            for r, category in enumerate(l):
+                details.write(r, col_num, category)
+            col_num = col_num + 1
+        details.hide()
         if data:
             keys = list(data[0].keys())
             worksheet.write('A1',keys[0])
@@ -526,6 +537,7 @@ def createFileProductosOtros():
             worksheet.write('K1',keys[10])
             rowIndex = 2
             for row in data:
+                print(f'{rowIndex=}')
                 worksheet.write(f'A{rowIndex}', row['BG'])
                 worksheet.write(f'B{rowIndex}', row['Material'])
                 worksheet.write(f'C{rowIndex}', row['SPGR'])
@@ -539,17 +551,26 @@ def createFileProductosOtros():
                 worksheet.write(f'K{rowIndex}', row['SPGR_historico'])
                 rowIndex+=1
         else:
-            worksheet.write('A1','BG')
-            worksheet.write('B1','Material')
-            worksheet.write('C1','SPGR')
-            worksheet.write('D1','TIPO')
-            worksheet.write('E1','Descripcion')
-            worksheet.write('F1','Portafolio')
-            worksheet.write('G1','BPU')
-            worksheet.write('H1','BrandCategory')
-            worksheet.write('I1','ApplicationForm')
-            worksheet.write('J1','EAN')
-            worksheet.write('K1','SPGR_historico')
+            worksheet.write(f'A1', 'BG')
+            worksheet.write(f'B1', 'Material')
+            worksheet.write(f'C1', 'SPGR')
+            worksheet.write(f'D1', 'TIPO')
+            worksheet.write(f'E1', 'Descripcion')
+            worksheet.write(f'F1', 'Portafolio')
+            worksheet.write(f'G1', 'BPU')
+            worksheet.write(f'H1', 'BrandCategory')
+            worksheet.write(f'I1', 'ApplicationForm')
+            worksheet.write(f'J1', 'EAN')
+            worksheet.write(f'K1', 'SPGR_historico')
+        
+        worksheet.data_validation('I2:I100', { 'validate': 'list', 'source': '=Details!$A$1:$A$'+str(len(app_form_list)), 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+        worksheet.data_validation('G2:G100', { 'validate': 'list', 'source': '=Details!$B$1:$B$'+str(len(bpu_list)), 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+        worksheet.data_validation('D2:D100', { 'validate': 'list', 'source': '=Details!$C$1:$C$'+str(len(tipo_list)), 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+        worksheet.data_validation('H2:H100', { 'validate': 'list', 'source': '=Details!$D$1:$D$'+str(len(brandcategory_list)), 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+        cell_format = workbook.add_format()
+        cell_format.set_text_wrap()
+        cell_format.set_align('top')
+        cell_format.set_align('left=')
         workbook.close()
         return filename
     except:

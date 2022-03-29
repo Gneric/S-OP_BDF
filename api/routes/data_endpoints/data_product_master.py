@@ -1,5 +1,4 @@
 import sys
-from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
 from api.utils.dataLoader import createFileProductosOtros

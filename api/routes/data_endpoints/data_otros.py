@@ -5,6 +5,7 @@ from api.utils.dataLoader import createFileProductosOtros
 from api.utils.functions import *
 from flask_restful import Resource
 from flask import request
+import flask
 
 class GetProductosSinClasificar(Resource):
     @jwt_required()
@@ -15,9 +16,8 @@ class GetProductosSinClasificar(Resource):
             res = createFileProductosOtros()
             if res:
                 data_path = join(getcwd(),'api','data')
-                result = send_from_directory(
-                    data_path, res, as_attachment=True, environ=request.environ
-                )
+                #result = send_from_directory(data_path, res, as_attachment=True, environ=request.environ)
+                result = flask.send_from_directory(data_path, res, as_attachment=True)
                 result.headers['filename'] = res
                 return result
             else:

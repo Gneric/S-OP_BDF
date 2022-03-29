@@ -37,7 +37,10 @@ class UpdateDB_Main(Resource):
 class CargarDBMain(Resource):
     @jwt_required()
     def post(self):
-        id = request.json.get('id', '')
+        if request.json != None:
+            id = request.json.get('id', '')
+        else:
+            id = ""
         current_user = get_jwt_identity()
         return request_cargar_db_main(id)
         
