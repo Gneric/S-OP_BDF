@@ -561,7 +561,7 @@ def get_category_items(data):
 
 def getUpsertCategory(data):
     try:
-        unique = list( { each['id'] : each for each in data }.values() )
+        unique = list( { each['name']+each['category'] : each for each in data }.values() )
         check_res = checkExistingCategories(unique)
         if check_res:
             return { 'error': 'errores en la verificacion de datos', 'error_details': check_res }, 400
