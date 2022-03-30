@@ -1509,6 +1509,9 @@ def request_cobertura(data):
                 TOTALES_IMPACTO
                 TOTALES_NETSALES_IMPACT
             }
+            ids {
+                id_nm
+            }
         }
         """
         res = queryHasura(q, { 'customWhere': data })
@@ -1518,7 +1521,8 @@ def request_cobertura(data):
         ns_impact = sum( row['NS_IMPACT'] for row in res['data']['function_get_cobertura_totales'] )
         sl_proyeccion = sum( row['SL_PROYECCION'] for row in res['data']['function_get_cobertura_totales'] )
         totales = { 'TOTALES_FC' : totales_fc, 'TOTALES_IMPACTO': totales_impacto, 'TOTALES_NETSALES_IMPACT': totales_netsales_impact, 'NS_IMPACT': ns_impact, 'SL_PROYECCION': sl_proyeccion }
-        return { 'data' : res['data']['function_get_cobertura'], 'totales' : totales }
+        mes = res["data"]["ids"][0]["id_nm"]
+        return { 'data' : res['data']['function_get_cobertura'], 'totales' : totales, 'mes_en_curso': mes }
     except:
         print('error request_cobertura :', sys.exc_info())
         print('result :', res)

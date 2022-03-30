@@ -86,9 +86,10 @@ def dataMaestroCheck(data):
             
     #new_err = list(dict.fromkeys(material_err))
     #new_data = [ x for x in data if x['Material'] not in new_err ]
+    new_data = list( { each['Material'] : each for each in data }.values() )
     if material_err:
         err_check = True
-    return err_check, material_err, data
+    return err_check, material_err, new_data
 
 def checkExistingCategories(data):
     categories = request_used_categories()

@@ -28,8 +28,6 @@ def Loadbaseline(df, year, month, file_id):
         df_obj = d1.select_dtypes(['object'])
         d1[df_obj.columns] = df_obj.apply(lambda x: x.str.strip())
         result = d1.to_json(orient="records")
-        #unique = list( { each['Material']+each['clasificacion']+each['nart']+each['descripcion']+each['year']+each['month']+each['file_id'] : each for each in result }.values() )
-        #result = unique.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
