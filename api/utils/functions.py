@@ -426,8 +426,8 @@ def getinfo_db_main(data):
 
 def update_db_main(data_old):
     try:
-        id = data_old[0]['id']
-        data = list( { each['id']+each['clasificacion']+each['bpu']+each['brand_category']+each['application_form']+each['promo_spgr']+each['year']+each['month'] : each for each in data_old }.values() )
+        id = request_id_db_main()
+        data = list( { str(each['id'])+str(each['clasificacion'])+str(each['bpu'])+str(each['brand_category'])+str(each['application_form'])+str(each['promo_spgr'])+str(each['year'])+str(each['month']) : each for each in data_old }.values() )
         for i in data:
             if i['id'] == 0: #Si es comodin
                 if i['promo_spgr'] == "" or i['ajuste_netsales'] == 0:
