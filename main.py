@@ -93,6 +93,7 @@ api.add_resource(UpdateDB_Main, '/api/update_db_main')
 api.add_resource(AddMultipleRows, '/api/new_multiple_rows')
 # data - Otros
 api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
+api.add_resource(GetTransitoNart, '/api/get_transito_nart')
 # user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')

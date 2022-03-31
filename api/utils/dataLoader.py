@@ -1,7 +1,6 @@
 import sys
 import json
 import re
-from xml.dom import WrongDocumentErr
 import pandas as pd
 import string
 from datetime import datetime, timedelta
@@ -312,12 +311,12 @@ def createExcelFile(file_id, area_id, data, xslx_name, xslx_path):
             return filename_path
         else:
             df = pd.read_json(json.dumps(data), orient='records')
-            indexes = [ str(x) for x in df.columns if str(x) not in ["year", "month", "value", "cantidad"]]
-            df["periodo"] = df["year"]+df["month"]
-            df = pd.pivot_table(df, index=indexes,columns=["periodo"],values="cantidad", fill_value=0).reset_index()
+            df["periodo"] = pd.to_datetime(df["year"].astype(str)+'-'+df["month"].astype(str)) 
+            df = df.drop(columns=['year','month'])
+            indexes = [ str(x) for x in df.columns if str(x) not in ["periodo", "value", "cantidad"]]
+            df = pd.pivot_table(df, values="cantidad", index=indexes, columns=["periodo"]).reset_index()
             json_data = df.to_json(orient="records")
             json_list = json.loads(json_data)
-
             filename_w_ext = f"{xslx_name}.xlsx"
             filename_path = f'api/data/{filename_w_ext}'
             workbook = xlsxwriter.Workbook(filename_path)

@@ -582,3 +582,13 @@ def delete_category_items(data):
             return { 'result' : 'ok' }
     except:
         return { 'error': 'error insertando/actualizando datos' }, 400
+    
+def get_transito_nart(nart):
+    try:
+        res = request_transito_nart(nart)
+        if res:
+            return res
+        else:
+            return { 'error', 'error al obtener datos del nart ingresado' }, 400
+    except:
+        return { 'error', 'error al obtener datos del nart ingresado' }, 400

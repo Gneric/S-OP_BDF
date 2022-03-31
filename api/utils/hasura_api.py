@@ -455,12 +455,15 @@ def requestDataBaseline(id):
         if len(res_select["data"]["Maestro_baseline"]) < 1:
             return "No existen datos para los parametros igresados"
 
+        
+
         size_list = [{'name':'clasificacion','size':120}, {'name':'descripcion','size':500},{'name':'nart','size':200}]
         colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_baseline"][0].keys()]
         result = {
             "columns" : colum_list,
             "rows" : res_select["data"]["Maestro_baseline"]
         }
+
         return result
     except:
         print('error requestDataBaseline :', sys.exc_info())
@@ -1733,3 +1736,21 @@ def request_delete_category_items(data):
         print('error request_delete_category_items:', sys.exc_info())
         print('result :', res)
         return ""
+
+def request_transito_nart(nart):
+    try:
+        q = """
+        query MyQuery($parametro_nart: String = "") {
+            function_get_transito_x_nart(args: {parametro_nart: $parametro_nart}) {
+                idfecha
+                nart
+                fechaLlegada
+                unidades
+            }
+        }
+        """
+        res = queryHasura(q, {'parametro_nart': nart})
+        return res["data"]["function_get_transito_x_nart"]
+    except:
+        print('Error request_transito_nart', sys.exc_info())
+        return []
