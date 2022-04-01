@@ -1,7 +1,12 @@
 flask
 flask_restful
 flask_cors
+flask_jwt_extended
 sqlalchemy
 waitress
-pyodbc
 pandas
+werkzeug
+xlsxwriter
+bcrypt
+requests
+openpyxl

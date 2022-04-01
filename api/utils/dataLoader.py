@@ -12,7 +12,6 @@ def Loadbaseline(df, year, month, file_id):
     try:
         print('LoadBaseline w file id :', file_id)
         df = df.melt(id_vars = ["CLASIFICACION", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month 
         df["KEY"] = str(year)+str(month)
@@ -47,7 +46,6 @@ def LoadLaunch(df, year, month, file_id):
     try:
         print('LoadLaunch w file id :', file_id)
         df = df.melt(id_vars = ["CLASIFICACION", "CANAL", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
@@ -80,7 +78,6 @@ def LoadLaunch(df, year, month, file_id):
 def LoadPromo(df, year, month, file_id):
     try:
         df = df.melt(id_vars = ["CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
@@ -156,7 +153,6 @@ def LoadValorizacion(df, year, month, file_id):
 def LoadShoppers(df, year, month, file_id):
     try:
         df = df.melt(id_vars = ["CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)

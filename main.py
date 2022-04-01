@@ -68,7 +68,6 @@ def needs_fresh_token_loader(jwt_header):
 
 # root
 api.add_resource(Welcome, '/api/')
-
 # data
 api.add_resource(GetData, '/api/get_excel_data')
 api.add_resource(DeleteData, '/api/del_data')
