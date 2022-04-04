@@ -1853,7 +1853,6 @@ def request_update_comparacion_sop(data):
         }
         """
         res = queryHasura(q, { 'objects': data })
-        print(res)
         if res:
             return { 'result': 'ok' }
         else:
