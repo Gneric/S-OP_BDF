@@ -6,7 +6,6 @@ from flask_jwt_extended import JWTManager, create_access_token
 from datetime import timedelta
 
 from api.routes.login import LogIn
-from api.routes.tests import ActionTest
 from api.routes.welcome import Welcome
 from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
 from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
@@ -93,6 +92,7 @@ api.add_resource(AddMultipleRows, '/api/new_multiple_rows')
 # data - Otros
 api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
 api.add_resource(GetTransitoNart, '/api/get_transito_nart')
+api.add_resource(UpsertComparacionSOP, '/api/upsert_comparacionSOP')
 # user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')
@@ -115,8 +115,6 @@ api.add_resource(DemandSimulation, '/api/demand_simulation')
 api.add_resource(FCSimulation, '/api/fc_simulation')
 api.add_resource(GraphDataset, '/api/graph_dataset')
 api.add_resource(GetCobertura, '/api/cobertura_graph')
-# tests
-api.add_resource(ActionTest, '/api/test_action_hasura')
 
 if __name__ == '__main__':
   from waitress import serve

@@ -1,7 +1,6 @@
 from os import getcwd
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.utils.dataLoader import createFileProductosOtros
-from api.utils.functions import get_transito_nart
 from api.utils.functions import *
 from flask_restful import Resource
 from flask import request
@@ -35,3 +34,13 @@ class GetTransitoNart(Resource):
             return get_transito_nart(nart)
         except:
             return { 'error': 'error al obtener datos del nart ingresado' }, 400
+
+class UpsertComparacionSOP(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.json.get('data','')
+        try:
+            return upsert_comparacion_sop(data)
+        except:
+            return { 'error': 'error al retornar peticion de actualizacion' }, 400

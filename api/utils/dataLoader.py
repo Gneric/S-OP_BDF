@@ -92,11 +92,15 @@ def LoadPromo(df, year, month, file_id):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad","file_id"]
         d1 = d1.groupby(["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","file_id"]).sum().reset_index()
+        with open('dataframe.txt', 'w') as file:
+            file.write(d1.to_string())
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        with open('parsed_data.txt', 'w') as file:
+            file.write(str(parsed))
         res = sendDataPromo(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
