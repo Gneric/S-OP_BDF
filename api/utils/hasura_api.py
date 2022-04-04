@@ -1847,13 +1847,13 @@ def request_update_comparacion_sop(data):
     try:
         q = """
         mutation MyMutation($objects: [Comparacion_SOP_M1_FC_insert_input!] = {}) {
-            insert_Comparacion_SOP_M1_FC(objects: $objects, on_conflict: {constraint: Comparacion_SOP_M1_FC_pkey1, 
-                update_columns: [comment, dif_abs_financial, dif_abs_lastyear, dif_abs_m1, financial, lastsop_eur, lastsop_pen, lastyear, sop_m1, var_porc_financial, var_porc_lastyear, var_porc_m1]}) {
+            insert_Comparacion_SOP_M1_FC(objects: $objects, on_conflict: {constraint: Comparacion_SOP_M1_FC_pkey1, update_columns: [comment, dif_abs_financial, dif_abs_lastyear, dif_abs_m1, financial, lastsop_eur, lastsop_pen, lastyear, sop_m1, var_porc_financial, var_porc_lastyear, var_porc_m1]}) {
                 affected_rows
             }
         }
         """
         res = queryHasura(q, { 'objects': data })
+        print(res)
         if res:
             return { 'result': 'ok' }
         else:
