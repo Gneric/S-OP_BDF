@@ -449,7 +449,7 @@ def createTemplate(filename, year, month):
             cell_num = 5
             worksheet.write('A1','CLASIFICACION')
             worksheet.write('B1','CANAL')
-            worksheet.data_validation( 'C2:C500', { 'validate': 'list', 'source': ['Tradicional','AASS','Farmacias','Otros'], 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
+            worksheet.data_validation( 'B2:B500', { 'validate': 'list', 'source': ['Tradicional','AASS','Farmacias','Otros'], 'error_message': 'El dato ingresado no concuerda con las categorias definidas' } )
             worksheet.write('C1','NART')
             worksheet.write('D1','DESCRIPCION')
             worksheet.write('A2','LAUNCH')
@@ -628,3 +628,16 @@ def createCloneMaestro(data):
     except:
         print('error createFileProductosOtros :', sys.exc_info())
         return ""
+
+
+def createDBMainFile(array):
+    try:
+        filename = "DBMain.xlsx"
+        workbook = xlsxwriter.Workbook(f"api/data/{filename}")
+        cell_format = workbook.add_format()
+        cell_format.set_text_wrap()
+        cell_format.set_align('top')
+        cell_format.set_align('left=')
+        worksheet = workbook.add_worksheet("database")
+    except:
+        print('Error createDBMainFile', sys.exc_info())
