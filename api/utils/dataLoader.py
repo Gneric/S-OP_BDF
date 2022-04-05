@@ -12,7 +12,6 @@ def Loadbaseline(df, year, month, file_id):
     try:
         print('LoadBaseline w file id :', file_id)
         df = df.melt(id_vars = ["CLASIFICACION", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month 
         df["KEY"] = str(year)+str(month)
@@ -47,7 +46,6 @@ def LoadLaunch(df, year, month, file_id):
     try:
         print('LoadLaunch w file id :', file_id)
         df = df.melt(id_vars = ["CLASIFICACION", "CANAL", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
@@ -80,7 +78,6 @@ def LoadLaunch(df, year, month, file_id):
 def LoadPromo(df, year, month, file_id):
     try:
         df = df.melt(id_vars = ["CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)
@@ -95,11 +92,15 @@ def LoadPromo(df, year, month, file_id):
         d1 = d1[d1['QUANTITY'].notna()]
         d1.columns = ["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","cantidad","file_id"]
         d1 = d1.groupby(["id","clasificacion","tipo_promo","canal","application_form","nart","descripcion","year","month","file_id"]).sum().reset_index()
+        with open('dataframe.txt', 'w') as file:
+            file.write(d1.to_string())
         result = d1.to_json(orient="records")
         check_result = dataCheck(result)
         if check_result['error_check'] == True:
             return { 'error': check_result['error_check'], 'warning': False, 'message': 'Error en los datos enviados', 'details': check_result['errors'] }
         parsed = json.loads(result)
+        with open('parsed_data.txt', 'w') as file:
+            file.write(str(parsed))
         res = sendDataPromo(parsed)
         if check_result['warning_check'] == True:
             return { 'error': False, 'warning': True, 'message': res, 'details': check_result['warnings'] }
@@ -156,7 +157,6 @@ def LoadValorizacion(df, year, month, file_id):
 def LoadShoppers(df, year, month, file_id):
     try:
         df = df.melt(id_vars = ["CLASIFICACION", "TIPO_PROMO", "CANAL", "APPLICATION_FORM", "NART", "DESCRIPCION"], var_name = "FECHA", value_name = "QUANTITY")
-        df = df.drop(labels=[0], axis=0)
         df['YEAR'] = df['FECHA'].dt.year
         df['MONTH'] = df['FECHA'].dt.month
         df["KEY"] = str(year)+str(month)

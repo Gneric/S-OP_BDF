@@ -99,6 +99,7 @@ class UploadExcel(Resource):
     @jwt_required()
     def post(self):
         try:
+            bypass = None
             current_user = get_jwt_identity()
             if 'year' in request.form.keys():
                 year = request.form['year']
@@ -106,6 +107,8 @@ class UploadExcel(Resource):
                 month = request.form['month']
             if 'area_id' in request.form.keys():
                 area_id = request.form["area_id"]
+            if 'bypass' in request.form.keys():
+                bypass = request.form["bypass"]
             if 'excel_file' in request.files.keys():
                 files = request.files.getlist('excel_file')
             else:
@@ -114,8 +117,9 @@ class UploadExcel(Resource):
                 month = f"0{int(month)}"
             if request.files['excel_file'].filename == '':
                 return { "error" : "No se encontro archivo excel adjunto" }, 400
-            if datetime.now().strftime('%Y%m') != str(year)+str(month):
-                return { "error" : "El periodo enviado no es el actual" }, 400
+            if bypass == None:
+                if datetime.now().strftime('%Y%m') != str(year)+str(month):
+                    return { "error" : "El periodo enviado no es el actual" }, 400
             cleanDataFolder()
             for f in files:
                 if allowed_extensions(f.filename) == False:

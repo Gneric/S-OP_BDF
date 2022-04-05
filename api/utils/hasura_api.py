@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from wsgiref.simple_server import sys_version
 import requests
 import sys
 
@@ -564,7 +565,6 @@ def sendDataPromo(data):
             }
         }
     }
-
     """
     res_insert = queryHasura(query, {"objects" : data})
     result = { "file_id" : res_insert["data"]["insert_Maestro_promo"]["returning"][0]["id"], "area_name" : area_by_table["Maestro_promo"]["area_name"]}
@@ -1754,3 +1754,109 @@ def request_transito_nart(nart):
     except:
         print('Error request_transito_nart', sys.exc_info())
         return []
+
+def request_data_comparacion_sop(id):
+    try:
+        if id:
+            q = """
+            query MyQuery($_eq: String = "") {
+            Comparacion_SOP_M1_FC_view(where: {id: {_eq: $_eq}}) {
+                id
+                application_form
+                brand_category
+                bpu
+                dif_abs_financial
+                dif_abs_lastyear
+                dif_abs_m1
+                financial
+                lastsop_eur
+                lastsop_pen
+                lastyear
+                sop_m1
+                var_porc_financial
+                var_porc_lastyear
+                var_porc_m1
+            }
+            }"""
+            res = queryHasura( q, {'_eq': str(id) } )
+            return res['data']['Comparacion_SOP_M1_FC_view']
+        else:
+            q = """
+            query MyQuery {
+                Comparacion_SOP_M1_FC_view {
+                    id
+                    application_form
+                    brand_category
+                    bpu
+                    dif_abs_financial
+                    dif_abs_lastyear
+                    dif_abs_m1
+                    financial
+                    lastsop_eur
+                    lastsop_pen
+                    lastyear
+                    sop_m1
+                    var_porc_financial
+                    var_porc_lastyear
+                    var_porc_m1
+                }
+            }
+            """
+            res = queryHasura(q)
+            return res['data']['Comparacion_SOP_M1_FC_view']
+    except:
+        print('Error request_data_comparacion_sop ', sys.exc_info())
+        return []
+
+def delete_data_comparacion_sop():
+    try:
+        q ="""mutation MyMutation {
+            delete_Comparacion_SOP_M1_FC(where: {}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q)
+        return 'ok'
+    except:
+        print('Error delete_data_comparacion_sop', sys.exc_info())
+        return ""
+
+def request_upsert_comparacion_sop(data):
+    try:
+        for row in data:
+            row.update({ 'comment': '' })
+        q = """
+        mutation MyMutation($objects: [Comparacion_SOP_M1_FC_insert_input!] = {}) {
+        insert_Comparacion_SOP_M1_FC(objects: $objects, on_conflict: {constraint: Comparacion_SOP_M1_FC_pkey1, 
+            update_columns: [comment, dif_abs_financial, dif_abs_lastyear, dif_abs_m1, financial, lastsop_eur, lastsop_pen, lastyear, sop_m1, var_porc_financial, var_porc_lastyear, var_porc_m1]}) {
+            affected_rows
+        }
+        }
+        """
+        res = queryHasura(q, { 'objects': data })
+        if res:
+            return res['data']['insert_Comparacion_SOP_M1_FC']['affected_rows']
+        else:
+            return 0
+    except:
+        print('Error request_upsert_comparacion_sop ', sys.exc_info())
+        return 0
+
+def request_update_comparacion_sop(data):
+    try:
+        q = """
+        mutation MyMutation($objects: [Comparacion_SOP_M1_FC_insert_input!] = {}) {
+            insert_Comparacion_SOP_M1_FC(objects: $objects, on_conflict: {constraint: Comparacion_SOP_M1_FC_pkey1, update_columns: [comment, dif_abs_financial, dif_abs_lastyear, dif_abs_m1, financial, lastsop_eur, lastsop_pen, lastyear, sop_m1, var_porc_financial, var_porc_lastyear, var_porc_m1]}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q, { 'objects': data })
+        if res:
+            return { 'result': 'ok' }
+        else:
+            return { 'error': 'error en la respuesta de actualizacion' }, 400
+    except:
+        print('Error request_upsert_comparacion_sop ', sys.exc_info())
+        return { 'error': 'error en la respuesta de actualizacion' }, 400
