@@ -1,4 +1,3 @@
-from flask_jwt_extended.internal_utils import custom_verification_for_token
 from api.utils.functions import get_db_historico, getDemandSimulationDB, getFCSimulation, getGraphDataset, getPrepareSummary, getSimmulationNetSales, getSimulationUnits, getVisualBD, request_info_cobertura
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import request

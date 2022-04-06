@@ -1,6 +1,7 @@
 from api.utils.hasura_api import *
-from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadProducts, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createCloneMaestro, createExcelFile, createTemplate, createTemplateValorizacion
-from os import getcwd, scandir, remove, listdir
+from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadProducts, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createCloneMaestro, createDBMainFile, createExcelFile, createTemplate, createTemplateValorizacion
+from os import getcwd, scandir, unlink, listdir
+from pathlib import Path
 from os.path import join
 import pandas as pd
 import bcrypt
@@ -12,8 +13,8 @@ from api.utils.rowsCheker import checkExistingCategories, dataMaestroCheck
 data_path = join(getcwd(),'api','data')
 template_path = join(getcwd(),'api','templates')
 def cleanDataFolder():
-    for file in scandir(data_path):
-        remove(file)
+    for file in Path(data_path).glob('*.xlsx'):
+        unlink(file)
 
 ALLOWED_EXT = set(['xlsx','xls'])
 def allowed_extensions(filename):
@@ -463,6 +464,17 @@ def request_cargar_db_main(id):
             return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra y {res_comp} filas ingresadas a la tabla de compraciones SOP - Regular ID: {curr_month}'}, 200
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
+
+def request_db_main(customWhere):
+    try:
+        data = request_alldata_db_main(customWhere)
+        if data == []:
+            return ""
+        else:
+            id = customWhere['id'][0]
+            return createDBMainFile(data,id)
+    except:
+        return ""
 
 def request_cerrar_mes():
     try:

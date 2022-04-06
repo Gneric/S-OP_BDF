@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from api.utils.dataLoader import createFileProductosOtros
 from api.utils.functions import *
 from flask_restful import Resource
-from flask import request
+from flask import abort, request, send_from_directory
 import flask
 
 class GetProductosSinClasificar(Resource):
@@ -44,3 +44,22 @@ class UpsertComparacionSOP(Resource):
             return upsert_comparacion_sop(data)
         except:
             return { 'error': 'error al retornar peticion de actualizacion' }, 400
+
+class GetDBSOP(Resource):
+    @jwt_required()
+    def post(self):
+        cleanDataFolder()
+        current_user = get_jwt_identity()
+        customWhere = request.json.get('customWhere','')
+        filename = request_db_main(customWhere)
+        if filename == "":
+            return { 'error': 'error al obtener datos para dbmain' }, 400
+        data_path = join(getcwd(),'api','data')
+        try:
+            result = send_from_directory(
+                data_path, filename, as_attachment=True, environ=request.environ
+            )
+            result.headers['filename'] = filename
+            return result
+        except FileNotFoundError:
+            abort(404)

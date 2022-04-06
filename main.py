@@ -93,6 +93,7 @@ api.add_resource(AddMultipleRows, '/api/new_multiple_rows')
 api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
 api.add_resource(GetTransitoNart, '/api/get_transito_nart')
 api.add_resource(UpsertComparacionSOP, '/api/upsert_comparacionSOP')
+api.add_resource(GetDBSOP, '/api/get_db_sop')
 # user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')

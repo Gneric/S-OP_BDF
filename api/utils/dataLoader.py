@@ -630,14 +630,61 @@ def createCloneMaestro(data):
         return ""
 
 
-def createDBMainFile(array):
+def createDBMainFile(array, id):
     try:
-        filename = "DBMain.xlsx"
+        filename = f"Database_{id}.xlsx"
         workbook = xlsxwriter.Workbook(f"api/data/{filename}")
         cell_format = workbook.add_format()
         cell_format.set_text_wrap()
         cell_format.set_align('top')
         cell_format.set_align('left=')
         worksheet = workbook.add_worksheet("database")
+        if array:
+            keys = list(array[0].keys())
+            worksheet.write('A1',keys[0])
+            worksheet.write('B1',keys[1])
+            worksheet.write('C1',keys[2])
+            worksheet.write('D1',keys[3])
+            worksheet.write('E1',keys[4])
+            worksheet.write('F1',keys[5])
+            worksheet.write('G1',keys[6])
+            worksheet.write('H1',keys[7])
+            worksheet.write('I1',keys[8])
+            worksheet.write('J1',keys[9])
+            worksheet.write('K1',keys[10])
+            worksheet.write('L1',keys[11])
+            worksheet.write('M1',keys[12])
+            rowIndex = 2
+            for row in array:
+                worksheet.write(f'A{rowIndex}', row['id'])
+                worksheet.write(f'B{rowIndex}', row['clasificacion'])
+                worksheet.write(f'C{rowIndex}', row['canal'])
+                worksheet.write(f'D{rowIndex}', row['bpu'])
+                worksheet.write(f'E{rowIndex}', row['brand_category'])
+                worksheet.write(f'F{rowIndex}', row['application_form'])
+                worksheet.write(f'G{rowIndex}', row['nart'])
+                worksheet.write(f'H{rowIndex}', row['spgr'])
+                worksheet.write(f'I{rowIndex}', row['descripcion'])
+                worksheet.write(f'J{rowIndex}', row['year'])
+                worksheet.write(f'K{rowIndex}', row['month'])
+                worksheet.write(f'L{rowIndex}', row['units'])
+                worksheet.write(f'M{rowIndex}', row['netsales'])
+                rowIndex+=1
+        else:
+            worksheet.write('A1','id')
+            worksheet.write('B1','clasificacion')
+            worksheet.write('C1','canal')
+            worksheet.write('D1','bpu')
+            worksheet.write('E1','brand_category')
+            worksheet.write('F1','application_form')
+            worksheet.write('G1','nart')
+            worksheet.write('H1','spgr')
+            worksheet.write('I1','descripcion')
+            worksheet.write('J1','year')
+            worksheet.write('K1','month')
+            worksheet.write('L1','units')
+            worksheet.write('M1','netsales')
+        workbook.close()
+        return filename
     except:
         print('Error createDBMainFile', sys.exc_info())

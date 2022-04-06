@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from wsgiref.simple_server import sys_version
 import requests
 import sys
 
@@ -1229,6 +1228,34 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
     except:
         print(sys.exc_info())
         return 0
+
+def request_alldata_db_main(customWhere):
+    try:
+        query = """
+        query MyQuery($customWhere: json = null) {
+            function_get_database(args: {customWhere: $customWhere}) {
+                id
+                clasificacion
+                canal
+                bpu
+                brand_category
+                application_form
+                nart
+                spgr
+                descripcion
+                year
+                month
+                units
+                netsales
+            }
+        }
+        """
+        res = queryHasura(query, { 'customWhere': customWhere })
+        data = res["data"]["function_get_database"]
+        return data
+    except:
+        print(sys.exc_info())
+        return []
 
 def request_id_db_main():
     try:
