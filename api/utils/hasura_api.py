@@ -1229,8 +1229,9 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
         print(sys.exc_info())
         return 0
 
-def request_alldata_db_main(customWhere):
+def request_alldata_db_main(id):
     try:
+        customWhere = '"customWhere": {"id":["'+id+'"]}}{}'
         query = """
         query MyQuery($customWhere: json = null) {
             function_get_database(args: {customWhere: $customWhere}) {

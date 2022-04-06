@@ -50,8 +50,8 @@ class GetDBSOP(Resource):
     def post(self):
         cleanDataFolder()
         current_user = get_jwt_identity()
-        customWhere = request.json.get('customWhere','')
-        filename = request_db_main(customWhere)
+        data = request.json.get('data','')
+        filename = request_db_main(data['id'])
         if filename == "":
             return { 'error': 'error al obtener datos para dbmain' }, 400
         data_path = join(getcwd(),'api','data')

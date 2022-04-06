@@ -465,13 +465,12 @@ def request_cargar_db_main(id):
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
 
-def request_db_main(customWhere):
+def request_db_main(id):
     try:
-        data = request_alldata_db_main(customWhere)
+        data = request_alldata_db_main(id)
         if data == []:
             return ""
         else:
-            id = customWhere['id'][0]
             return createDBMainFile(data,id)
     except:
         return ""
