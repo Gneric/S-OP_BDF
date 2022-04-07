@@ -1231,9 +1231,8 @@ def requestinfo_db_main(clasificacion, year, month, bpu, brand_category, applica
 
 def request_alldata_db_main(id):
     try:
-        customWhere = '"customWhere": {"id":["'+id+'"]}}{}'
         query = """
-        query MyQuery($customWhere: json = null) {
+        query MyQuery($customWhere: json) {
             function_get_database(args: {customWhere: $customWhere}) {
                 id
                 clasificacion
@@ -1251,11 +1250,12 @@ def request_alldata_db_main(id):
             }
         }
         """
-        res = queryHasura(query, { 'customWhere': customWhere })
+        res = queryHasura(query, { 'customWhere': {"id":[id]}})
         data = res["data"]["function_get_database"]
         return data
     except:
         print(sys.exc_info())
+        print(res)
         return []
 
 def request_id_db_main():
@@ -1369,7 +1369,6 @@ def backup_db_main(data):
         }
         """
         res = queryHasura(query, {'data': data })
-        print(res)
         return res["data"]["insert_Cierre_mes_sop"]["affected_rows"]
     except:
         print(sys.exc_info())

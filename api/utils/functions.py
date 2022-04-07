@@ -477,14 +477,15 @@ def request_db_main(id):
 
 def request_cerrar_mes():
     try:
-        data = request_data_last_id()
-        curr_month = f'{datetime.now().strftime("%Y%m")}'
-        if data == [] or data[0]["id"] < curr_month :
+        data = request_data_last_id(id = False)
+        if data != []:
             del_res = backup_db_main(data)
             return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
         else:
+           print(sys.exc_info())
            return { 'error': 'no se encontraron datos del mes en curso' }, 400
     except:
+        print(sys.exc_info())
         return { 'error': 'error cargando nuevos datos' }, 400
 
 def getInfoTimeline(permissionID, timelineID):
