@@ -1783,12 +1783,11 @@ def request_transito_nart(nart):
         print('Error request_transito_nart', sys.exc_info())
         return []
 
-def request_data_comparacion_sop(id):
+def request_data_comparacion_sop():
     try:
-        if id:
-            q = """
-            query MyQuery($_eq: String = "") {
-            Comparacion_SOP_M1_FC_view(where: {id: {_eq: $_eq}}) {
+        q = """
+        query MyQuery {
+            Comparacion_SOP_M1_FC_view {
                 id
                 application_form
                 brand_category
@@ -1805,33 +1804,10 @@ def request_data_comparacion_sop(id):
                 var_porc_lastyear
                 var_porc_m1
             }
-            }"""
-            res = queryHasura( q, {'_eq': str(id) } )
-            return res['data']['Comparacion_SOP_M1_FC_view']
-        else:
-            q = """
-            query MyQuery {
-                Comparacion_SOP_M1_FC_view {
-                    id
-                    application_form
-                    brand_category
-                    bpu
-                    dif_abs_financial
-                    dif_abs_lastyear
-                    dif_abs_m1
-                    financial
-                    lastsop_eur
-                    lastsop_pen
-                    lastyear
-                    sop_m1
-                    var_porc_financial
-                    var_porc_lastyear
-                    var_porc_m1
-                }
-            }
-            """
-            res = queryHasura(q)
-            return res['data']['Comparacion_SOP_M1_FC_view']
+        }
+        """
+        res = queryHasura(q)
+        return res['data']['Comparacion_SOP_M1_FC_view']
     except:
         print('Error request_data_comparacion_sop ', sys.exc_info())
         return []
@@ -1850,7 +1826,7 @@ def delete_data_comparacion_sop():
         print('Error delete_data_comparacion_sop', sys.exc_info())
         return ""
 
-def request_upsert_comparacion_sop(data):
+def  request_upsert_comparacion_sop(data):
     try:
         for row in data:
             row.update({ 'comment': '' })

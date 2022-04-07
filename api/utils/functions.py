@@ -445,7 +445,7 @@ def update_db_main(data_old):
 def request_cargar_db_main(id):
     try:
         data = request_data_last_id(id)
-        data_comparacion = request_data_comparacion_sop(id)
+        data_comparacion = request_data_comparacion_sop()
         curr_month = f'{datetime.now().strftime("%Y%m")}'
         if id:
             if data == []:

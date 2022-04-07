@@ -3,7 +3,8 @@ from flask import Flask, request
 from flask_cors import CORS
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, create_access_token
-from datetime import timedelta
+
+from api.config.app_config import app_config
 
 from api.routes.login import LogIn
 from api.routes.welcome import Welcome
@@ -17,12 +18,12 @@ from api.routes.data_endpoints.data_product_master import *
 from api.routes.data_endpoints.data_otros import *
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "bZwk/=X48SnCtUEWpzH2RcJP-6yeVAKTrBvDsuM_mfFj9dxqGh"
-app.config["JWT_COOKIE_SECURE"] = False
-app.config["JWT_TOKEN_LOCATION"] = ["headers"]
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(hours=48)
-app.config["PROPAGATE_EXCEPTIONS"] = True
+app.config['SECRET_KEY'] = app_config['SECRET_KEY']
+app.config["JWT_COOKIE_SECURE"] = app_config['JWT_COOKIE_SECURE']
+app.config["JWT_TOKEN_LOCATION"] = app_config['JWT_TOKEN_LOCATION']
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = app_config['JWT_ACCESS_TOKEN_EXPIRES']
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = app_config['JWT_REFRESH_TOKEN_EXPIRES']
+app.config["PROPAGATE_EXCEPTIONS"] = app_config['PROPAGATE_EXCEPTIONS']
 jwt = JWTManager(app)
 CORS(app, expose_headers=["filename"], resources={r"*": {"origins": "*"}})
 api = Api(app)
