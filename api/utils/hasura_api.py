@@ -1863,3 +1863,31 @@ def request_update_comparacion_sop(data):
     except:
         print('Error request_upsert_comparacion_sop ', sys.exc_info())
         return { 'error': 'error en la respuesta de actualizacion' }, 400
+
+def request_data_db_main():
+    try:
+        q = """
+        query MyQuery {
+        DB_Main {
+            id
+            month
+            netsales
+            promo_spgr
+            units
+            year
+            comentario
+            clasificacion
+            canal
+            brand_category
+            bpu
+            application_form
+            ajuste_netsales
+        }
+        }
+        """
+        res = queryHasura(q)
+        return res["data"]["DB_Main"]
+    except:
+        print('Error request_data_db_main', res)
+        print(sys.exc_info())
+        return []

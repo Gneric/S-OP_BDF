@@ -477,7 +477,7 @@ def request_db_main(id):
 
 def request_cerrar_mes():
     try:
-        data = request_data_last_id(id = False)
+        data = request_data_db_main()
         if data != []:
             del_res = backup_db_main(data)
             return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
