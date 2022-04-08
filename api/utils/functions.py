@@ -482,7 +482,7 @@ def request_cerrar_mes():
             del_res = backup_db_main(data)
             data_comparacion = request_curr_comparacion_sop()
             del_res_sop = backup_comparacion_sop(data_comparacion)
-            return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
+            return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup y {del_res_sop} filas a cierre de comparaciones'}
         else:
            print(sys.exc_info())
            return { 'error': 'no se encontraron datos del mes en curso' }, 400

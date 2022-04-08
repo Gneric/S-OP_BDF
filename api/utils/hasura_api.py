@@ -1363,15 +1363,16 @@ def backup_db_main(data):
     try:
         query = """
         mutation MyMutation($data: [Cierre_mes_sop_insert_input!] = {}) {
-        insert_Cierre_mes_sop(objects: $data) {
-            affected_rows
-        }
+            insert_Cierre_mes_sop(objects: $data, on_conflict: {constraint: Cierre_mes_sop_pkey, update_columns: [units, netsales, ajuste_netsales, comentario]}) {
+                affected_rows
+            }
         }
         """
         res = queryHasura(query, {'data': data })
         return res["data"]["insert_Cierre_mes_sop"]["affected_rows"]
     except:
-        print(sys.exc_info())
+        print('Error backup_db_main', sys.exc_info())
+        print(res)
         return 0
 
 def delete_db_main_id():
@@ -1836,7 +1837,7 @@ def request_curr_comparacion_sop():
         }
         """
         res = queryHasura(q)
-        return res['data']['Comparacion_SOP_M1_FC_view']
+        return res['data']['Comparacion_SOP_M1_FC']
     except:
         print('Error request_curr_comparacion_sop', sys.exc_info())
         return []
@@ -1880,7 +1881,7 @@ def backup_comparacion_sop(data):
     try:
         q = """
         mutation MyMutation($objects: [Cierre_Comparacion_SOP_M1_FC_insert_input!] = {}) {
-            insert_Cierre_Comparacion_SOP_M1_FC(objects: $objects, on_conflict: {constraint: Cierre_Comparacion_SOP_M1_FC_pkey, update_columns: [lastsop_pen, lastsop_eur, lastyear, dif_abs_m1, dif_abs_lastyear, dif_abs_financial, var_proc_m1, var_proc_lastyear, var_proc_financial, financial, sop_m1, comment]}) {
+            insert_Cierre_Comparacion_SOP_M1_FC(objects: $objects, on_conflict: {constraint: Cierre_Comparacion_SOP_M1_FC_pkey, update_columns: [lastsop_pen, lastsop_eur, lastyear, dif_abs_m1, dif_abs_lastyear, dif_abs_financial, var_porc_m1, var_porc_lastyear, var_porc_financial, financial, sop_m1, comment]}) {
                 affected_rows
             }
         }
@@ -1891,7 +1892,8 @@ def backup_comparacion_sop(data):
         else:
             return 0
     except:
-        print('Error request_upsert_comparacion_sop ', sys.exc_info())
+        print('Error backup_comparacion_sop ', sys.exc_info())
+        print(res)
         return 0
 
 def request_update_comparacion_sop(data):
