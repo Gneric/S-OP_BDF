@@ -1811,6 +1811,36 @@ def request_data_comparacion_sop():
         print('Error request_data_comparacion_sop ', sys.exc_info())
         return []
 
+def request_curr_comparacion_sop():
+    try:
+        q = """
+        query MyQuery {
+            Comparacion_SOP_M1_FC {
+                id
+                application_form
+                brand_category
+                bpu
+                dif_abs_financial
+                dif_abs_lastyear
+                dif_abs_m1
+                financial
+                lastsop_eur
+                lastsop_pen
+                lastyear
+                sop_m1
+                var_porc_financial
+                var_porc_lastyear
+                var_porc_m1
+                comment
+            }
+        }
+        """
+        res = queryHasura(q)
+        return res['data']['Comparacion_SOP_M1_FC_view']
+    except:
+        print('Error request_curr_comparacion_sop', sys.exc_info())
+        return []
+
 def delete_data_comparacion_sop():
     try:
         q ="""mutation MyMutation {
@@ -1825,7 +1855,7 @@ def delete_data_comparacion_sop():
         print('Error delete_data_comparacion_sop', sys.exc_info())
         return ""
 
-def  request_upsert_comparacion_sop(data):
+def request_upsert_comparacion_sop(data):
     try:
         for row in data:
             row.update({ 'comment': '' })
@@ -1840,6 +1870,24 @@ def  request_upsert_comparacion_sop(data):
         res = queryHasura(q, { 'objects': data })
         if res:
             return res['data']['insert_Comparacion_SOP_M1_FC']['affected_rows']
+        else:
+            return 0
+    except:
+        print('Error request_upsert_comparacion_sop ', sys.exc_info())
+        return 0
+
+def backup_comparacion_sop(data):
+    try:
+        q = """
+        mutation MyMutation($objects: [Cierre_Comparacion_SOP_M1_FC_insert_input!] = {}) {
+            insert_Cierre_Comparacion_SOP_M1_FC(objects: $objects, on_conflict: {constraint: Cierre_Comparacion_SOP_M1_FC_pkey, update_columns: [lastsop_pen, lastsop_eur, lastyear, dif_abs_m1, dif_abs_lastyear, dif_abs_financial, var_proc_m1, var_proc_lastyear, var_proc_financial, financial, sop_m1, comment]}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q, { 'objects': data })
+        if res:
+            return res['data']['insert_Cierre_Comparacion_SOP_M1_FC']['affected_rows']
         else:
             return 0
     except:

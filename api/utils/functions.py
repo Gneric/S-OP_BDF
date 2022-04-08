@@ -480,6 +480,8 @@ def request_cerrar_mes():
         data = request_data_db_main()
         if data != []:
             del_res = backup_db_main(data)
+            data_comparacion = request_curr_comparacion_sop()
+            del_res_sop = backup_comparacion_sop(data_comparacion)
             return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup'}, 200
         else:
            print(sys.exc_info())
