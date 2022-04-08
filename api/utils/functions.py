@@ -445,7 +445,6 @@ def update_db_main(data_old):
 def request_cargar_db_main(id):
     try:
         data = request_data_last_id(id)
-        data_comparacion = request_data_comparacion_sop()
         curr_month = f'{datetime.now().strftime("%Y%m")}'
         if id:
             if data == []:
@@ -453,10 +452,11 @@ def request_cargar_db_main(id):
         else:
             if data == [] or data[0]["id"] < curr_month :
                 return { 'error': f'no se encontro data en el mes actual - {curr_month}' }, 400
-
         del_res = delete_db_main_id()
-        del_res = delete_data_comparacion_sop()
         res = insert_data_db_main(data)
+
+        data_comparacion = request_data_comparacion_sop()
+        del_res = delete_data_comparacion_sop()
         res_comp = request_upsert_comparacion_sop(data_comparacion)
         if id:
             return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra y {res_comp} filas ingresadas a la tabla de compraciones SOP - Custom ID: {id}'}, 200
