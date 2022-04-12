@@ -33,8 +33,12 @@ class DeleteData(Resource):
             year = request.json.get('year','')
             month = request.json.get('month', '')
             area_id = request.json.get('area_id', '')
+            if int(month) < 10 and len(str(month)) == 1:
+                month = f"0{int(month)}"
             if area_id == "" or month == "" or year == "":
                 return 'No se encuentran todas las varaibles necesarias', 400
+            if datetime.now().strftime('%Y%m') != str(year)+str(month):
+                    return { "error" : "El periodo enviado no es el actual" }, 400
             res = checkDeleteTable(area_id, year, month, current_user)
             if res == "":
                 return "Error eliminando data del mes", 400
