@@ -1,8 +1,9 @@
-from api.utils.functions import logUser, generate_token
 from flask_restful import Resource
 from flask import request
 from flask_jwt_extended import create_access_token, create_refresh_token
 import sys
+
+from src.api.controllers.login import logUser, generate_token
 
 class LogIn(Resource):
     def post(self):

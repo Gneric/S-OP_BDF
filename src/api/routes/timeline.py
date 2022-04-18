@@ -2,8 +2,7 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from flask import request
 
-from api.utils.functions import getInfoTimeline, setInfoTimeline
-
+from src.api.controllers.timeline import getInfoTimeline, setInfoTimeline
 
 class GetInfoTimeline(Resource):
     @jwt_required()

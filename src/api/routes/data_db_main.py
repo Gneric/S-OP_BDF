@@ -1,7 +1,7 @@
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from api.utils.functions import *
 from flask_restful import Resource
 from flask import request
+from src.api.controllers.data_db_main import *
 
 class GetInfoDB_Main(Resource):
     @jwt_required()

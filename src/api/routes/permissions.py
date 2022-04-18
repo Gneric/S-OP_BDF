@@ -2,7 +2,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 from flask import request
 
-from api.utils.functions import getPermissionbyActions, updatePermissions
+from src.api.controllers.permissions import getPermissionbyActions, updatePermissions
 
 class GetPermissions(Resource):
     @jwt_required()

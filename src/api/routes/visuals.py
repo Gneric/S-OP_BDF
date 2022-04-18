@@ -1,8 +1,9 @@
-from api.utils.functions import get_db_historico, getDemandSimulationDB, getFCSimulation, getGraphDataset, getPrepareSummary, getSimmulationNetSales, getSimulationUnits, getVisualBD, request_info_cobertura
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import request
 from flask_restful import Resource
 import sys
+
+from src.api.controllers.visuals import *
 
 class GetVisualBD(Resource):
     @jwt_required()

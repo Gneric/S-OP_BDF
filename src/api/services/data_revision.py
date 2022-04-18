@@ -1,7 +1,5 @@
-import sys
-import json
-
-from api.utils.hasura_api import request_Maestro_productos, request_clasificaciones_Maestro_productos, request_used_categories
+from src.api.hasura_queries.data_revision import request_Maestro_productos, request_clasificaciones_Maestro_productos, request_used_categories
+import sys, json
 
 def dataCheck(data):
     json_data = json.loads(data)
@@ -57,9 +55,7 @@ def dataMaestroCheck(data):
         applicationForm = row.get('ApplicationForm','')
         tipo = row.get('TIPO','')
 
-
         err_row = False
-        # Revision de datos
         if bpu.upper() not in maestro_bpu_upper:
             err_row = True
             err_message.append(f'La descripción {bpu} de BPU no concuerda con las categorías definidas')    
@@ -84,8 +80,6 @@ def dataMaestroCheck(data):
         if err_row:
             material_err.append({ 'material': material, 'errores': err_message })
             
-    #new_err = list(dict.fromkeys(material_err))
-    #new_data = [ x for x in data if x['Material'] not in new_err ]
     new_data = list( { each['Material'] : each for each in data }.values() )
     if material_err:
         err_check = True
@@ -107,3 +101,11 @@ def checkExistingCategories(data):
         except:
             err_message.append(f'error en la fila {name}')
     return err_message
+
+def getSizebyColumnName(size_list, name):
+    try:
+        values_list = [ x['size'] if x['name']==name else 'NULL' for x in size_list]
+        value = list(filter(lambda a: a != 'NULL', values_list))[0]
+        return value
+    except:
+        return 0

@@ -4,18 +4,18 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, create_access_token
 
-from api.config.app_config import app_config
+from src.config.app_config import app_config
 
-from api.routes.login import LogIn
-from api.routes.welcome import Welcome
-from api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
-from api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
-from api.routes.permissions import GetPermissions, UpdatePermissions
-from api.routes.timeline import GetInfoTimeline, SetInfoTimeline
-from api.routes.data_endpoints.data_db_main import *
-from api.routes.data_endpoints.data_inputs import *
-from api.routes.data_endpoints.data_product_master import *
-from api.routes.data_endpoints.data_otros import *
+from src.api.routes.login import LogIn
+from src.api.routes.welcome import Welcome
+from src.api.routes.users import ChangePassword, ModifyUser, CreateUser, UserList
+from src.api.routes.visuals import DemandSimulation, FCSimulation, GetBDHistorico, GetCobertura, GetVisualBD, GraphDataset, PrepareSummary, NetSalesxPBU, UnitsxBPU
+from src.api.routes.permissions import GetPermissions, UpdatePermissions
+from src.api.routes.timeline import GetInfoTimeline, SetInfoTimeline
+from src.api.routes.data_db_main import GetInfoDB_Main, UpdateDB_Main, CargarDBMain, CerrarMesDBMain, AddMultipleRows
+from src.api.routes.data_inputs import GetData, DeleteData, CloneData, GetTemplates, UploadExcel, GetInfoMes, DeleteFileData, UpdateDbData, AddRow
+from src.api.routes.data_product_master import UpdateProduct, UploadProduct, CloneProduct, UpsertCategoryItem, DeleteCategoryItem
+from src.api.routes.data_otros import GetProductosSinClasificar, GetTransitoNart, UpsertComparacionSOP, GetDBSOP
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = app_config['SECRET_KEY']

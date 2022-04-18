@@ -1,10 +1,12 @@
-from os import getcwd
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from api.utils.dataLoader import createFileProductosOtros
-from api.utils.functions import *
-from flask_restful import Resource
-from flask import abort, request, send_from_directory
 import flask
+from flask_restful import Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask import abort, request, send_from_directory
+from ntpath import join
+from os import getcwd
+
+from src.api.controllers.data_otros import *
+from src.api.services.global_variables import cleanDataFolder
 
 class GetProductosSinClasificar(Resource):
     @jwt_required()
@@ -50,7 +52,7 @@ class GetDBSOP(Resource):
     def post(self):
         cleanDataFolder()
         current_user = get_jwt_identity()
-        data = request.json.get('data','')
+        data = request.json.get('data','') 
         filename = request_db_main(data['id'])
         if filename == "":
             return { 'error': 'error al obtener datos para dbmain' }, 400

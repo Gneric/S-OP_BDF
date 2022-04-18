@@ -1,9 +1,10 @@
 from flask_jwt_extended.view_decorators import jwt_required
 from flask_jwt_extended import get_jwt_identity
-from api.utils.functions import createUser, userInfo, pwdChange, modUser
 from flask_restful import Resource
 from flask import request
 import sys
+
+from src.api.controllers.users import userInfo, createUser, pwdChange, modUser
 
 class UserList(Resource):
     @jwt_required()

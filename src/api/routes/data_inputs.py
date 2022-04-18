@@ -1,11 +1,13 @@
-import sys
-from os import getcwd
+from flask_restful import Resource, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename, send_from_directory
-from api.utils.functions import *
-from flask_restful import Resource, abort
-from datetime import datetime
+
 from flask import request
+from os import getcwd
+import sys
+
+from src.api.controllers.data_inputs import *
+from src.api.services.global_variables import *
 
 
 class GetData(Resource):
@@ -128,7 +130,7 @@ class UploadExcel(Resource):
                 if allowed_extensions(f.filename) == False:
                     return { "error" : "extension del archivo adjunto no se encuentra en el listado de aprovados" }, 400
                 else:
-                    f.save(join(data_path, secure_filename(f.filename)))
+                    f.save(join(DATA_PATH, secure_filename(f.filename)))
             if checkFiles() == 0:
                 return { "error" : 'No files saved' }, 400
             else:                
