@@ -63,3 +63,13 @@ class GetDBSOP(Resource):
             return result
         except FileNotFoundError:
             abort(404)
+
+class SetCurrency(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.json.get('data','')
+        try:
+            return upsert_conversion_moneda(data)
+        except:
+            return { 'error': 'error al retornar peticion de ingreso/actualizacion de valor EUR' }, 400

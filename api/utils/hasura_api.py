@@ -1941,3 +1941,19 @@ def request_data_db_main():
         print('Error request_data_db_main', res)
         print(sys.exc_info())
         return []
+
+def request_update_conversion_moneda(data):
+    try:
+        q = """
+        mutation MyMutation($objects: [Conversion_moneda_insert_input!] = {}) {
+            insert_Conversion_moneda(objects: $objects, on_conflict: {constraint: Conversion_moneda_pkey, update_columns: valor}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q, { 'objects': data } )
+        return res["data"]["insert_Conversion_moneda"]["affected_rows"]
+    except:
+        print('Error request_data_db_main', res)
+        print(sys.exc_info())
+        return ''

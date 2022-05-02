@@ -621,3 +621,14 @@ def upsert_comparacion_sop(data):
     except:
         print(sys.exc_info())
         return { 'error': 'error haciendo la peticion de actualizacion' }, 400
+
+def upsert_conversion_moneda(data):
+    try:
+        unique = list( { str(each['year'])+str(each['moneda'])+str(each['valor']) : each for each in data }.values() )
+        res = request_update_conversion_moneda(unique)
+        if res:
+            return { 'result': f'ok - {res} filas afectadas' }
+        else:
+            return { 'error': 'error en la respuesta de actualizacion' }, 400
+    except:
+        return { 'error': 'error en la respuesta de actualizacion' }, 400
