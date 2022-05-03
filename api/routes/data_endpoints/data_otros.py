@@ -73,3 +73,12 @@ class SetCurrency(Resource):
             return upsert_conversion_moneda(data)
         except:
             return { 'error': 'error al retornar peticion de ingreso/actualizacion de valor EUR' }, 400
+
+class GetCurrency(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        try:
+            return get_conversion_moneda()
+        except:
+            return { 'error': 'error al retornar peticion de ingreso/actualizacion de valor EUR' }, 400

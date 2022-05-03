@@ -632,3 +632,12 @@ def upsert_conversion_moneda(data):
             return { 'error': 'error en la respuesta de actualizacion' }, 400
     except:
         return { 'error': 'error en la respuesta de actualizacion' }, 400
+
+def get_conversion_moneda():
+    try:
+        res = request_conversion_moneda()
+        if res != '':
+            return res
+        return { 'error': 'error en la obtencion de datos' }, 400
+    except:
+        return { 'error': 'error en la obtencion de datos' }, 400

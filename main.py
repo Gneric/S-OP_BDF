@@ -117,8 +117,9 @@ api.add_resource(DemandSimulation, '/api/demand_simulation')
 api.add_resource(FCSimulation, '/api/fc_simulation')
 api.add_resource(GraphDataset, '/api/graph_dataset')
 api.add_resource(GetCobertura, '/api/cobertura_graph')
-# EUR
+# currency
 api.add_resource(SetCurrency, '/api/set_currency')
+api.add_resource(GetCurrency, '/api/get_currency')
 
 if __name__ == '__main__':
   from waitress import serve

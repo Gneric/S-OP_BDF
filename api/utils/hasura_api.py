@@ -1957,3 +1957,21 @@ def request_update_conversion_moneda(data):
         print('Error request_data_db_main', res)
         print(sys.exc_info())
         return ''
+
+def request_conversion_moneda():
+    try:
+        q = """
+        query MyQuery {
+            Conversion_moneda {
+                year
+                moneda
+                valor
+            }
+        }
+        """
+        res = queryHasura(q)
+        return res["data"]["Conversion_moneda"]
+    except:
+        print('Error request_conversion_moneda', res)
+        print(sys.exc_info())
+        return ''
