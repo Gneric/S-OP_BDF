@@ -58,7 +58,7 @@ class CloneData(Resource):
             res = cloneData(file_id, area_id, current_user)
             print('res :', res)
             if res == "":
-                return "Error clonando data del mes", 400
+                return {"error": "Error clonando data del mes" }, 400
             else:
                 data_path = join(getcwd(),'api','data')
                 try:
@@ -81,7 +81,7 @@ class GetTemplates(Resource):
             month = str(request.json['month'])
             area_id = int(request.json['area_id'])
             cleanDataFolder()
-            res = getTemplates(year, month, area_id)
+            res = getTemplates(year, month, area_id, current_user)
             print('(GetTemplate) res:', res)
             if res == "" or res is None:
                 return { 'error': 'error creando template / template vacio' }, 400

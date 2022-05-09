@@ -11,7 +11,7 @@ class UpdateProduct(Resource):
         current_user = get_jwt_identity()
         data = request.json.get('data','')
         if data:
-            return request_update_product(data)
+            return request_update_product(data, current_user)
         else:
             return { 'error': 'error de lectura de variable data' }, 400
 
@@ -29,7 +29,7 @@ class UploadProduct(Resource):
         if checkFiles() == 0:
             return { "error" : 'No files saved' }, 400
         else:                
-            res = checkExcelProduct()
+            res = checkExcelProduct(current_user)
             cleanDataFolder()
             return res
 
@@ -39,7 +39,7 @@ class CloneProduct(Resource):
         try:
             current_user = get_jwt_identity()
             cleanDataFolder()
-            res = cloneMaestro()
+            res = cloneMaestro(current_user)
             try:
                 result = send_from_directory(
                     data_path, res, as_attachment=True, environ=request.environ
@@ -58,7 +58,7 @@ class UpsertCategoryItem(Resource):
         try:
             current_user = get_jwt_identity()
             data = request.json.get('data','')
-            res = getUpsertCategory(data)
+            res = getUpsertCategory(data, current_user)
             return res
         except:
             print(sys.exc_info())
@@ -71,7 +71,7 @@ class DeleteCategoryItem(Resource):
         try:
             current_user = get_jwt_identity()
             data = request.json.get('data','')
-            res = delete_category_items(data)
+            res = delete_category_items(data, current_user)
             return res
         except:
             print(sys.exc_info())

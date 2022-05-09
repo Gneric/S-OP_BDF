@@ -27,6 +27,7 @@ class UpdateDB_Main(Resource):
         res = update_db_main(data)
         if res == 0:
             return { 'error': 'error actualizar data' }, 400
+        insert_audit(7, 2, 0, 0, 0, 0, current_user)
         return { 'result' : 'ok' }, 200
 
 class CargarDBMain(Resource):
@@ -37,13 +38,13 @@ class CargarDBMain(Resource):
         else:
             id = ""
         current_user = get_jwt_identity()
-        return request_cargar_db_main(id)
+        return request_cargar_db_main(id, current_user)  
         
 class CerrarMesDBMain(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
-        return request_cerrar_mes()
+        return request_cerrar_mes(current_user)
 
 class AddMultipleRows(Resource):
     @jwt_required()
@@ -52,4 +53,4 @@ class AddMultipleRows(Resource):
         data = request.json.get('data', '')
         if data == '':
             return { 'error': 'error en la lectura de data' }, 400
-        return add_multiple_rows(data)
+        return add_multiple_rows(data, current_user)

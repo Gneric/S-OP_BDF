@@ -1,4 +1,4 @@
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_restful import Resource
 from flask import request
 
@@ -17,8 +17,9 @@ class GetInfoTimeline(Resource):
 class SetInfoTimeline(Resource):
     @jwt_required()
     def post(self):
+        current_user = get_jwt_identity()
         data = request.json.get('data', {})
         if data:
-            return setInfoTimeline(data)
+            return setInfoTimeline(data, current_user)
         else:
             return { 'error', 'No se enncontro "data"' }, 400

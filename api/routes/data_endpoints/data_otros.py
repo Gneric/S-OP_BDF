@@ -41,7 +41,7 @@ class UpsertComparacionSOP(Resource):
         current_user = get_jwt_identity()
         data = request.json.get('data','')
         try:
-            return upsert_comparacion_sop(data)
+            return upsert_comparacion_sop(data, current_user)
         except:
             return { 'error': 'error al retornar peticion de actualizacion' }, 400
 
@@ -70,7 +70,7 @@ class SetCurrency(Resource):
         current_user = get_jwt_identity()
         data = request.json.get('data','')
         try:
-            return upsert_conversion_moneda(data)
+            return upsert_conversion_moneda(data, current_user)
         except:
             return { 'error': 'error al retornar peticion de ingreso/actualizacion de valor EUR' }, 400
 

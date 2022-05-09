@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import requests
-import sys
+import sys, time
 
 hasura_endpoint = 'https://graph.sop.strategio.cloud/v1/graphql'
 headers = {'Content-Type': 'application/json','x-hasura-admin-secret': 'x5cHTWnDb7N2vh3eJZYzamgsUXBVkw'}
@@ -11,6 +11,7 @@ area_by_table = {
     "Maestro_valorizacion" : { "area_id" : 4, "area_name" : "Finanzas"},
     "Maestro_Shopper" : { "area_id" : 5, "area_name" : "Shopper"},
 }
+
 
 def getSizebyColumnName(size_list, name):
     try:
@@ -31,19 +32,59 @@ def queryHasura(query, variables = ""):
     else:
         raise Exception("Query failed to run by returning code of {}. {}".format(requests.status_code, query))
 
-def audit_inputs(row):
-    try:
+
+def request_role_by_id(user_id):
+    try: 
         q = """
-        mutation MyMutation($objects: [auditorias_auditoria_input_insert_input!] = {}) {
-        insert_auditorias_auditoria_input(objects: $objects) {
-            affected_rows
-        }
-        }
-        """
-        res_audit = queryHasura(q, {"objects": row})
-        return res_audit['data']['insert_auditorias_auditoria_input']['affected_rows']
+        query MyQuery($id: Int = 0) {
+            Users(where: {userID: {_eq: $id}}) {
+                role
+            }
+        }"""
+        res = queryHasura(q, { 'id': user_id })
+        return res['data']['Users'][0]['role']
     except:
         print('Error audit_inputs :', sys.exc_info())
+        print(res)
+        return ""
+
+def insert_audit(codigo_accion, codigo_target, codigo_clasificacion, file_id, month, year, codigo_user):
+    temp_row = { 
+        'codigo_accion': codigo_accion, 
+        'codigo_target':codigo_target, 
+        'codigo_clasificacion': codigo_clasificacion, 
+        'file_id': file_id, 
+        'month': month, 
+        'year': year, 
+        'codigo_user': codigo_user 
+    }
+    temp_row.update({ "fecha": datetime.now().strftime('%m/%d/%Y') })
+    try:
+        q = """
+        mutation MyMutation($objects: [auditorias_auditorias_insert_input!] = {}) {
+            insert_auditorias_auditorias(objects: $objects) {
+                affected_rows
+            }
+        }
+        """
+        res_audit = queryHasura(q, { "objects": temp_row })
+        return res_audit['data']['insert_auditorias_auditorias']['affected_rows']
+    except:
+        print('Error insert_audit :', sys.exc_info())
+        return ""
+
+def insert_audit_login(codigo_user):
+    try:
+        q = """
+        mutation MyMutation($codigo_user: Int = 0) {
+            insert_auditorias_logins(objects: {codigo_user: $codigo_user}) {
+                affected_rows
+            }
+        } """
+        res = queryHasura(q, { 'codigo_user': codigo_user })
+        return res['data']['insert_auditorias_logins']['affected_rows']
+    except:
+        print('Error insert_audit_login :', sys.exc_info())
         return ""
 
 def register_file(row):
@@ -454,8 +495,6 @@ def requestDataBaseline(id):
         res_select = queryHasura(query, {"id" : id })
         if len(res_select["data"]["Maestro_baseline"]) < 1:
             return "No existen datos para los parametros igresados"
-
-        
 
         size_list = [{'name':'clasificacion','size':120}, {'name':'descripcion','size':500},{'name':'nart','size':200}]
         colum_list = [{'name': i,'prop': i,'autoSize': True,'sortable': True} if i not in [x['name'] for x in size_list ] else {'name':i,'prop':i,'size':getSizebyColumnName(size_list,i),'autoSize':True,'sortable':True} for i in res_select["data"]["Maestro_baseline"][0].keys()]

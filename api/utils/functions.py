@@ -1,3 +1,4 @@
+from numpy import insert
 from api.utils.hasura_api import *
 from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadProducts, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createCloneMaestro, createDBMainFile, createExcelFile, createTemplate, createTemplateValorizacion
 from os import getcwd, scandir, unlink, listdir
@@ -29,6 +30,11 @@ def checkFiles():
 
 
 db_table_area = {"1":"baseline" ,"2":"launch", "3":"promo", "4":"valorizacion", "5":"shopper"}
+
+
+def getRoleByUserID(user_id):
+    res = request_role_by_id(user_id)
+    return res
 
 def checkExcelFiles(area_id, year, month, current_user, filename):
     for f in scandir(data_path):
@@ -64,25 +70,26 @@ def checkExcelFiles(area_id, year, month, current_user, filename):
                     else:
                         return { 'error': msg }, 400
                 elif warning_check:
-                    audit = audit_inputs({"file_id": file_id, "date": datetime.now().strftime('%m/%d/%Y'), "accion": "INSERT", "clasificacion": clasificacion, "user": current_user})
+                    insert_audit(1, 1, area_id, file_id, month, year, current_user )
                     reg_file = register_file({'file_id': file_id, "date": datetime.now().strftime('%m/%d/%Y'), "name": filename, "user": current_user })
                     file_data = request_file_data(area_id, msg['file_id'])
                     return { 'result': 'ok', 'warning': err_details, 'file_id': msg['file_id'], 'file_data': file_data}
                 else:
-                    audit = audit_inputs({"file_id": file_id, "date": datetime.now().strftime('%m/%d/%Y'), "accion": "INSERT", "clasificacion": clasificacion, "user": current_user})
+                    insert_audit(1, 1, area_id, file_id, month, year, current_user )
                     reg_file = register_file({'file_id': file_id, "date": datetime.now().strftime('%m/%d/%Y'), "name": filename, "user": current_user })
                     file_data = request_file_data(area_id, msg['file_id'])
                     return { 'result' : 'ok', 'warning': [], 'file_id': msg['file_id'], 'file_data': file_data}
             else:
                 return { 'error': f"No se encontro la hoja con el nombre correcto 'Hoja 1' / {db_table_area[area_id]}" }, 400
 
-def checkExcelProduct():
+def checkExcelProduct(current_user):
     try:
         for file in scandir(data_path):
             xl = pd.ExcelFile(file)
             for sheet in xl.sheet_names:
                 df = pd.read_excel(file, sheet)
                 res = LoadProducts(df)
+                insert_audit(1, 3, 0, 0, 0, 0, current_user)
                 return res
     except:
         print('error checkExcelProduct :', sys.exc_info())
@@ -115,57 +122,36 @@ def checkDeleteTable(area_id, year, month, current_user):
         month = f"0{int(month)}"
     if area_id == 1:
         res = deleteDataBaseline(year+month)
-        if res != "":
-            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "BASELINE", "user": current_user})
-        return res
     if area_id == 2:
         res = deleteDataLaunch(year+month)
-        if res != "":
-            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "LAUNCH", "user": current_user})
-        return res
     if area_id == 3:
         res = deleteDataPromo(year+month)
-        if res != "":
-            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "PROMO", "user": current_user})
-        return res
     if area_id == 4:
         res = deleteDataValorizacion(year+month)
-        if res != "":
-            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "VALORIZACION", "user": current_user})
-        return res
     if area_id == 5:
-        res = deleteDataShoppers(year+month)
-        if res != "":
-            audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": "DELETE", "clasificacion": "SHOPPER", "user": current_user})
-        return res
-    else:
+        res = deleteDataShoppers(year+month)    
+    if res == "":
         return ""
+    else:
+        insert_audit(2, 1, area_id, 0, month, year, current_user)
+        return res
 
 def cloneData(file_id, area_id, current_user):
     try:
         data = []
         if area_id == 1:
             data = requestDataBaseline(file_id)
-            if data != "":
-                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "BASELINE", "user": current_user})
         if area_id == 2:
             data = requestDataLaunch(file_id)
-            if data != "":
-                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "LAUNCH", "user": current_user})
         if area_id == 3:
             data = requestDataPromo(file_id)
-            if data != "":
-                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "PROMO", "user": current_user})
         if area_id == 4:
             data = requestDataValorizacion(file_id)
-            if data != "":
-                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "VALORIZACION", "user": current_user})
         if area_id == 5:
             data = requestDataShoppers(file_id)
-            if data != "":
-                audit_inputs({"file_id": int(time.time()), "date": datetime.now().strftime('%m/%d/%Y'), "accion": f"CLONE {file_id}", "clasificacion": "SHOPPER", "user": current_user})
+
         if data == []:
-            return "area_id not found"
+            return ""
         formatted_data = data['rows']
         xslx_name = f"{db_table_area[str(area_id)]}"
         xlsx_name_w_ext = f'{xslx_name}.xlsx'
@@ -173,21 +159,25 @@ def cloneData(file_id, area_id, current_user):
         excel_path = createExcelFile(file_id, area_id, formatted_data, xslx_name, xslx_path)
         if excel_path == "":
             return ""
+        insert_audit(4, 1, area_id, file_id, 0, 0, current_user)
         return xlsx_name_w_ext
     except:
         return sys.exc_info()[1]
     
 
-def getTemplates(year, month, area_id):
+def getTemplates(year, month, area_id, current_user):
     try:
         if year == "":
             year = str(datetime.today().strftime('%Y'))
         if month == "":
             month = str(datetime.today().strftime('%m'))
         if db_table_area[str(area_id)] == 'valorizacion':
-            return createTemplateValorizacion(f"{db_table_area[str(area_id)]}", year, month)
+            tmp_xlsx = createTemplateValorizacion(f"{db_table_area[str(area_id)]}", year, month)
         if db_table_area[str(area_id)] != 'valorizacion':
-            return createTemplate(f"{db_table_area[str(area_id)]}", year, month)
+            tmp_xlsx = createTemplate(f"{db_table_area[str(area_id)]}", year, month)
+
+        insert_audit(5, 1, area_id, 0, month, year, current_user)        
+        return tmp_xlsx
     except:
         print(sys.exc_info()[1])
         return ""
@@ -309,12 +299,13 @@ def getPermissionbyActions(action):
         print(sys.exc_info()[1])
         return { "error" : "Error al retornar permisos" }, 400
 
-def updatePermissions(permissions):
+def updatePermissions(permissions, current_user):
     try:
         rows_affected = updatePermissionByList(permissions)
         if rows_affected == "":
             return { "error" : "Error al actualizar permisos" }, 400
         else:
+            insert_audit(7, 9, 0, 0, 0, 0, current_user)
             return { 'result' : 'ok' }, 200
     except:
         print(sys.exc_info()[1])
@@ -352,7 +343,7 @@ def add_new_row(data):
         print(f' Error add_new_row {err}')
         return 0
 
-def add_multiple_rows(data):
+def add_multiple_rows(data, current_user):
     try:
         rows = []
         table_name = data['clasificacion']
@@ -387,6 +378,7 @@ def add_multiple_rows(data):
         if res == "":
             return { 'error': 'error insertando data' }, 400
         else:
+            insert_audit(7, 2, 0, 0, 0, 0, current_user)
             return { 'result' : 'ok' }
     except KeyError as err:
         print('error add_multiple_rows :', err)
@@ -442,7 +434,7 @@ def update_db_main(data_old):
         print(sys.exc_info())
         return { 'error': 'error actualizando data' }, 400
 
-def request_cargar_db_main(id):
+def request_cargar_db_main(id, current_user):
     try:
         data = request_data_last_id(id)
         curr_month = f'{datetime.now().strftime("%Y%m")}'
@@ -459,9 +451,12 @@ def request_cargar_db_main(id):
         del_res = delete_data_comparacion_sop()
         res_comp = request_upsert_comparacion_sop(data_comparacion)
         if id:
-            return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra y {res_comp} filas ingresadas a la tabla de compraciones SOP - Custom ID: {id}'}, 200
+            result = { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra y {res_comp} filas ingresadas a la tabla de compraciones SOP - Custom ID: {id}'}, 200
         else:
-            return { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra y {res_comp} filas ingresadas a la tabla de compraciones SOP - Regular ID: {curr_month}'}, 200
+            result = { 'ok': f'{res} filas ingresadas a la tabla de datos Maestra y {res_comp} filas ingresadas a la tabla de compraciones SOP - Regular ID: {curr_month}'}, 200
+        
+        insert_audit(9, 2, 0, 0, 0, 0, current_user)
+        return result
     except:
         return { 'error': 'error cargando nuevos datos' }, 400
 
@@ -475,13 +470,14 @@ def request_db_main(id):
     except:
         return ""
 
-def request_cerrar_mes():
+def request_cerrar_mes(current_user):
     try:
         data = request_data_db_main()
         if data != []:
             del_res = backup_db_main(data)
             data_comparacion = request_curr_comparacion_sop()
             del_res_sop = backup_comparacion_sop(data_comparacion)
+            insert_audit(8, 2, 0, 0, 0, 0, current_user)
             return { 'ok': f'{del_res} filas ingresadas a la tabla de SOP Backup y {del_res_sop} filas a cierre de comparaciones'}
         else:
            print(sys.exc_info())
@@ -500,10 +496,11 @@ def getInfoTimeline(permissionID, timelineID):
     except:
         return { 'error': 'error en la busqueda de informacion' }, 400
 
-def setInfoTimeline(data):
+def setInfoTimeline(data, current_user):
     try:
         res = request_setinfo_timeline(data)
         if res:
+            insert_audit(8, 10, 0, 0, 0, 0, current_user)
             return res
         else:
             return { 'error': 'error en el retorno de informacion' }, 400
@@ -529,7 +526,7 @@ def delete_file_data(area_id, file_id):
     except:
         return { 'error': 'error haciendo la peticion de eliminacion de data' }, 400
 
-def request_update_product(data):
+def request_update_product(data, current_user):
     try:
         unique = list( { each['Material'] : each for each in data }.values() )
         err_check, err_message, new_data = dataMaestroCheck(unique)
@@ -538,6 +535,7 @@ def request_update_product(data):
         else:
             res = upload_data_maestro(new_data)
             if res:
+                insert_audit(7, 3, 0, 0, 0, 0, current_user)
                 return res
             else:
                 return { 'error': 'error al retornar peticion de actualizacion' }, 400
@@ -558,10 +556,11 @@ def request_upload_product(data):
     except:
         return { 'error': 'error haciendo la peticion de actualizacion' }, 400
 
-def cloneMaestro():
+def cloneMaestro(current_user):
     try:
         data =  request_data_maestro()
         res = createCloneMaestro(data)
+        insert_audit(4, 3, 0, 0, 0, 0, current_user)
         return res
     except:
         return { 'error':'error obteniendo datos' }, 400
@@ -576,7 +575,7 @@ def get_category_items(data):
     except:
         return { 'error': 'error insertando/actualizando datos' }, 400
 
-def getUpsertCategory(data):
+def getUpsertCategory(data, current_user):
     try:
         unique = list( { each['name']+each['category'] : each for each in data }.values() )
         check_res = checkExistingCategories(unique)
@@ -586,16 +585,18 @@ def getUpsertCategory(data):
         if res == "":
             return { 'error': 'error en la actualizacion de la base de datos' }, 400
         else:
+            insert_audit(7, 6, 0, 0, 0, 0, current_user)
             return { 'result' : 'ok' }
     except:
         return { 'error': 'error insertando/actualizando datos' }, 400
 
-def delete_category_items(data):
+def delete_category_items(data, current_user):
     try:
         res = request_delete_category_items(data)
         if res == "":
             return { 'error': 'error en la actualizacion de la base de datos' }, 400
         else:
+            insert_audit(3, 6, 0, 0, 0, 0, current_user)
             return { 'result' : 'ok' }
     except:
         return { 'error': 'error insertando/actualizando datos' }, 400
@@ -610,11 +611,12 @@ def get_transito_nart(nart):
     except:
         return { 'error', 'error al obtener datos del nart ingresado' }, 400
 
-def upsert_comparacion_sop(data):
+def upsert_comparacion_sop(data, current_user):
     try:
         unique = list( { str(each['id'])+str(each['brand_category'])+str(each['application_form'])+str(each['bpu']) : each for each in data }.values() )
         res = request_update_comparacion_sop(unique)
         if res:
+            insert_audit(7, 5, 0, 0, 0, 0, current_user)
             return res
         else:
             return { 'error': 'error en la respuesta de actualizacion' }, 400
@@ -622,12 +624,13 @@ def upsert_comparacion_sop(data):
         print(sys.exc_info())
         return { 'error': 'error haciendo la peticion de actualizacion' }, 400
 
-def upsert_conversion_moneda(data):
+def upsert_conversion_moneda(data, current_user):
     try:
         unique = list( { str(each['year'])+str(each['moneda']) : each for each in data }.values() )
         filtered_unique = [ each for each in unique if len(str(each['year'])) == 4 and each['valor'] > 0 ]
         res = request_update_conversion_moneda(filtered_unique)
         if res:
+            insert_audit(7, 4, 0, 0, 0, 0, current_user)
             return { 'result': f'ok - {res} filas afectadas' }
         else:
             return { 'error': 'error en la respuesta de actualizacion' }, 400
