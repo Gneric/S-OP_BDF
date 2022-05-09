@@ -58,7 +58,7 @@ def insert_audit(codigo_accion, codigo_target, codigo_clasificacion, file_id, mo
         'year': year, 
         'codigo_user': codigo_user 
     }
-    temp_row.update({ "fecha": datetime.now().strftime('%m/%d/%Y') })
+    temp_row.update({ "date": datetime.now().strftime('%m/%d/%Y') })
     try:
         q = """
         mutation MyMutation($objects: [auditorias_auditorias_insert_input!] = {}) {
@@ -71,6 +71,7 @@ def insert_audit(codigo_accion, codigo_target, codigo_clasificacion, file_id, mo
         return res_audit['data']['insert_auditorias_auditorias']['affected_rows']
     except:
         print('Error insert_audit :', sys.exc_info())
+        print(res_audit)
         return ""
 
 def insert_audit_login(codigo_user):
