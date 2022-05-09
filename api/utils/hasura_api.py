@@ -352,7 +352,7 @@ def listUsers(data):
     try:
         query = """
         query MyQuery($ilike: String = "") {
-        Users("""+variables+""", where: {_or: [{userName: {_ilike: $ilike}}, {name: {_ilike: $ilike}}, {mail: {_ilike: $ilike}}]}) {
+        Users("""+variables+""", where: {_and: {userID: {_gte: 1}, _or: {userName: {_ilike: $ilike}, name: {_ilike: $ilike}, mail: {_ilike: $ilike}}}}){
             userID
             profileImageUrl
             userName
@@ -2002,7 +2002,6 @@ def request_conversion_moneda():
         q = """
         query MyQuery {
             Conversion_moneda {
-                year
                 moneda
                 valor
             }
