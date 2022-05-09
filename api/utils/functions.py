@@ -626,8 +626,8 @@ def upsert_comparacion_sop(data, current_user):
 
 def upsert_conversion_moneda(data, current_user):
     try:
-        unique = list( { str(each['year'])+str(each['moneda']) : each for each in data }.values() )
-        filtered_unique = [ each for each in unique if len(str(each['year'])) == 4 and each['valor'] > 0 ]
+        unique = list( { str(each['moneda']) : each for each in data }.values() )
+        filtered_unique = [ each for each in unique if each['valor'] > 0 ]
         res = request_update_conversion_moneda(filtered_unique)
         if res:
             insert_audit(7, 4, 0, 0, 0, 0, current_user)
