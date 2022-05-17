@@ -82,3 +82,13 @@ class GetCurrency(Resource):
             return get_conversion_moneda()
         except:
             return { 'error': 'error al retornar peticion de ingreso/actualizacion de valor EUR' }, 400
+
+class SaveRiskOPS(Resource):
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.json.get('data','')
+        try:
+            return save_risk_ops(data)
+        except:
+            return { 'error': 'error al retornar peticion de ingreso/actualizacion de risk ops' }, 400
