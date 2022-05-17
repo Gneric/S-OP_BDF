@@ -2014,3 +2014,19 @@ def request_conversion_moneda():
         print('Error request_conversion_moneda', res)
         print(sys.exc_info())
         return ''
+
+def upsert_risk_ops(data):
+    try:
+        q = """
+        mutation MyMutation($objects: [risk_opp_mso_insert_input!] = {}) {
+            insert_risk_opp_mso(objects: $objects, on_conflict: {constraint: risk_opp_mso_pkey, update_columns: valor}) {
+                affected_rows
+            }
+        }
+        """
+        res = queryHasura(q, { 'objects': data })
+        return res["data"]["insert_risk_opp_mso"]["affected_rows"]
+    except:
+        print('Error upsert_risk_ops', res)
+        print(sys.exc_info())
+        return ''

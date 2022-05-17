@@ -1,3 +1,4 @@
+from cgi import test
 from numpy import insert
 from api.utils.hasura_api import *
 from api.utils.dataLoader import LoadForecast, LoadLaunch, LoadProducts, LoadPromo, LoadShoppers, LoadValorizacion, Loadbaseline, createCloneMaestro, createDBMainFile, createExcelFile, createTemplate, createTemplateValorizacion
@@ -8,6 +9,7 @@ import pandas as pd
 import bcrypt
 from datetime import datetime
 import time
+import locale
 
 from api.utils.rowsCheker import checkExistingCategories, dataMaestroCheck
 
@@ -645,3 +647,30 @@ def get_conversion_moneda():
         return { 'error': 'error en la obtencion de datos' }, 400
     except:
         return { 'error': 'error en la obtencion de datos' }, 400
+
+def save_risk_ops(data):
+
+    def transform_data(tranform):
+        new_data = []
+        months = [ i for i in tranform[0].keys() if i not in ['id','tipo','bpu','description','year'] ]
+        locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+        for row in tranform:
+            for month in months:
+                new_data.append( { 
+                    'id': row.get('id'), 'tipo': row.get('tipo'), 
+                    'bpu': row.get('bpu'), 'descripcion': row.get('description'), 
+                    'year': row.get('year'), 'month': int(datetime.strptime(month, "%B").month),
+                    'valor': row.get(month)
+                } )
+        return new_data
+
+    try:
+        #unique = list( { str(each['id'])+str(each['tipo'])+str(each['bpu'])+str(each['descripcion'])+str(each['year']) : each for each in data }.values() )
+        new_data = transform_data(data)
+        res = upsert_risk_ops(new_data)
+        if type(res) == int:
+            return { 'result' : 'ok' }
+        else:
+            return { 'error': 'result not from expected type' }, 400
+    except:
+        return { 'error', 'error dentro de la transformacion de data' }, 400

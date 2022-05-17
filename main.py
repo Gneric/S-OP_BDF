@@ -4,7 +4,7 @@ from flask_cors import CORS
 from flask_restful import Api
 from flask_jwt_extended import JWTManager, create_access_token
 
-from api.config.app_config import app_config
+from api.config import app_config
 
 from api.routes.login import LogIn
 from api.routes.welcome import Welcome
@@ -18,12 +18,7 @@ from api.routes.data_endpoints.data_product_master import *
 from api.routes.data_endpoints.data_otros import *
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = app_config['SECRET_KEY']
-app.config["JWT_COOKIE_SECURE"] = app_config['JWT_COOKIE_SECURE']
-app.config["JWT_TOKEN_LOCATION"] = app_config['JWT_TOKEN_LOCATION']
-app.config["JWT_ACCESS_TOKEN_EXPIRES"] = app_config['JWT_ACCESS_TOKEN_EXPIRES']
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = app_config['JWT_REFRESH_TOKEN_EXPIRES']
-app.config["PROPAGATE_EXCEPTIONS"] = app_config['PROPAGATE_EXCEPTIONS']
+app.config.from_object(app_config)
 jwt = JWTManager(app)
 CORS(app, expose_headers=["filename"], resources={r"*": {"origins": "*"}})
 api = Api(app)
@@ -95,6 +90,7 @@ api.add_resource(GetProductosSinClasificar, '/api/productos_sin_clasificar')
 api.add_resource(GetTransitoNart, '/api/get_transito_nart')
 api.add_resource(UpsertComparacionSOP, '/api/upsert_comparacionSOP')
 api.add_resource(GetDBSOP, '/api/get_db_sop')
+api.add_resource(SaveRiskOPS, '/api/save_risk_ops')
 # user
 api.add_resource(LogIn, '/api/login')
 api.add_resource(CreateUser, '/api/add_user')
